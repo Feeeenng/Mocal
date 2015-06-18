@@ -1,12 +1,10 @@
-from flask import Flask, render_template
+from flask import render_template
+from app import m_app
 
-app = Flask(__name__)
-
-
-@app.route('/')
+@m_app.route('/')
 def hello_world():
-    return render_template('index.html', title='Hello World!', name='haner27!')
-
+    # return render_template('index.html', title='Mocal', name='Hi!Mocal.')
+    return '1'
 
 if __name__ == '__main__':
-    app.run(debug=True, host='127.0.0.1', port=5000)
+    m_app.run(debug=True, host='127.0.0.1', port=5000)
