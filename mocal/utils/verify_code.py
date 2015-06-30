@@ -136,3 +136,4 @@ def generate_verify_code():
 
 
 # res, img_base64 = generate_verify_code()
+# <img src="data:image/jpg;base64,{{ img_io }}">
