@@ -2,7 +2,8 @@
 
 from db import DatabaseObject
 
-class User(DatabaseObject):
+
+class UserDBObject(DatabaseObject):
     __tablename__ = 'user'
     __table_args__ = {'autoload': True, 'extend_existing': True}
 

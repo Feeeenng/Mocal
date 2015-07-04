@@ -5,6 +5,7 @@ from utils.verify_code import generate_verify_code
 from utils.email import Email
 from utils.qr_code import generate_qrcode
 from utils.logger import Logger
+from controllers.user import User
 
 
 @m_app.route('/')
@@ -20,6 +21,16 @@ def hello_world():
     # logger = Logger('han', 'pay', 'pay.log')
     # logger.info('good qr_code!')
 
+    # db
+    # from models.user import UserDBObject
+    # u = UserDBObject.query.first()
+    # print u.name
+
+    user = User.from_id(3)
+    user.set_property('name', 'yang')
+    user.save()
+    print user.name
+    print user.age
     return render_template('index.html', title='Mocal', name='Hi!Mocal.', img_io=img_base64)
 
 if __name__ == '__main__':

@@ -20,5 +20,3 @@ class DatabaseObject(db.Model):
     def add(self):
         db.session.add(self)
 
-    def commit(self):
-        db.session.commit()
