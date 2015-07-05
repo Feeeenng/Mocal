@@ -41,7 +41,14 @@ class BaseController(object):
             db_obj = self.__class__.dbobject(**self.properties)
             db_obj.add()
             db.session.commit()
-            self = self.__class__.object_class(db_obj.__dict__)
+
+            self.properties = db_obj.__dict__
+            for k, v in self.properties.items():
+                if k.startswith('_'):
+                    del self.properties[k]
+                    continue
+                setattr(self, k, v)
+
         else:
             db.session.commit()
 
@@ -67,6 +74,7 @@ class BaseController(object):
     def __sync_attr_data(self, k, v):
         db_obj = self.__class__.dbobject.query.filter_by(id=self.id).first()
         setattr(db_obj, k, v)
+        setattr(db_obj, 'updated_at', db.func.now())
         db_obj.add()
 
 
