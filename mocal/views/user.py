@@ -6,6 +6,7 @@ from mocal.views import register_view
 
 instance = Blueprint('user', __name__)
 
+
 @register_view('/user', instance, ['get'])
 class User(MethodView):
     def get(self):

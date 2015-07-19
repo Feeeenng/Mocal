@@ -1,6 +1,7 @@
 # -*- coding: utf8 -*-
 
 import os
+import sys
 import glob
 
 from utils.logger import logger
@@ -10,12 +11,16 @@ from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_cache import Cache
-from flask_restful import Api, Resource
+
+# setting sys default encode.
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 app = Flask('mocal')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqldb://root:haner27@127.0.0.1:3306/mocal?charset=utf8'
 app.config['SECRET_KEY'] = 'you-never-guess'
+app.config['UPLOAD_FOLDER'] = 'static/upload'
 
 # bootstrap
 bootstrap = Bootstrap(app)
