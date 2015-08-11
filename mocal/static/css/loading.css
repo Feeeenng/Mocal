@@ -4,6 +4,7 @@
   height: 60px;
   text-align: center;
   font-size: 10px;
+    z-index: 1002;
 }
 
 .spinner > div {

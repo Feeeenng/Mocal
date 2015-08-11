@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from flask import render_template, session
 from app import m_app
+from mocal.controllers.upload import Upload
 
 
 @m_app.route('/')
-def hello_world():
-
-    return render_template('index.html', title='Mocal', name='Mocal.')
+def index():
+    carousel_pics = Upload.fetch(page=1, count=3, category='carousel')
+    return render_template('index.html', title='Mocal', carousel_pics=carousel_pics)
 
 # emergency handler
 @m_app.errorhandler(404)

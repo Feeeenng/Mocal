@@ -8,6 +8,3 @@ from mocal.models.user import UserDBObject
 class User(BaseController):
     def __init__(self, properties=None):
         super(User, self).__init__(properties)
-
-    def print_a(self):
-        print self.name

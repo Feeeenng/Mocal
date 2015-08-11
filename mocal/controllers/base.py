@@ -1,5 +1,5 @@
 # -*- coding: utf8 -*-
-from app import db
+from mocal.app import db
 
 
 class BaseController(object):
@@ -31,8 +31,12 @@ class BaseController(object):
 
     # get more
     @classmethod
-    def fetch(cls, **kwargs):
-        dbobjects = cls.dbobject.query.filter_by(**kwargs).all()
+    def fetch(cls, page=0, count=0, **kwargs):
+        if page == 0 and count == 0:
+            dbobjects = cls.dbobject.query.filter_by(**kwargs).all()
+        else:
+            dbobjects = cls.dbobject.query.filter_by(**kwargs).order_by(db.desc('id')).paginate(page, count, False).items
+
         return [] if not dbobjects else [cls.object_class(dbobject.__dict__) for dbobject in dbobjects]
 
     # save

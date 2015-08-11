@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 
-from app import db
+from mocal.app import db
 from datetime import datetime
 
 class DatabaseObject(db.Model):
