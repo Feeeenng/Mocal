@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %} Mocal登陆入口 {% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+    function test(){
+        show_loading();
+        alert(11111111);
+        hide_loading();
+    }
+
+    function check_login(){
+        var login_account = $('#login_account').val();
+        if(!login_account){
+            show_msg('账号不能为空', 1500);
+            return false;
+        }
+
+        var login_password = $('#login_password').val();
+        if(!login_password){
+            show_msg('密码不能为空', 1500);
+            return false;
+        }
+
+        return true;
+    }
+    </script>
+{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+{% endblock %}
+
+{% block page_content %}
+    <div class="page-header">
+        <div class="container">
+            <div class="col-lg-4 col-lg-offset-4 col-sm-6 col-sm-offset-3 col-xs-8 col-xs-offset-2" id="logindiv">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h2 class="text-center">Mocal</h2>
+                    </div>
+                    <div class="panel-body">
+                        <form class="form" method="post" action="{{ url_for('user.login') }}">
+                            <label for="login_account" class="sr-only">Email address</label>
+                            <input type="text" id="login_account" name="login_account" class="form-control" placeholder="用户名" required="" autofocus="">
+                            <label for="login_password" class="sr-only">Password</label>
+                            <input type="password" id="login_password" name="login_password" class="form-control" placeholder="密码" required="">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" value="remember_me" name="remember_me"> Remember me
+                                </label>
+                            </div>
+                            <button class="btn btn-lg btn-primary btn-block" style="background-color: #000000;color: white" type="submit">登陆</button>
+                        </form>
+                        <hr/>
+                        <button type="button" class="btn btn-lg btn-primary btn-block" data-toggle="modal" data-target="#register_modal">
+                        注册
+                        </button>
+                    </div>
+                    <div class="panel-footer">
+                        Panel footer
+                    </div>
+                </div>
+            </div>
+        </div> <!-- /container -->
+    </div>
+
+    <!-- 注册Modal -->
+    <div class="modal fade" id="register_modal" tabindex="-1" role="dialog" aria-labelledby="register_modal_label">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <!-- Modal标题栏 -->
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="register_modal_label">Mocal注册</h4>
+                </div>
+                <!-- Modal正文 -->
+                <div class="modal-body">
+                    <fieldset>
+                        <div class="form-group">
+                            <label for="login_account">账号</label>
+                            <input type="text" class="form-control" id="login_account" placeholder="Account">
+                        </div>
+                        <div class="form-group">
+                            <label for="login_password">密码</label>
+                            <input type="password" class="form-control" id="login_password" placeholder="Password">
+                        </div>
+                    </fieldset>
+                </div>
+                <!-- Modal页脚 -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" style="background-color: #000000">提交</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

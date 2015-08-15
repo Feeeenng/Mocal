@@ -7,7 +7,8 @@ from mocal.views import register_view
 instance = Blueprint('user', __name__)
 
 
-@register_view('/user', instance, ['get'])
-class User(MethodView):
+@register_view('/login', instance, ['get', 'post'])
+class Login(MethodView):
     def get(self):
-        return render_template('index.html')
+
+        return render_template('login.html')

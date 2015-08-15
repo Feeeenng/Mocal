@@ -5,16 +5,30 @@
 {% block scripts %}
     {{ super() }}
     <script>
-    function test(){
-        show_loading();
-        alert(11111111);
-        hide_loading();
-    }
+
     </script>
 {% endblock %}
 
 {% block styles %}
     {{ super() }}
+    <style>
+    .carousel
+    {
+        height: 500px;
+        background-color: #000;
+    }
+
+    .carousel .item
+    {
+        height: 500px;//固定高度
+        background-color: #000;
+    }
+
+    .carousel img
+    {
+        width: 100%;//图片自适应
+    }
+    </style>
 {% endblock %}
 
 {% block page_content %}
@@ -32,21 +46,20 @@
                 {% for pic in carousel_pics %}
                     {% if carousel_pics.index(pic) == 0 %}
                         <div class="item active">
-                            <img src="{{ pic.path }}" alt="图片加载失败">
+                            <img src="{{ pic.path }}" alt="图片加载失败" >
                             <div class="carousel-caption">
                             {{ pic.desc }}
                             </div>
                         </div>
                     {% else %}
                         <div class="item">
-                            <img src="{{ pic.path }}" alt="图片加载失败">
+                            <img src="{{ pic.path }}" alt="图片加载失败" >
                             <div class="carousel-caption">
                             {{ pic.desc }}
                             </div>
                         </div>
                     {% endif %}
                 {% endfor %}
-                ...
             </div>
 
             <!-- Controls -->

@@ -11,6 +11,7 @@ from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_cache import Cache
+from flask_login import LoginManager
 
 # setting sys default encode.
 reload(sys)
@@ -20,6 +21,8 @@ app = Flask('mocal')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqldb://root:haner27@127.0.0.1:3306/mocal?charset=utf8'
 app.config['SECRET_KEY'] = 'you-never-guess'
+
+# upload
 app.config['UPLOAD_FOLDER'] = 'static/upload'
 
 # bootstrap
@@ -52,6 +55,12 @@ mail = Mail(app) # 初始化mail
 # cache
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
+
+# flask_login
+login_manager = LoginManager()
+login_manager.session_protection = 'strong'
+login_manager.login_view = 'user.login'
+login_manager.init_app(app)
 
 # config blueprint
 def config_blueprint(application):

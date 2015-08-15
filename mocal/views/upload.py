@@ -5,6 +5,7 @@ import os
 from werkzeug.utils import secure_filename
 from flask import Blueprint, render_template, flash, url_for, redirect, request
 from flask.views import MethodView
+from flask_login import login_required
 from mocal.views import register_view
 from mocal.forms.upload import UploadForm
 from mocal.app import m_app
@@ -19,10 +20,12 @@ ALLOWED_FILES = ['jpg', 'png', 'jpeg']
 
 @register_view('/upload', instance, ['get', 'post'])
 class UploadFile(MethodView):
+    @login_required
     def get(self):
         form = UploadForm()
         return render_template('upload.html', form=form)
 
+    @login_required
     def post(self):
         form = UploadForm()
         f = request.files['photo']
