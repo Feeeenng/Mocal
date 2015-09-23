@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50624
 File Encoding         : 65001
 
-Date: 2015-09-23 17:52:11
+Date: 2015-09-23 19:04:59
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -49,10 +49,12 @@ CREATE TABLE `user` (
   `sex` varchar(6) DEFAULT '' COMMENT '性别',
   `email` varchar(40) DEFAULT '' COMMENT '邮箱',
   `mobile` varchar(11) DEFAULT '' COMMENT '手机号',
-  `photo` text COMMENT '相片链接',
+  `photo` text NOT NULL COMMENT '相片链接',
   `account` varchar(32) NOT NULL COMMENT '登录账号',
   `password` varchar(32) NOT NULL COMMENT '登录密码',
   `status` int(11) DEFAULT '1' COMMENT '状态',
+  `privileges` varchar(40) NOT NULL DEFAULT '0' COMMENT '权限',
+  `role` int(11) NOT NULL DEFAULT '111' COMMENT '角色',
   `created_at` datetime NOT NULL COMMENT '创建时间',
   `updated_at` datetime NOT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`)
