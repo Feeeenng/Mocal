@@ -2,8 +2,8 @@
 
 from flask import Blueprint, render_template, session, flash, url_for, redirect
 from flask.views import MethodView
-from mocal.views import register_view
-from mocal.forms.register import RegisterForm
+from views import register_view
+from forms.register import RegisterForm
 
 instance = Blueprint('register', __name__)
 

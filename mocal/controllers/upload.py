@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 
 from base import BaseController, controller_with_dbobject
-from mocal.models.upload import UploadDBObject
+from models.upload import UploadDBObject
 
 
 @controller_with_dbobject(UploadDBObject)

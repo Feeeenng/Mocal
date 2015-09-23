@@ -1,5 +1,5 @@
 # -*- coding: utf8 -*-
-from mocal.app import db
+from app import db
 
 
 class BaseController(object):

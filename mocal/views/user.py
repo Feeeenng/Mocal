@@ -2,7 +2,7 @@
 
 from flask import Blueprint, render_template, url_for
 from flask.views import MethodView
-from mocal.views import register_view
+from views import register_view
 
 instance = Blueprint('user', __name__)
 

@@ -6,15 +6,14 @@ from werkzeug.utils import secure_filename
 from flask import Blueprint, render_template, flash, url_for, redirect, request
 from flask.views import MethodView
 from flask_login import login_required
-from mocal.views import register_view
-from mocal.forms.upload import UploadForm
-from mocal.app import m_app
-from mocal.controllers.upload import Upload
-from mocal.utils.md5 import MD5
+from views import register_view
+from forms.upload import UploadForm
+from controllers.upload import Upload
+from utils.md5 import MD5
 
 instance = Blueprint('upload', __name__)
 
-UPLOAD_FOLDER = m_app.config['UPLOAD_FOLDER']
+UPLOAD_FOLDER = 'static/upload'
 ALLOWED_FILES = ['jpg', 'png', 'jpeg']
 
 

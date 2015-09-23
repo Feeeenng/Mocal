@@ -12,6 +12,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_cache import Cache
 from flask_login import LoginManager
+from flask_script import Manager, Server
 
 # setting sys default encode.
 reload(sys)
@@ -21,9 +22,6 @@ app = Flask('mocal')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqldb://root:haner27@127.0.0.1:3306/mocal?charset=utf8'
 app.config['SECRET_KEY'] = 'you-never-guess'
-
-# upload
-app.config['UPLOAD_FOLDER'] = 'static/upload'
 
 # bootstrap
 bootstrap = Bootstrap(app)
@@ -82,7 +80,6 @@ def config_blueprint(application):
     for blue_print in register_blueprints:
         application.register_blueprint(blue_print)
 
-
 def import_instance(instance_name):
     package = instance_name[:instance_name.rindex('.')]
 
@@ -95,6 +92,10 @@ def import_instance(instance_name):
 
 config_blueprint(app)
 
-
 # get m_app
 m_app = app
+
+# manager配置
+manager = Manager(m_app)
+manager.add_command("runserver", Server(threaded=True))
+
