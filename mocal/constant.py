@@ -25,3 +25,7 @@ ROLE_TEXT = {
     VIP_USER: '会员用户',
     ADMIN: '管理员'
 }
+
+
+# 加密salt
+SALT = '*^)h#a&n@#$;.'

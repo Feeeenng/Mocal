@@ -2,7 +2,7 @@
 
 from db import DatabaseObject
 from flask_login import UserMixin
-from app import login_manager
+from mocal.app import login_manager
 
 
 class UserDBObject(UserMixin, DatabaseObject):

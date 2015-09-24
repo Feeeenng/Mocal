@@ -1,6 +1,10 @@
 # -*- coding: utf8 -*-
 
 import re
+import json
+from flask import make_response
+from mocal.error import Error
+
 p = re.compile('([A-Z])')
 
 
@@ -25,3 +29,26 @@ def camel_to_underscore_line(name):
         name = name[1:]
 
     return name
+
+
+def privilege_required():
+    pass
+
+
+def res(code=Error.SUCCESS, data=None, msg=None):
+    result = {
+        'code': code,
+    }
+    if Error.is_succeed(code):
+        result['result'] = True
+        result['detail'] = data
+        response = make_response(json.dumps(result))
+    else:
+        result['result'] = False
+        if msg:
+            result['msg'] = msg
+        else:
+            result['msg'] = Error.error_map[code]
+        response = make_response(json.dumps(result))
+
+    return response

@@ -3,6 +3,8 @@
 from base import BaseController, controller_with_dbobject
 from mocal.models.user import UserDBObject
 from mocal.constant import VIP_USER, CAN_CREATE, CAN_DELETE, CAN_SELECT, CAN_UPDATE
+from mocal.utils.md5 import MD5
+from mocal.constant import SALT
 
 
 @controller_with_dbobject(UserDBObject)
@@ -25,6 +27,15 @@ class User(BaseController):
 
     def could_update(self):
         return True if CAN_UPDATE in self.privileges_list else False
+
+    @property
+    def password_encrypted(self):
+        md5 = MD5(self.password)
+        return md5.add_salt(SALT)
+
+    def verify_password(self, password):
+        md5 = MD5(password)
+        return True if self.password_encrypted == md5.add_salt(SALT) else False
 
     @property
     def privileges_list(self):
