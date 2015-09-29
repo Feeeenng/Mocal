@@ -13,6 +13,23 @@ class BaseController(object):
                     continue
                 setattr(self, k, v)
 
+    def get_id(self):
+        return unicode(self.id)
+
+    @classmethod
+    def get_usermixin_atter(cls, dbobject):
+        obj_dict = {}
+        obj_dict.update(dbobject.__dict__)
+
+        class_name = dbobject.__class__.__name__
+        if class_name == 'UserDBObject':
+            obj_dict['is_authenticated'] = dbobject.is_authenticated
+            obj_dict['is_active'] = dbobject.is_active
+            obj_dict['is_anonymous'] = dbobject.is_anonymous
+
+        return obj_dict
+
+
     @classmethod
     def set_dbobject_class(cls, dbobject, object_class):
         setattr(cls, 'dbobject', dbobject)
@@ -22,12 +39,12 @@ class BaseController(object):
     @classmethod
     def from_id(cls, id):
         dbobject = cls.dbobject.query.filter_by(id=id).first()
-        return None if not dbobject else cls.object_class(dbobject.__dict__)
+        return None if not dbobject else cls.object_class(cls.get_usermixin_atter(dbobject))
 
     @classmethod
     def from_db(cls, **kwargs):
         dbobject = cls.dbobject.query.filter_by(**kwargs).first()
-        return None if not dbobject else cls.object_class(dbobject.__dict__)
+        return None if not dbobject else cls.object_class(cls.get_usermixin_atter(dbobject))
 
     # get more
     @classmethod
@@ -37,13 +54,15 @@ class BaseController(object):
         else:
             dbobjects = cls.dbobject.query.filter_by(**kwargs).order_by(db.desc('id')).paginate(page, count, False).items
 
-        return [] if not dbobjects else [cls.object_class(dbobject.__dict__) for dbobject in dbobjects]
+        return [] if not dbobjects else [cls.object_class(cls.get_usermixin_atter(dbobject)) for dbobject in dbobjects]
 
     # save
     def save(self, add=False):
         if add:
             db_obj = self.__class__.dbobject(**self.properties)
             db_obj.add()
+            db.session.flush()  # 主要是这里，写入数据库，但是不提交
+            item_id = db_obj.id  # 获取自增ID
             db.session.commit()
 
             self.properties = db_obj.__dict__
@@ -53,8 +72,12 @@ class BaseController(object):
                     continue
                 setattr(self, k, v)
 
+            return item_id
+
         else:
             db.session.commit()
+
+            return True
 
     # get property
     def get_property(self, k):

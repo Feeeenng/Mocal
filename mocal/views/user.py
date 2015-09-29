@@ -2,10 +2,13 @@
 
 from flask import Blueprint, render_template, url_for, request, redirect, session, flash
 from flask.views import MethodView
+from flask.ext.login import current_user, login_user, logout_user, login_required
+
 from mocal.views import register_view, res
 from mocal.controllers.user import User
 from mocal.error import Error
-from flask.ext.login import login_user, logout_user
+from mocal.utils.md5 import MD5
+from mocal.constant import SALT
 
 instance = Blueprint('user', __name__)
 
@@ -30,7 +33,17 @@ class Login(MethodView):
 
         # 登录
         login_user(user, remember=remember_me)
+        print request.args.get('next')
+        print request.url
         return redirect(request.args.get('next') or url_for('index'))
+
+
+@register_view('/logout', instance, ['get'])
+class Logout(MethodView):
+    @login_required
+    def get(self):
+        logout_user()
+        return redirect(url_for('index'))
 
 
 @register_view('/register', instance, ['post'])
@@ -38,18 +51,32 @@ class Register(MethodView):
     def post(self):
         req = request.form
         account = req.get('register_account')
-        password = req.get('register_password')
+        password = MD5(req.get('register_password')).add_salt(SALT)
         password_confirm = req.get('password_confirm')
         nickname = req.get('nickname')
         email = req.get('email')
 
-        return res(data=req)
+        params = {
+            'account': account,
+            'password': password,
+            'password_confirm': password_confirm,
+            'nickname': nickname,
+            'email': email
+        }
+
+        user = User(params)
+        uid = user.save(add=True)
+
+        results = {
+            'uid': uid
+        }
+        return res(data=results)
 
 
 @register_view('/check_account/<account>', instance, ['get'])
 class CheckAccount(MethodView):
     def get(self, account):
-        user = User.from_db(account=account)
+        user = User.from_db(account=account, status=1)
         if not user:
             return res(data=False)
         return res(data=True)
@@ -58,7 +85,7 @@ class CheckAccount(MethodView):
 @register_view('/check_nickname/<nickname>', instance, ['get'])
 class CheckNickname(MethodView):
     def get(self, nickname):
-        user = User.from_db(nickname=nickname)
+        user = User.from_db(nickname=nickname, status=1)
         if not user:
             return res(data=False)
         return res(data=True)
@@ -67,7 +94,7 @@ class CheckNickname(MethodView):
 @register_view('/check_email/<email>', instance, ['get'])
 class CheckEmail(MethodView):
     def get(self, email):
-        user = User.from_db(email=email)
+        user = User.from_db(email=email, status=1)
         if not user:
             return res(data=False)
         return res(data=True)

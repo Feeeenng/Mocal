@@ -3,6 +3,7 @@
 from app import db
 from datetime import datetime
 
+
 class DatabaseObject(db.Model):
     __abstract__ = True
 

@@ -11,8 +11,8 @@ from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_cache import Cache
-from flask_login import LoginManager
 from flask_script import Manager, Server
+
 
 # setting sys default encode.
 reload(sys)
@@ -25,6 +25,7 @@ app.config['SECRET_KEY'] = 'you-never-guess'
 
 # bootstrap
 bootstrap = Bootstrap(app)
+
 
 # db
 class DataBase(SQLAlchemy):
@@ -55,10 +56,9 @@ cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 
 # flask_login
-login_manager = LoginManager()
-login_manager.session_protection = 'strong'
-login_manager.login_view = 'user.login'
+from mocal.controllers.user import login_manager
 login_manager.init_app(app)
+
 
 # config blueprint
 def config_blueprint(application):

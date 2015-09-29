@@ -5,7 +5,6 @@
 {% block scripts %}
     {{ super() }}
     <script>
-
     function check_enable(id){
         var cls = $('#'+id).next().attr('class');
         if(cls == 'glyphicon glyphicon-ok'){
@@ -170,7 +169,7 @@
                 show_msg("返回数据错误！", 1500);
             },
             success: function (ret) {
-                if (ret["result"] == true) {
+                if (ret["detail"] == false) {
                     hide_loading();
                     $(obj).next().attr('class', 'glyphicon glyphicon-ok');
                 } else {
@@ -199,7 +198,7 @@
                 show_msg("返回数据错误！", 1500);
             },
             success: function (ret) {
-                if (ret["result"] == true) {
+                if (ret["detail"] == false) {
                     hide_loading();
                     $(obj).next().attr('class', 'glyphicon glyphicon-ok');
                 } else {
@@ -236,7 +235,7 @@
                 show_msg("返回数据错误！", 1500);
             },
             success: function (ret) {
-                if (ret["result"] == true) {
+                if (ret["detail"] == false) {
                     hide_loading();
                     $(obj).next().attr('class', 'glyphicon glyphicon-ok');
                 } else {
@@ -273,7 +272,7 @@
                         <h2 class="text-center">Mocal</h2>
                     </div>
                     <div class="panel-body">
-                        <form class="form" method="post" action="{{ url_for('user.login') }}" onsubmit="return check_login()">
+                        <form class="form" method="post" action="{{ request.url }}" onsubmit="return check_login()">
                             <label for="login_account" class="sr-only">Account</label>
                             <input type="text" id="login_account" name="login_account" class="form-control" placeholder="用户名" autofocus="">
                             <label for="login_password" class="sr-only">Password</label>

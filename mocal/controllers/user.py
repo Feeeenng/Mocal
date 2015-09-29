@@ -6,6 +6,22 @@ from mocal.constant import VIP_USER, CAN_CREATE, CAN_DELETE, CAN_SELECT, CAN_UPD
 from mocal.utils.md5 import MD5
 from mocal.constant import SALT
 
+from flask import redirect, url_for
+from flask.ext.login import LoginManager
+
+login_manager = LoginManager()
+login_manager.session_protection = 'strong'
+login_manager.login_view = 'user.login'
+
+@login_manager.user_loader
+def load_user(uid):
+    return UserDBObject.query.get(int(uid))
+
+
+# @login_manager.unauthorized_handler
+# def unauthorized():
+#     return redirect(url_for('index'))
+
 
 @controller_with_dbobject(UserDBObject)
 class User(BaseController):
@@ -28,14 +44,9 @@ class User(BaseController):
     def could_update(self):
         return True if CAN_UPDATE in self.privileges_list else False
 
-    @property
-    def password_encrypted(self):
-        md5 = MD5(self.password)
-        return md5.add_salt(SALT)
-
     def verify_password(self, password):
         md5 = MD5(password)
-        return True if self.password_encrypted == md5.add_salt(SALT) else False
+        return True if self.password == md5.add_salt(SALT) else False
 
     @property
     def privileges_list(self):

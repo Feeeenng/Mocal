@@ -3,7 +3,7 @@
 import re
 import json
 from flask import make_response
-from mocal.error import Error
+from error import Error
 
 p = re.compile('([A-Z])')
 
@@ -31,7 +31,11 @@ def camel_to_underscore_line(name):
     return name
 
 
-def privilege_required():
+def privileges_required():
+    pass
+
+
+def roles_required():
     pass
 
 

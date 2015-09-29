@@ -2,7 +2,6 @@
 
 from db import DatabaseObject
 from flask_login import UserMixin
-from mocal.app import login_manager
 
 
 class UserDBObject(UserMixin, DatabaseObject):
@@ -11,8 +10,3 @@ class UserDBObject(UserMixin, DatabaseObject):
 
     def __repr__(self):
         return '<User: %r>' % self.name
-
-
-@login_manager.user_loader
-def load_user(uid):
-    return UserDBObject.query.get(int(uid))
