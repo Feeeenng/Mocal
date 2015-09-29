@@ -78,7 +78,7 @@ def rndColor():
 
 # 随机字体
 def rndFont():
-    font_list = ['/Library/Fonts/华文细黑.ttf', '/Library/Fonts/yuanti.ttc', '/Library/Fonts/Xingkai.ttc']
+    font_list = ['C:\Windows\Fonts\STHUPO.TTF']  # ['/Library/Fonts/华文细黑.ttf', '/Library/Fonts/yuanti.ttc', '/Library/Fonts/Xingkai.ttc']
     return random.choice(font_list)
 
 # 随机字体大小
@@ -105,7 +105,7 @@ def generate_verify_code():
 
     # 创建Font对象:
     font1 = ImageFont.truetype(font_format, rndFontSize())
-    font2 = ImageFont.truetype(font_format, rndFontSize())
+    font2 = ImageFont.truetype(font_format, random.randint(40, 48))
     font3 = ImageFont.truetype(font_format, rndFontSize())
 
     # 输出文字:

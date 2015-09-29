@@ -8,6 +8,7 @@ from mocal.views import register_view, res
 from mocal.controllers.user import User
 from mocal.error import Error
 from mocal.utils.md5 import MD5
+from mocal.utils.verify_code import generate_verify_code
 from mocal.constant import SALT
 
 instance = Blueprint('user', __name__)
@@ -16,7 +17,8 @@ instance = Blueprint('user', __name__)
 @register_view('/login', instance, ['get', 'post'])
 class Login(MethodView):
     def get(self):
-        return render_template('login.html', msg='')
+        results, img_base64 = generate_verify_code()
+        return render_template('login.html', msg='', img_io=img_base64)
 
     def post(self):
         req = request.values
@@ -33,8 +35,6 @@ class Login(MethodView):
 
         # 登录
         login_user(user, remember=remember_me)
-        print request.args.get('next')
-        print request.url
         return redirect(request.args.get('next') or url_for('index'))
 
 
