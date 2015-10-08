@@ -2,8 +2,10 @@
 
 import re
 import json
-from flask import make_response
-from error import Error
+from flask import make_response, session
+from functools import wraps
+
+from mocal.error import Error
 
 p = re.compile('([A-Z])')
 
@@ -56,3 +58,23 @@ def res(code=Error.SUCCESS, data=None, msg=None):
         response = make_response(json.dumps(result))
 
     return response
+
+
+def captcha_required(func):
+    @wraps(func)
+    def _captcha_required(*args, **kwargs):
+        if 'login_failed_count' not in session or session.get('login_failed_count') == 0:
+            session['verify_code'] = 0
+            session['login_failed_count'] = 0
+            session['show_captcha'] = False
+            session['check_captcha'] = False
+        else:
+            if session.get('login_failed_count') == 2:
+                session['show_captcha'] = True
+
+            if session.get('login_failed_count') >=3:
+                session['check_captcha'] = True
+
+        return func(*args, **kwargs)
+
+    return _captcha_required

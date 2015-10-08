@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, url_for, request, redirect, sessio
 from flask.views import MethodView
 from flask.ext.login import current_user, login_user, logout_user, login_required
 
-from mocal.views import register_view, res
+from mocal.views import register_view, res, captcha_required
 from mocal.controllers.user import User
 from mocal.error import Error
 from mocal.utils.md5 import MD5
@@ -17,30 +17,38 @@ instance = Blueprint('user', __name__)
 @register_view('/login', instance, ['get', 'post'])
 class Login(MethodView):
     def get(self):
-        return render_template('login.html', msg='', account='')
+        return render_template('login.html', msg='', account='', show_captcha=False)
 
+    @captcha_required
     def post(self):
         req = request.values
         account = req.get('login_account')
         password = req.get('login_password')
         remember_me = True if req.get('remember_me') else None
-        captcha = req.get('captcha')
 
-        print session['verify_code']
-        if int(captcha) != session.get('verify_code'):
-            return render_template('login.html', msg=Error.error_map[Error.LOGIN_CAPTCHA_ERROR], remember_me=remember_me, account=account)
+        if session.get('check_captcha'):
+            captcha = req.get('captcha')
+            if int(captcha) != session.get('verify_code'):
+                return render_template('login.html', msg=Error.error_map[Error.LOGIN_CAPTCHA_ERROR], remember_me=remember_me, account=account, show_captcha=session.get('show_captcha'))
 
         user = User.from_db(account=account)
         if not user:
-            return render_template('login.html', msg=Error.error_map[Error.LOGIN_ACCOUNT_NOT_EXISTED], remember_me=remember_me, account=account)
+            session['login_failed_count'] += 1
+            return render_template('login.html', msg=Error.error_map[Error.LOGIN_ACCOUNT_NOT_EXISTED], remember_me=remember_me, account=account, show_captcha=session.get('show_captcha'))
 
         if not user.verify_password(password):
-            return render_template('login.html', msg=Error.error_map[Error.LOGIN_PASSWORD_ERROR], remember_me=remember_me, account=account)
+            session['login_failed_count'] += 1
+            return render_template('login.html', msg=Error.error_map[Error.LOGIN_PASSWORD_ERROR], remember_me=remember_me, account=account, show_captcha=session.get('show_captcha'))
 
         # 登录
         login_user(user, remember=remember_me)
 
-        del session['verify_code']
+        # 清除session
+        session['verify_code'] = 0
+        session['login_failed_count'] = 0
+        session['show_captcha'] = False
+        session['check_captcha'] = False
+
         return redirect(request.args.get('next') or url_for('index'))
 
 
@@ -120,3 +128,4 @@ class ChangeVerifyCode(MethodView):
         results, img_base64 = generate_verify_code()
         session['verify_code'] = results
         return res(data=img_base64)
+
