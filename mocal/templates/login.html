@@ -350,9 +350,9 @@
                     <div class="panel-body">
                         <form class="form" method="post" action="{{ request.url }}" onsubmit="return check_login()">
                             <label for="login_account" class="sr-only">Account</label>
-                            <input type="text" id="login_account" name="login_account" class="form-control" placeholder="用户名" autofocus="" value="{{ account }}">
+                            <input type="text" id="login_account" name="login_account" class="form-control input" placeholder="用户名" autofocus="" value="{{ account }}">
                             <label for="login_password" class="sr-only">Password</label>
-                            <input type="password" id="login_password" name="login_password" class="form-control" placeholder="密码" {{ password }}>
+                            <input type="password" id="login_password" name="login_password" class="form-control input" placeholder="密码" {{ password }}>
                             <div class="checkbox">
                                 <label>
                                     {% if remember_me %}
@@ -364,8 +364,11 @@
                             </div>
                             <div class="form-inline" id="captcha">
                                 <!-- captcha -->
-                                <img id="verify_code" style="border: 1px solid;border-color: #CACACA">
-                                <a href="javascript:change_verify_code()"><span class="glyphicon glyphicon-retweet"></span></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <img id="verify_code" style="border: 1px solid;border-color: #CCCCCC">
+                                <a href="javascript:change_verify_code()">
+                                    <span class="glyphicon glyphicon-retweet" style="color: #337AB7" onmouseout="$(this).css('color', '#337AB7')" onmouseover="$(this).css('color', '#000000')"></span>
+                                </a>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <input id="vc" name="captcha" type="text" class="form-control input-sm" style="width: 30%;text-align:center;"
                                    onkeyup="check_verify_code(this)" placeholder="计算结果" maxlength="2">
                                 <span id="is_verify_passed"></span>
