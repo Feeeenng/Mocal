@@ -3,7 +3,7 @@
 from flask_mail import Message
 import os
 import time
-from app import mail
+from mocal.app import mail
 
 type_list = {
     'html': 'text/html',

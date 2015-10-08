@@ -73,7 +73,7 @@ def rndColor_ganrao():
 
 # 随机颜色:
 def rndColor():
-    color_list = [(255, 106, 106), (40, 144, 255), (7, 255, 0), (255, 255, 0)]
+    color_list = [(255, 106, 106), (40, 144, 255), (0, 64, 128)]  # 粉 蓝 墨绿
     return random.choice(color_list)
 
 # 随机字体
@@ -83,43 +83,50 @@ def rndFont():
 
 # 随机字体大小
 def rndFontSize():
-    return random.randint(20, 48)
+    return random.randint(20, 30)
+
+# 随机背景颜色
+def rndBackGroundColor():
+    return random.choice([(237, 247, 255), (247, 254, 236)])
 
 def generate_verify_code():
-    # 240 x 60:
+    # 240 x 40:
     width = 36 * 4  # 验证码图片宽
-    height = 60  # 验证码图片高
-    image = Image.new('RGB', (width, height), (255, 255, 255))  # 白底
+    height = 36  # 验证码图片高
+    image = Image.new('RGB', (width, height), rndBackGroundColor())  # 白底
 
     # 创建Draw对象:
     draw = ImageDraw.Draw(image)
 
     # 填充每个像素（加模糊点）:
-    for x in range(width):
-        for y in range(height):
-            draw.point((x, y), fill=rndColor_ganrao())
+    # for x in range(width):
+    #     for y in range(height):
+    #         draw.point((x, y), fill=rndColor_ganrao())
 
     # 获取随机元素
     color = rndColor()
     font_format = rndFont()
+    op_num1_size = rndFontSize()
+    op_size = rndFontSize()
+    op_num2_size = rndFontSize()
 
     # 创建Font对象:
-    font1 = ImageFont.truetype(font_format, rndFontSize())
-    font2 = ImageFont.truetype(font_format, random.randint(40, 48))
-    font3 = ImageFont.truetype(font_format, rndFontSize())
+    font1 = ImageFont.truetype(font_format, op_num1_size)
+    font2 = ImageFont.truetype(font_format, op_size)
+    font3 = ImageFont.truetype(font_format, op_num2_size)
 
     # 输出文字:
     num1, num_str1 = random_number1(0, 9)
-    draw.text((40 * 0 + 15, 2), unicode(num_str1, 'utf-8'), font=font1, fill=color)
+    draw.text((40 * 0 + 15, (height - op_num1_size)/2), unicode(num_str1, 'utf-8'), font=font1, fill=color)
 
     op, op_str = random_operate()
-    draw.text((40 * 1 + 15, 2), unicode(op_str, 'utf-8'), font=font2, fill=color)
+    draw.text((40 * 1 + 15, (height - op_size)/2), unicode(op_str, 'utf-8'), font=font2, fill=color)
 
     # 根据 操作数1 和 op 确认 操作数2集合
     num2_list = get_num2_list(num1, op)
 
     num2, num_str2 = random_number2(num2_list)
-    draw.text((40 * 2 + 15, 2), unicode(num_str2, 'utf-8'), font=font3, fill=color)
+    draw.text((40 * 2 + 15, (height - op_num2_size)/2), unicode(num_str2, 'utf-8'), font=font3, fill=color)
 
     results = calculate(num1, num2, op)
 

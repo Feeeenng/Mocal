@@ -18,12 +18,21 @@
         var login_account = $('#login_account').val();
         if(!login_account){
             show_msg('用户名不能为空', 1500);
+            $('#login_account').focus();
             return false;
         }
 
         var login_password = $('#login_password').val();
         if(!login_password){
             show_msg('密码不能为空', 1500);
+            $('#login_password').focus();
+            return false;
+        }
+
+        var captcha = $('#vc').val();
+        if(!captcha){
+            $('#vc').focus();
+            show_msg('请输入验证码计算结果', 1500);
             return false;
         }
 
@@ -250,11 +259,78 @@
         $(obj).next().removeAttr('class');
     }
 
+    function check_verify_code(obj){
+        var v = $(obj).val();
+
+        // 判断没有内容的时候 删除图标
+        if(v.length<1){
+            $('#is_verify_passed').removeAttr('class');
+            $('#vc').focus();
+            return;
+        }
+
+        // 判断是否是是数字
+        var real_v = v.replace(/\D/g,'');
+        $(obj).val(real_v);
+
+        if(!real_v){
+            return;
+        }
+
+        // 检查验证码
+        var url = "{{ url_for('user.check_verify_code', code='') }}" + real_v;
+        show_loading();
+        $.ajax({
+            type: "GET",
+            async: false,
+            url: url,
+            dataType   : "json",
+            error: function (ret) {
+                hide_loading();
+                show_msg("返回数据错误！", 1500);
+            },
+            success: function (ret) {
+                if (ret["detail"] == false) {
+                    hide_loading();
+                    $('#is_verify_passed').attr('class', 'glyphicon glyphicon-remove');
+                } else {
+                    hide_loading();
+                    $('#is_verify_passed').attr('class', 'glyphicon glyphicon-ok');
+                }
+            }
+        });
+    }
+
+    function change_verify_code(){
+        var url = "{{ url_for('user.change_verify_code') }}";
+        show_loading();
+        $.ajax({
+            type: "GET",
+            async: false,
+            url: url,
+            dataType   : "json",
+            error: function (ret) {
+                hide_loading();
+                show_msg("返回数据错误！", 1500);
+            },
+            success: function (ret) {
+                hide_loading();
+                $('#verify_code').attr('src', "data:image/jpg;base64," + ret["detail"]);
+                $('#vc').val('');
+                $('#vc').focus();
+                $('#is_verify_passed').removeAttr('class');
+            }
+        });
+    }
+
     $(document).ready(function(){
         var msg = '{{ msg }}';
         if(msg){
             show_msg(msg, 1500);
         }
+
+        // verify_code
+        change_verify_code();
     });
     </script>
 {% endblock %}
@@ -274,15 +350,27 @@
                     <div class="panel-body">
                         <form class="form" method="post" action="{{ request.url }}" onsubmit="return check_login()">
                             <label for="login_account" class="sr-only">Account</label>
-                            <input type="text" id="login_account" name="login_account" class="form-control" placeholder="用户名" autofocus="">
+                            <input type="text" id="login_account" name="login_account" class="form-control" placeholder="用户名" autofocus="" value="{{ account }}">
                             <label for="login_password" class="sr-only">Password</label>
-                            <input type="password" id="login_password" name="login_password" class="form-control" placeholder="密码">
+                            <input type="password" id="login_password" name="login_password" class="form-control" placeholder="密码" {{ password }}>
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox" value="remember_me" name="remember_me"> Remember me
+                                    {% if remember_me %}
+                                        <input type="checkbox" value="remember_me" name="remember_me" checked> 记住我
+                                    {% else %}
+                                        <input type="checkbox" value="remember_me" name="remember_me"> 记住我
+                                    {% endif %}
                                 </label>
                             </div>
-                            <img src="data:image/jpg;base64,{{ img_io }}">
+                            <div class="form-inline" id="captcha">
+                                <!-- captcha -->
+                                <img id="verify_code" style="border: 1px solid;border-color: #CACACA">
+                                <a href="javascript:change_verify_code()"><span class="glyphicon glyphicon-retweet"></span></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input id="vc" name="captcha" type="text" class="form-control input-sm" style="width: 30%;text-align:center;"
+                                   onkeyup="check_verify_code(this)" placeholder="计算结果" maxlength="2">
+                                <span id="is_verify_passed"></span>
+                            </div>
+                            <br/>
                             <button class="btn btn-lg btn-primary btn-block" style="background-color: #000000;color: white" type="submit">登陆</button>
                         </form>
                         <hr/>
