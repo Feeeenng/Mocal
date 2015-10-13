@@ -3,32 +3,44 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title></title>
-    <link href="../static/css/loading.css" rel="stylesheet" type="text/css">
     <script src="../static/js/jquery-1.7.2.min.js"></script>
     <script>
-        function show(){
-            $('#bg').css('display', 'block');
-            $('#loading').css('display', 'block');
-        }
-
-        function hide(){
-            $('#bg').css('display', 'none');
-            $('#loading').css('display', 'none');
+        function select_city(obj){
+            var v = $(obj).val();
+            var url = "{{ url_for('select') }}";
+            var data = {
+                'pid': v
+            };
+            $.ajax({
+                type: "POST",
+                async: false,
+                url: url,
+                data: data,
+                dataType   : "json",
+                error: function (ret) {
+                    alert("返回数据错误！");
+                },
+                success: function (ret) {
+                    $('#city').empty();
+                    var cities = ret['cities'];
+                    $('#city').append('<option value="">请选择</option>');
+                    for(var k in cities){
+                        $('#city').append('<option value="'+k+'">'+cities[k]+'</option>');
+                    }
+                }
+            });
         }
     </script>
 </head>
 <body>
-<div id="bg" style="display: none"></div>
-<div class="spinner" id="loading" style="display: none">
-    <div class="rect1"></div>
-    <div class="rect2"></div>
-    <div class="rect3"></div>
-    <div class="rect4"></div>
-</div>
-
-
-
-<input type="button" onclick="show()" value="show">
-<input type="button" onclick="hide()" value="hide">
+    <select id="province" onchange="select_city(this)">
+        <option value="">请选择</option>
+        {% for k, v in p.items()%}
+        <option value="{{ k }}">{{ v }}</option>
+        {% endfor %}
+    </select>
+    <select id="city">
+        <option value="">请选择</option>
+    </select>
 </body>
 </html>

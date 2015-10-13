@@ -63,7 +63,7 @@ def res(code=Error.SUCCESS, data=None, msg=None):
 def captcha_required(func):
     @wraps(func)
     def _captcha_required(*args, **kwargs):
-        if 'login_failed_count' not in session or session.get('login_failed_count') == 0:
+        if not session.get('login_failed_count', ''):
             session['verify_code'] = 0
             session['login_failed_count'] = 0
             session['show_captcha'] = False

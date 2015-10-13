@@ -17,7 +17,7 @@ class BaseController(object):
         return unicode(self.id)
 
     @classmethod
-    def get_usermixin_atter(cls, dbobject):
+    def get_usermixin_attr(cls, dbobject):
         obj_dict = {}
         obj_dict.update(dbobject.__dict__)
 
@@ -39,12 +39,12 @@ class BaseController(object):
     @classmethod
     def from_id(cls, id):
         dbobject = cls.dbobject.query.filter_by(id=id).first()
-        return None if not dbobject else cls.object_class(cls.get_usermixin_atter(dbobject))
+        return None if not dbobject else cls.object_class(cls.get_usermixin_attr(dbobject))
 
     @classmethod
     def from_db(cls, **kwargs):
         dbobject = cls.dbobject.query.filter_by(**kwargs).first()
-        return None if not dbobject else cls.object_class(cls.get_usermixin_atter(dbobject))
+        return None if not dbobject else cls.object_class(cls.get_usermixin_attr(dbobject))
 
     # get more
     @classmethod
@@ -54,7 +54,7 @@ class BaseController(object):
         else:
             dbobjects = cls.dbobject.query.filter_by(**kwargs).order_by(db.desc('id')).paginate(page, count, False).items
 
-        return [] if not dbobjects else [cls.object_class(cls.get_usermixin_atter(dbobject)) for dbobject in dbobjects]
+        return [] if not dbobjects else [cls.object_class(cls.get_usermixin_attr(dbobject)) for dbobject in dbobjects]
 
     # save
     def save(self, add=False):

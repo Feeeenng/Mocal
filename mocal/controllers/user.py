@@ -6,12 +6,12 @@ from mocal.constant import VIP_USER, CAN_CREATE, CAN_DELETE, CAN_SELECT, CAN_UPD
 from mocal.utils.md5 import MD5
 from mocal.constant import SALT
 
-from flask import redirect, url_for
 from flask.ext.login import LoginManager
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
 login_manager.login_view = 'user.login'
+login_manager.login_message = '用户需要登录后方可访问该页面'
 
 @login_manager.user_loader
 def load_user(uid):
