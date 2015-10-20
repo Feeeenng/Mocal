@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from flask_mail import Message
-import os
 import time
 from mocal.app import mail
 from mocal.utils.mimetype import get_mimetype
@@ -13,8 +12,7 @@ class Email(Message):
             date=time.time(), body=body)
 
     def add_attachment(self, file_path, send_file_name):
-        filename = os.path.basename(file_path)
-        mytype = get_mimetype(filename)
+        mytype = get_mimetype(file_path)
 
         with open(file_path, 'rb') as f:
             self.attach(u'{0}'.format(send_file_name or '未命名'), mytype, f.read())
