@@ -5,6 +5,7 @@ import sys
 import glob
 
 from utils.logger import logger
+from utils.csrf_token import generate_csrf_token
 
 from flask import Flask
 from flask_bootstrap import Bootstrap
@@ -22,6 +23,7 @@ app = Flask('mocal')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqldb://root:haner27@127.0.0.1:3306/mocal?charset=utf8'
 app.config['SECRET_KEY'] = 'you-never-guess'
+app.jinja_env.globals['csrf_token'] = generate_csrf_token
 
 # bootstrap
 bootstrap = Bootstrap(app)
