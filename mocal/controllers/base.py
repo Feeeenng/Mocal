@@ -43,6 +43,9 @@ class BaseController(object):
 
     @classmethod
     def from_db(cls, **kwargs):
+        if len(kwargs.items()) <= 0:
+            return None
+
         dbobject = cls.dbobject.query.filter_by(**kwargs).first()
         return None if not dbobject else cls.object_class(cls.get_usermixin_attr(dbobject))
 
@@ -62,7 +65,7 @@ class BaseController(object):
             db_obj = self.__class__.dbobject(**self.properties)
             db_obj.add()
             db.session.flush()  # 主要是这里，写入数据库，但是不提交
-            item_id = db_obj.id  # 获取自增ID
+            self.id = db_obj.id  # 获取自增ID
             db.session.commit()
 
             self.properties = db_obj.__dict__
@@ -72,9 +75,10 @@ class BaseController(object):
                     continue
                 setattr(self, k, v)
 
-            return item_id
+            return self.id
 
         else:
+            self.__data_sync()
             db.session.commit()
 
             return True
@@ -102,6 +106,22 @@ class BaseController(object):
         db_obj = self.__class__.dbobject.query.filter_by(id=self.id).first()
         setattr(db_obj, k, v)
         setattr(db_obj, 'updated_at', db.func.now())
+        db_obj.add()
+
+    def __data_sync(self):
+        db_obj = self.__class__.dbobject.query.filter_by(id=self.id).first()
+        modified = False
+        for attr_k, attr_v in self.__dict__.items():
+            if attr_k.startswith('_') or attr_k in ['is_authenticated', 'is_active', 'is_anonymous']:
+                continue
+
+            if hasattr(db_obj, attr_k):
+                setattr(db_obj, attr_k, attr_v)
+                modified = True
+
+        if modified:
+            setattr(db_obj, 'updated_at', db.func.now())
+
         db_obj.add()
 
 

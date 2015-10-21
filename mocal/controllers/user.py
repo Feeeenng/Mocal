@@ -1,4 +1,5 @@
 # -*- coding: utf8 -*-
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 from base import BaseController, controller_with_dbobject
 from mocal.models.user import UserDBObject
@@ -6,6 +7,7 @@ from mocal.constant import VIP_USER, CAN_CREATE, CAN_DELETE, CAN_SELECT, CAN_UPD
 from mocal.utils.md5 import MD5
 from mocal.constant import SALT
 
+from flask import current_app
 from flask.ext.login import LoginManager
 
 login_manager = LoginManager()
@@ -51,3 +53,20 @@ class User(BaseController):
     @property
     def privileges_list(self):
         return self.privileges.split(',')
+
+    def generate_confirmation_token(self, expiration=86400):
+        s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)
+        return s.dumps({'confirm': self.id})
+
+    def confirm(self, token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return False
+        if data.get('confirm') != self.id:
+            return False
+
+        self.confirmed = 1
+        self.save()
+        return True

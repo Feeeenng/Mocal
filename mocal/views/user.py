@@ -1,6 +1,5 @@
 # -*- coding: utf8 -*-
-
-from flask import Blueprint, render_template, url_for, request, redirect, session, flash
+from flask import Blueprint, render_template, url_for, request, redirect, session, flash, current_app, abort
 from flask.views import MethodView
 from flask.ext.login import current_user, login_user, logout_user, login_required
 
@@ -9,6 +8,7 @@ from mocal.controllers.user import User
 from mocal.error import Error
 from mocal.utils.md5 import MD5
 from mocal.utils.verify_code import generate_verify_code
+from mocal.utils.email import Email
 from mocal.constant import SALT
 
 instance = Blueprint('user', __name__)
@@ -81,10 +81,38 @@ class Register(MethodView):
         user = User(params)
         uid = user.save(add=True)
 
+        # generate confirm token
+        token = user.generate_confirmation_token()
+
+        # get confirm url
+        confirm_url = url_for('user.confirm', token=token, _external=True)
+        html = render_template(
+            'email_activate.html',
+            confirm_url=confirm_url)
+
+        # send activate email
+        email = Email(send_email='haner27@126.com', recipients=[user.email], sender='Mocal', subject='账户邮件确认', html=html)
+        email.send_email()
+
         results = {
             'uid': uid
         }
         return res(data=results)
+
+
+@register_view('/email_confirm/<token>', instance, ['get'])
+class Confirm(MethodView):
+    @login_required
+    def get(self, token):
+        if current_user.confirmed:
+            return redirect(url_for('index'))
+
+        user = User.from_id(current_user.id)
+        if user.confirm(token):
+            flash('恭喜你！你的账户邮箱验证成功！')
+        else:
+            flash('账户邮箱验证链接无效或是已经过期！')
+        return redirect(url_for('index'))
 
 
 @register_view('/check_account/<account>', instance, ['get'])
