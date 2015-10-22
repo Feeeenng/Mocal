@@ -354,7 +354,7 @@
                     <div class="panel-body">
                         <form class="form" method="post" action="{{ request.url }}" onsubmit="return check_login()">
                             <!-- 每个post 请求都要添加 -->
-                            <input id="csrf_token" name=_csrf_token type=hidden value="{{ csrf_token() }}">
+                            <input id="csrf_token" name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
 
                             <label for="login_account" class="sr-only">Account</label>
                             <input type="text" id="login_account" name="login_account" class="form-control input" placeholder="用户名" autofocus="" value="{{ account }}">

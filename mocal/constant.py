@@ -26,6 +26,5 @@ ROLE_TEXT = {
     ADMIN: '管理员'
 }
 
-
-# 加密salt
-SALT = '*^)h#a&n@#$;.'
+# 上传文件格式设置
+ALLOWED_FILES = ['jpg', 'png', 'jpeg']

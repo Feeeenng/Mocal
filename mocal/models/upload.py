@@ -3,7 +3,7 @@
 from db import DatabaseObject
 
 
-class UploadDBObject(DatabaseObject):
+class Upload(DatabaseObject):
     __tablename__ = 'upload'
     __table_args__ = {'autoload': True, 'extend_existing': True}
 

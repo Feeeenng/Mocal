@@ -5,7 +5,8 @@ from threading import Thread
 
 from flask_mail import Message
 
-from mocal.app import mail, m_app
+from mocal import mail
+from mocal.manager import mocal as app
 from mocal.utils.mimetype import get_mimetype
 
 
@@ -29,11 +30,11 @@ class Email(Message):
 
     @async
     def send_email(self):
-        with m_app.app_context():
+        with app.app_context():
             mail.send(self)
 
 
-# email = Email('haner27@126.com', ['369685930@qq.com'], 'I LOVE YOU!', '韩能放', '告白')
+# email = Email('haner27@126.com', ['369685930@qq.com'], '韩能放', 'I LOVE YOU!', '告白')
 # email.add_attachment('code.jpg', 'good.jpg')
 # email.send_email()
 

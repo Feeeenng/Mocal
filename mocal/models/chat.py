@@ -3,7 +3,7 @@
 from db import DatabaseObject
 
 
-class ChatMsgDBObject(DatabaseObject):
+class ChatMsg(DatabaseObject):
     __tablename__ = 'chat_msg'
     __table_args__ = {'autoload': True, 'extend_existing': True}
 
