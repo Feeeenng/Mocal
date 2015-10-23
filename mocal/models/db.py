@@ -31,8 +31,15 @@ class DatabaseObject(db.Model):
         return None
 
     def to_json(self):
-        pass
-       # todo: 完成这个， sql的binary, db.bindparam(), like
+        d = {}
+        for k, v in self.__dict__.items():
+            if k.startswith('_'):
+                continue
+
+            d[k] = v
+        return d
+
+       # todo: sql的binary, db.bindparam(), like
 
     @classmethod
     def from_id(cls, id):
