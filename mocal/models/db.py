@@ -32,6 +32,7 @@ class DatabaseObject(db.Model):
 
     def to_json(self):
         pass
+       # todo: 完成这个， sql的binary, db.bindparam(), like
 
     @classmethod
     def from_id(cls, id):
