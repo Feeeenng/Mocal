@@ -31,8 +31,8 @@ class DataBase(SQLAlchemy):
 def config_blueprint(application):
     views = 'views'
     register_blueprints = []
-
-    for py_file in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'views', '*.py')):
+    x = glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'views', '*.py'))
+    for py_file in x:
         view_name = os.path.basename(py_file)[:-3]
         if view_name == '__init__':
             continue
@@ -40,9 +40,8 @@ def config_blueprint(application):
         instance = import_instance('.'.join([views, view_name, 'instance']))
         if instance:
             register_blueprints.append(instance)
-            logger.info('{0} import instance succeed'.format(view_name))
         else:
-            logger.error('{0} import instance failed'.format(view_name))
+            pass
 
     for blue_print in register_blueprints:
         application.register_blueprint(blue_print)

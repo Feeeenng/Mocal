@@ -35,4 +35,4 @@ manager.add_command("runserver", Server(threaded=True))
 
 if __name__ == '__main__':
     # manager.run()
-    mocal.run()
+    mocal.run(debug=True)
