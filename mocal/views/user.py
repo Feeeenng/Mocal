@@ -149,7 +149,8 @@ def change_verify_code():
 
 @instance.route('/test/<content>', methods=['GET'])
 def test(content):
-    users = User.fetch(age__in=(21, 100, 200))
+    from datetime import datetime
+    users = User.fetch(nickname__binary='han')
     data = []
     for user in users:
         data.append(user.to_json())

@@ -43,7 +43,7 @@ class DatabaseObject(db.Model):
                 d[k] = v
         return d
 
-       # todo: sql的binary, db.bindparam(), like， logger， pagenatiom
+       # todo: sql的binary, logger， pagenatiom
 
     @classmethod
     def from_id(cls, id):
@@ -78,8 +78,8 @@ class DatabaseObject(db.Model):
                 operate = k.split('__')[1]
                 if hasattr(cls, key):
                     field = getattr(cls, key)
-                    if operate == 'like':
-                        expressions.append(field.like('%{0}%'.format(v)))
+                    if operate == 'contains':
+                        expressions.append(field.contains(v))
                     elif operate == 'gt':
                         expressions.append(field > v)
                     elif operate == 'gte':
@@ -92,6 +92,10 @@ class DatabaseObject(db.Model):
                         expressions.append(field != v)
                     elif operate == 'in':
                         expressions.append(field.in_(v))
+                    elif operate == 'not_in':
+                        expressions.append(field.notin_(v))
+                    elif operate == 'binary':
+                        expressions.append(db.compare(field == v))
                     else:
                         raise SyntaxError, '无操作符{0}'.format(operate)
                 else:
