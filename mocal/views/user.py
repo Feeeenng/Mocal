@@ -146,3 +146,11 @@ def change_verify_code():
     session['verify_code'] = results
     return res(data=img_base64)
 
+
+@instance.route('/test/<content>', methods=['GET'])
+def test(content):
+    users = User.fetch(age__in=(21, 100, 200))
+    data = []
+    for user in users:
+        data.append(user.to_json())
+    return res(data=data)

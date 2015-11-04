@@ -1,7 +1,8 @@
 # -*- coding: utf8 -*-
+import types
+from datetime import datetime
 
 from mocal import db
-from datetime import datetime
 
 
 class DatabaseObject(db.Model):
@@ -30,13 +31,16 @@ class DatabaseObject(db.Model):
         db.session.commit()
         return None
 
-    def to_json(self):
+    def to_json(self, format='%Y-%m-%d %H:%M:%S'):
         d = {}
         for k, v in self.__dict__.items():
             if k.startswith('_'):
                 continue
 
-            d[k] = v
+            if isinstance(v, datetime):
+                d[k] = v.strftime(format)
+            else:
+                d[k] = v
         return d
 
        # todo: sql的binary, db.bindparam(), like， logger， pagenatiom
@@ -51,17 +55,56 @@ class DatabaseObject(db.Model):
         if len(kwargs.items()) <= 0:
             return None
 
-        obj = cls.query.filter_by(**kwargs).first()
+        expressions = cls.get_filter_params(**kwargs)
+        obj = cls.query.filter(*expressions).first()
         return obj
 
     @classmethod
     def fetch(cls, page=0, count=0, **kwargs):
         if page == 0 and count == 0:
-            objs = cls.query.filter_by(**kwargs).all()
+            expressions = cls.get_filter_params(**kwargs)
+            objs = cls.query.filter(*expressions).all()
         else:
-            objs = cls.query.filter_by(**kwargs).order_by(db.desc('id')).paginate(page, count, False).items
-
+            expressions = cls.get_filter_params(**kwargs)
+            objs = cls.query.filter_by(*expressions).order_by(db.desc('id')).paginate(page, count, False).items
         return objs
+
+    @classmethod
+    def get_filter_params(cls, **kwargs):
+        expressions = []
+        for k, v in kwargs.items():
+            if '__' in k:
+                key = k.split('__')[0]
+                operate = k.split('__')[1]
+                if hasattr(cls, key):
+                    field = getattr(cls, key)
+                    if operate == 'like':
+                        expressions.append(field.like('%{0}%'.format(v)))
+                    elif operate == 'gt':
+                        expressions.append(field > v)
+                    elif operate == 'gte':
+                        expressions.append(field >= v)
+                    elif operate == 'lt':
+                        expressions.append(field < v)
+                    elif operate == 'lte':
+                        expressions.append(field <= v)
+                    elif operate == 'not':
+                        expressions.append(field != v)
+                    elif operate == 'in':
+                        expressions.append(field.in_(v))
+                    else:
+                        raise SyntaxError, '无操作符{0}'.format(operate)
+                else:
+                    raise SyntaxError, 'models {0}无{1}字段'.format(cls.__name__, key)
+            else:
+                if hasattr(cls, k):
+                    field = getattr(cls, k)
+                    expressions.append(field == v)
+                else:
+                    raise SyntaxError, 'models {0}无{1}字段'.format(cls.__name__, k)
+
+        return expressions
+
 
     # get property
     def get_property(self, k):
