@@ -1,5 +1,4 @@
 # -*- coding: utf8 -*-
-import types
 from datetime import datetime
 
 from mocal import db
@@ -66,7 +65,7 @@ class DatabaseObject(db.Model):
             objs = cls.query.filter(*expressions).all()
         else:
             expressions = cls.get_filter_params(**kwargs)
-            objs = cls.query.filter_by(*expressions).order_by(db.desc('id')).paginate(page, count, False).items
+            objs = cls.query.filter(*expressions).order_by(db.desc('id')).paginate(page, count, False).items
         return objs
 
     @classmethod
@@ -95,7 +94,9 @@ class DatabaseObject(db.Model):
                     elif operate == 'not_in':
                         expressions.append(field.notin_(v))
                     elif operate == 'binary':
-                        expressions.append(db.compare(field == v))
+                        expressions.append(field.collate('utf8mb4_bin') == v)
+                    elif operate == 'binary__contains':
+                        expressions.append(field.collate('utf8mb4_bin').contains(v))
                     else:
                         raise SyntaxError, '无操作符{0}'.format(operate)
                 else:

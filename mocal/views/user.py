@@ -147,10 +147,11 @@ def change_verify_code():
     return res(data=img_base64)
 
 
-@instance.route('/test/<content>', methods=['GET'])
-def test(content):
+@instance.route('/test', methods=['GET'])
+def test():
     from datetime import datetime
     users = User.fetch(nickname__binary='han')
+    # users = User.fetch(age__in=[21, 23])
     data = []
     for user in users:
         data.append(user.to_json())
