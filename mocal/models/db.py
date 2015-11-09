@@ -42,7 +42,7 @@ class DatabaseObject(db.Model):
                 d[k] = v
         return d
 
-       # todo: sql的binary, logger， pagenatiom
+       # todo: logger， pagenatiom
 
     @classmethod
     def from_id(cls, id):

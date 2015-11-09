@@ -15,7 +15,7 @@ instance = Blueprint('user', __name__)
 @instance.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('login.html', msg='', account='', show_captcha=False)
+        return render_template('user/login.html', msg='', account='', show_captcha=False)
 
     req = request.values
     account = req.get('login_account')
@@ -25,18 +25,18 @@ def login():
     if session.get('check_captcha'):
         captcha = req.get('captcha')
         if int(captcha) != session.get('verify_code'):
-            return render_template('login.html', msg=Error.error_map[Error.LOGIN_CAPTCHA_ERROR], remember_me=remember_me, account=account, show_captcha=session.get('show_captcha'))
+            return render_template('user/login.html', msg=Error.error_map[Error.LOGIN_CAPTCHA_ERROR], remember_me=remember_me, account=account, show_captcha=session.get('show_captcha'))
 
     user = User.from_db(account=account)
     if not user:
         session['login_failed_count'] = 1
         session['check_captcha'] = True
-        return render_template('login.html', msg=Error.error_map[Error.LOGIN_ACCOUNT_NOT_EXISTED], remember_me=remember_me, account=account, show_captcha=True)
+        return render_template('user/login.html', msg=Error.error_map[Error.LOGIN_ACCOUNT_NOT_EXISTED], remember_me=remember_me, account=account, show_captcha=True)
 
     if not user.verify_password(password):
         session['login_failed_count'] = 1
         session['check_captcha'] = True
-        return render_template('login.html', msg=Error.error_map[Error.LOGIN_PASSWORD_ERROR], remember_me=remember_me, account=account, show_captcha=True)
+        return render_template('user/login.html', msg=Error.error_map[Error.LOGIN_PASSWORD_ERROR], remember_me=remember_me, account=account, show_captcha=True)
 
     # 登录
     login_user(user, remember=remember_me)
@@ -82,7 +82,7 @@ def register():
     # get confirm url
     confirm_url = url_for('user.confirm', token=token, _external=True)
     html = render_template(
-        'email_activate.html',
+        'email/email_activate.html',
         confirm_url=confirm_url)
 
     # send activate email
@@ -147,12 +147,23 @@ def change_verify_code():
     return res(data=img_base64)
 
 
-@instance.route('/test', methods=['GET'])
-def test():
-    from datetime import datetime
-    users = User.fetch(nickname__binary='han')
-    # users = User.fetch(age__in=[21, 23])
-    data = []
-    for user in users:
-        data.append(user.to_json())
-    return res(data=data)
+@instance.route('/change_password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    if request.method == 'GET':
+        return render_template('user/change_password.html')
+
+    old_password = request.form.get('old_password', '')
+    new_password = request.form.get('new_password', '')
+    confirm_new_password = request.form.get('confirm_new_password', '')
+    if current_user.verify_password(old_password):
+        if new_password != confirm_new_password:
+            flash('重置的密码不一致！')
+        else:
+            current_user.password = MD5(new_password).add_salt(current_app.config.get('SALT'))
+            current_user.save()
+            flash('重置密码的成功！')
+            return redirect(url_for('main.index'))
+    else:
+        flash('原密码错误！')
+    return render_template('user/change_password.html')
