@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import json
 import requests
 
 
@@ -12,7 +12,7 @@ def request(url, method, data=None, headers=None, **kwargs):
 
     code = res.status_code
     if code == 200:
-        results = res.text
+        results = json.loads(res.text)
         return True, results
     else:
         return False, None

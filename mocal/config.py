@@ -22,6 +22,10 @@ class Config:
     # 加密salt
     SALT = '*^)h#a&n@#$;.'
 
+    # 新浪sina
+    SINA_APP_KEY = 3058213685
+    SINA_SECRET = 'b46f30e6ca313fef81beba2360a70616'
+
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://root:haner27@127.0.0.1:3306/mocal?charset=utf8'
