@@ -8,8 +8,8 @@ SINA_SHORTEN_URL_CREATE_API = 'http://api.t.sina.com.cn/short_url/shorten.json'
 SINA_SHORTEN_URL_EXPAND_API = 'http://api.t.sina.com.cn/short_url/expand.json'
 
 
-def get_shorten_url(url):
-    api_request_url = SINA_SHORTEN_URL_CREATE_API + '?source={0}&url_long={1}'.format(sina_app_key, url)
+def get_shorten_url(long_url):
+    api_request_url = SINA_SHORTEN_URL_CREATE_API + '?source={0}&url_long={1}'.format(sina_app_key, long_url)
     code, results = request(api_request_url, 'GET')
     url_short = None
     url_long = None
@@ -21,8 +21,8 @@ def get_shorten_url(url):
     return url_short
 
 
-def get_long_url(url):
-    api_request_url = SINA_SHORTEN_URL_EXPAND_API + '?source={0}&url_short={1}'.format(sina_app_key, url)
+def get_long_url(short_url):
+    api_request_url = SINA_SHORTEN_URL_EXPAND_API + '?source={0}&url_short={1}'.format(sina_app_key, short_url)
     code, results = request(api_request_url, 'GET')
     url_short = None
     url_long = None
