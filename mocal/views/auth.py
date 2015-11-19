@@ -9,43 +9,36 @@ from mocal.utils.md5 import MD5
 from mocal.utils.verify_code import generate_verify_code
 from mocal.utils.email import Email
 
-instance = Blueprint('user', __name__)
+instance = Blueprint('auth', __name__)
 
 
 @instance.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('user/login.html', msg='', account='', show_captcha=False)
+        return render_template('auth/login.html', msg='', account='', show_captcha=False)
 
-    req = request.values
-    account = req.get('login_account')
-    password = req.get('login_password')
-    remember_me = True if req.get('remember_me') else None
+    account = request.form.get('login_account')
+    password = request.form.get('login_password')
+    captcha = request.form.get('captcha')
+    remember_me = True if request.form.get('remember_me') else False
 
-    if session.get('check_captcha'):
-        captcha = req.get('captcha')
-        if int(captcha) != session.get('verify_code'):
-            return render_template('user/login.html', msg=Error.error_map[Error.LOGIN_CAPTCHA_ERROR], remember_me=remember_me, account=account, show_captcha=session.get('show_captcha'))
+    if not account or not password or not captcha:
+        return res(code=Error.PARAMS_REQUIRED)
+
+    if int(captcha) != session.get('verify_code'):
+        flash(Error.error_map[Error.LOGIN_CAPTCHA_ERROR])
+        return render_template('user/login.html')
 
     user = User.from_db(account=account)
-    if not user:
-        session['login_failed_count'] = 1
-        session['check_captcha'] = True
-        return render_template('user/login.html', msg=Error.error_map[Error.LOGIN_ACCOUNT_NOT_EXISTED], remember_me=remember_me, account=account, show_captcha=True)
-
-    if not user.verify_password(password):
-        session['login_failed_count'] = 1
-        session['check_captcha'] = True
-        return render_template('user/login.html', msg=Error.error_map[Error.LOGIN_PASSWORD_ERROR], remember_me=remember_me, account=account, show_captcha=True)
+    if not user or not user.verify_password(password):
+        flash(Error.error_map[Error.LOGIN_INFO_ERROR])
+        return render_template('user/login.html', msg=Error.error_map[Error.LOGIN_INFO_ERROR])
 
     # 登录
     login_user(user, remember=remember_me)
 
     # 清除session
     session['verify_code'] = 0
-    session['login_failed_count'] = 0
-    session['check_captcha'] = False
-
     return redirect(request.args.get('next') or url_for('main.index'))
 
 
@@ -107,14 +100,6 @@ def confirm(token):
     else:
         flash('账户邮箱验证链接无效或是已经过期！')
     return redirect(url_for('main.index'))
-
-
-@instance.route('/check_account/<account>', methods=['GET'])
-def check_account(account):
-    user = User.from_db(account=account, status=1)
-    if not user:
-        return res(data=False)
-    return res(data=True)
 
 
 @instance.route('/check_nickname/<nickname>', methods=['GET'])

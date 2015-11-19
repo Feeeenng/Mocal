@@ -15,6 +15,16 @@ function hide_loading(){
 }
 
 
+//检查邮箱格式
+function check_email_format(email){
+    var search_str = /^[\w\-\.]+@[\w\-\.]+(\.\w+)+$/;
+    if(!search_str.test(email)){
+        return false;
+    }
+    return true;
+}
+
+
 //弹出框
 function show_msg(str,time){
     if($("#alertMsg").attr('id') == undefined){
@@ -28,3 +38,4 @@ function show_msg(str,time){
         });
     }
 }
+

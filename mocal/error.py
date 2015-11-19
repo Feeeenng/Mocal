@@ -3,19 +3,19 @@
 
 class Error:
     SUCCESS = 0
+    PARAMS_REQUIRED = 1
 
     # login
-    LOGIN_ACCOUNT_NOT_EXISTED = 100
-    LOGIN_PASSWORD_ERROR = 101
-    LOGIN_CAPTCHA_ERROR = 102
+    LOGIN_INFO_ERROR = 100
+    LOGIN_CAPTCHA_ERROR = 101
 
     UNKNOWN = 999
 
     # error map
     error_map = {
         SUCCESS: '操作成功',
-        LOGIN_ACCOUNT_NOT_EXISTED: '用户名不存在',
-        LOGIN_PASSWORD_ERROR: '密码错误',
+        PARAMS_REQUIRED: '登录接口参数缺失',
+        LOGIN_INFO_ERROR: '用户名或密码错误',
         LOGIN_CAPTCHA_ERROR: '验证码错误',
         UNKNOWN: '未知错误'
     }
