@@ -15,30 +15,29 @@ instance = Blueprint('auth', __name__)
 @instance.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
-        return render_template('auth/login.html', msg='', account='', show_captcha=False)
+        return render_template('auth/login.html', msg='', email='', remember_me='')
 
-    account = request.form.get('login_account')
-    password = request.form.get('login_password')
+    email = request.form.get('email')
+    password = request.form.get('password')
     captcha = request.form.get('captcha')
     remember_me = True if request.form.get('remember_me') else False
 
-    if not account or not password or not captcha:
-        return res(code=Error.PARAMS_REQUIRED)
+    if not email or not password or not captcha:
+        return render_template('auth/login.html', msg=Error.error_map[Error.PARAMS_REQUIRED], email=email, remember_me=remember_me)
 
     if int(captcha) != session.get('verify_code'):
-        flash(Error.error_map[Error.LOGIN_CAPTCHA_ERROR])
-        return render_template('user/login.html')
+        return render_template('auth/login.html', msg=Error.error_map[Error.LOGIN_CAPTCHA_ERROR], email=email, remember_me=remember_me)
 
-    user = User.from_db(account=account)
+    user = User.from_db(email=email)
     if not user or not user.verify_password(password):
-        flash(Error.error_map[Error.LOGIN_INFO_ERROR])
-        return render_template('user/login.html', msg=Error.error_map[Error.LOGIN_INFO_ERROR])
+        return render_template('auth/login.html', msg=Error.error_map[Error.LOGIN_INFO_ERROR], email=email, remember_me=remember_me)
 
     # 登录
     login_user(user, remember=remember_me)
 
     # 清除session
-    session['verify_code'] = 0
+    del session['verify_code']
+    x = request.args.get('next')
     return redirect(request.args.get('next') or url_for('main.index'))
 
 
@@ -73,7 +72,7 @@ def register():
     token = user.generate_confirmation_token()
 
     # get confirm url
-    confirm_url = url_for('user.confirm', token=token, _external=True)
+    confirm_url = url_for('auth.confirm', token=token, _external=True)
     html = render_template(
         'email/email_activate.html',
         confirm_url=confirm_url)
@@ -136,7 +135,7 @@ def change_verify_code():
 @login_required
 def change_password():
     if request.method == 'GET':
-        return render_template('user/change_password.html')
+        return render_template('auth/change_password.html')
 
     old_password = request.form.get('old_password', '')
     new_password = request.form.get('new_password', '')
@@ -151,4 +150,4 @@ def change_password():
             return redirect(url_for('main.index'))
     else:
         flash('原密码错误！')
-    return render_template('user/change_password.html')
+    return render_template('auth/change_password.html')

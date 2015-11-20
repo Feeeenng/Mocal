@@ -110,7 +110,6 @@ class DatabaseObject(db.Model):
 
         return expressions
 
-
     # get property
     def get_property(self, k):
         if hasattr(self, k):
