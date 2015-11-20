@@ -37,7 +37,6 @@ def login():
 
     # 清除session
     del session['verify_code']
-    x = request.args.get('next')
     return redirect(request.args.get('next') or url_for('main.index'))
 
 
@@ -48,8 +47,11 @@ def logout():
     return redirect(url_for('main.index'))
 
 
-@instance.route('/register', methods=['POST'])
+@instance.route('/register', methods=['GET', 'POST'])
 def register():
+    if request.method == 'GET':
+        return render_template('auth/register.html')
+
     req = request.form
     account = req.get('register_account')
     password = MD5(req.get('register_password')).add_salt(current_app.config.get('SALT'))
