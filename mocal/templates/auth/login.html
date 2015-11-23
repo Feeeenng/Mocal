@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} Mocal登陆入口 {% endblock %}
+{% block title %} Mocal登陆 {% endblock %}
 
 {% block scripts %}
     {{ super() }}
@@ -107,6 +107,7 @@
         if (email != ''){
             if(!check_email_format(email)){
                 show_msg('请输入正确的邮箱格式', 1500);
+                $(obj).focus();
             }
         }
     }
@@ -196,10 +197,13 @@
                             <input type="email" class="form-control login_input" id="email" placeholder="邮箱"
                                   maxlength="30" name="email" value="{{ email }}" onblur="check_email(this)" autofocus>
                         </div>
+
                         <div class="form-group has-feedback">
                             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-                            <input type="password" class="form-control login_input" id="password" name="password" placeholder="密码">
+                            <input type="password" class="form-control login_input" id="password" name="password"
+                                   maxlength="20" placeholder="密码">
                         </div>
+
                         <div class="checkbox">
                             <label style="color: white">
                                 {% if remember_me %}
@@ -209,6 +213,7 @@
                                 {% endif %}
                             </label>
                         </div>
+
                         <div class="form-group form-inline captcha">
                             <!-- captcha -->
                             <img id="verify_code" class="captcha_pic" onclick="change_verify_code()" style="cursor: pointer">
@@ -216,9 +221,9 @@
                             <input id="vc" name="captcha" type="text" class="form-control" style="width: 30%;text-align:center;float: right;"
                                onkeyup="check_verify_code(this)" placeholder="计算结果" maxlength="2">
                         </div>
-                        <button type="submit" class="btn btn-default login_submit">登录</button>
-                        <input type="button" value="注册" class="btn btn-primary register_submit" onclick="javascript:location.href='{{ url_for('auth.register') }}'">
-                        <input type="button" value="忘记密码" class="btn btn-info forget_submit" onclick="">
+                        <button type="submit" class="btn btn-primary login_submit">登录</button>
+                        <input type="button" value="注册" class="btn btn-success register_submit" onclick="javascript:location.href='{{ url_for('auth.register') }}'">
+                        <input type="button" value="忘记密码" class="btn btn-danger forget_submit" onclick="">
                     </form>
                 </div>
             </div>

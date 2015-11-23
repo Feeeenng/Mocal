@@ -1,10 +1,127 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+{% extends "base.html" %}
 
-</body>
-</html>
+{% block title %} Mocal注册 {% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+    $(document).ready(function(){
+
+    });
+
+    function check_email(obj){
+        var email = $(obj).val();
+        if (email != ''){
+            if(!check_email_format(email)){
+                show_msg('请输入正确的邮箱格式', 1500);
+                $(obj).focus();
+            }
+        }
+    }
+
+    function check_register(){
+
+    }
+
+    function select_sex(obj){
+        var sex = $('#sex').val();
+        if(!sex){
+            $('#sex').val(1);
+            $(obj).attr('class', 'btn btn-info');
+            $(obj).val('男');
+        } else {
+            if(sex == 1){
+                $('#sex').val(2);
+                $(obj).attr('class', 'btn btn-danger');
+                $(obj).val('女');
+            }else{
+                $('#sex').val(1);
+                $(obj).attr('class', 'btn btn-info');
+                $(obj).val('男');
+            }
+        }
+    }
+    </script>
+{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <style>
+    .register {
+        background:rgba(255, 255, 255, 0.7);
+        padding-top: 0.1%;
+        margin-top: 10%;
+        margin-left: 10%;
+        margin-right: 10%;
+        padding-bottom: 5%;
+        border-radius: 15px;
+    }
+    .register-form{
+        margin-left: 10%;
+        margin-right: 10%;
+    }
+    .form-control-feedback {
+        left: 0
+    }
+    .register_input {
+        padding-left: 10%;
+    }
+    .register_submit {
+        margin-top: 1%;
+    }
+    </style>
+{% endblock %}
+
+{% block background %}
+        <!-- 背景图 -->
+    <div id="Layer1" style="position:absolute; width:100%; height:100%; z-index:-1">
+        <img src="{{ url_for('static', filename='upload/background/register/background.jpg') }}" height="100%" width="100%"/>
+    </div>
+{% endblock %}
+
+{% block page_content %}
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="register">
+                <form class="register-form" action="{{ request.url }}" method="post" onsubmit="return check_register()">
+                    <h1 style="color: black" class="text-center"><strong>注册</strong></h1>
+                    <input id="csrf_token" name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+
+                    <div class="form-group has-feedback">
+                        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+                        <input type="email" class="form-control register_input" id="email" placeholder="邮箱"
+                              maxlength="30" name="email" onblur="check_email(this)" autofocus>
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                        <input type="password" class="form-control register_input" id="password" name="password"
+                               maxlength="20" placeholder="密码">
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <span class="glyphicon glyphicon-check form-control-feedback"></span>
+                        <input type="password" class="form-control register_input" id="password_confirmed"
+                               maxlength="20" name="password_confirmed" placeholder="确认密码">
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                        <input type="text" class="form-control register_input" id="nickname" name="nickname"
+                               maxlength="12" placeholder="昵称">
+                    </div>
+
+                    <div class="form-group has-feedback">
+                        <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
+                        <input type="date" class="form-control register_input" id="birthday" name="birthday">
+                    </div>
+
+                    <input type="hidden" id="sex" name="sex">
+                    <input type="button" class="btn btn-success" style="width: 100%" value="性别" onclick="select_sex(this)">
+
+                    <button type="submit" class="btn btn-primary register_submit" style="width: 100%">注册</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
