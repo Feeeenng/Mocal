@@ -1,12 +1,14 @@
 # -*- coding: utf8 -*-
 
 import json
+import datetime
 from functools import wraps
 
 from flask import make_response, jsonify
 from flask_login import current_user
 
 from mocal.error import Error
+from mocal.utils.email import check_email_format
 
 
 def privileges_required(privileges=list()):
@@ -51,3 +53,42 @@ def res(code=Error.SUCCESS, data=None, msg=None):
         response = make_response(json.dumps(result))
 
     return response
+
+
+def check_filed_type_and_length(filed, limit_type, max_size=1000, min_size=0):
+    if limit_type in ['str', 'email']:
+        if isinstance(filed, basestring):
+
+            if limit_type == 'email':
+                if not check_email_format(filed):
+                    return False, Error.REGISTER_EMAIL_FORMAT_ERROR
+
+            if len(filed) > max_size:
+                return False, Error.REGISTER_FIELD_LENGTH_BEYOND
+            else:
+                if len(filed) < min_size:
+                    return False, Error.REGISTER_FIELD_LENGTH_UNQUALIFIED
+                else:
+                    return True, Error.SUCCESS
+        else:
+                return False, Error.REGISTER_FIELD_TYPE_ERROR
+
+    elif limit_type in ['int']:
+        if isinstance(filed, int):
+            if filed > max_size:
+                return False, Error.REGISTER_FIELD_LENGTH_BEYOND
+            else:
+                if filed < min_size:
+                    return False, Error.REGISTER_FIELD_LENGTH_UNQUALIFIED
+                else:
+                    return True, Error.SUCCESS
+        else:
+            return False, Error.REGISTER_FIELD_TYPE_ERROR
+
+    elif limit_type in ['datetime']:
+        if not isinstance(filed, datetime.datetime):
+            return False, Error.REGISTER_FIELD_TYPE_ERROR
+        return True, Error.SUCCESS
+
+    else:
+        return False, Error.REGISTER_FIELD_LIMIT_TYPE_NOT_EXISTED

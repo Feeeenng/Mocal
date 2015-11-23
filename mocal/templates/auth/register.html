@@ -6,7 +6,12 @@
     {{ super() }}
     <script>
     $(document).ready(function(){
-
+        $('#birthday').datetimepicker({
+        　　minView: "month", //选择日期后，不会再跳转去选择时分秒
+        　　format: "yyyy-mm-dd", //选择日期后，文本框显示的日期格式
+        　　language: 'zh-CN', //汉化
+        　　autoclose:true //选择日期后自动关闭
+        });
     });
 
     function check_email(obj){
@@ -101,8 +106,8 @@
 
                     <div class="form-group has-feedback">
                         <span class="glyphicon glyphicon-check form-control-feedback"></span>
-                        <input type="password" class="form-control register_input" id="password_confirmed"
-                               maxlength="20" name="password_confirmed" placeholder="确认密码">
+                        <input type="password" class="form-control register_input" id="password_confirm"
+                               maxlength="20" name="password_confirm" placeholder="确认密码">
                     </div>
 
                     <div class="form-group has-feedback">
@@ -113,13 +118,14 @@
 
                     <div class="form-group has-feedback">
                         <span class="glyphicon glyphicon-calendar form-control-feedback"></span>
-                        <input type="date" class="form-control register_input" id="birthday" name="birthday">
+                        <input type="text" class="form-control register_input" id="birthday" name="birthday"
+                                placeholder="生日" readonly>
                     </div>
 
                     <input type="hidden" id="sex" name="sex">
                     <input type="button" class="btn btn-success" style="width: 100%" value="性别" onclick="select_sex(this)">
 
-                    <button type="submit" class="btn btn-primary register_submit" style="width: 100%">注册</button>
+                    <button type="submit" class="btn btn-primary register_submit" style="width: 100%">提交</button>
                 </form>
             </div>
         </div>

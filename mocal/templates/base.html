@@ -4,15 +4,17 @@
 
 {% block scripts %}
     {{ super() }}
-    <script type="text/javascript" src="../static/js/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src="../static/js/common.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+    <script type="text/javascript" src="../static/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="../static/js/bootstrap-datetimepicker.zh-CN.js"></script>
 {% endblock %}
 
 {% block styles %}
     {{ super() }}
     <link href="../static/css/loading.css" rel="stylesheet" type="text/css">
     <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
+    <link href="../static/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
 {% endblock %}
 
 {% block navbar %}
