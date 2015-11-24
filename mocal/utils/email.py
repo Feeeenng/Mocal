@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import re
 import time
 from threading import Thread
 
@@ -33,15 +32,6 @@ class Email(Message):
     def send_email(self):
         with app.app_context():
             mail.send(self)
-
-
-def check_email_format(subject):
-    regex=ur"^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
-    match = re.search(regex, subject)
-    if not match:
-        return False
-    else:
-        return True
 
 
 # email = Email('haner27@126.com', ['369685930@qq.com'], '韩能放', 'I LOVE YOU!', '告白')

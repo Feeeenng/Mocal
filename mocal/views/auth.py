@@ -1,4 +1,7 @@
 # -*- coding: utf8 -*-
+
+from datetime import datetime
+
 from flask import Blueprint, render_template, url_for, request, redirect, session, flash, current_app
 from flask.ext.login import current_user, login_user, logout_user, login_required
 
@@ -64,16 +67,24 @@ def register():
     if not email or not password or not password_confirm or not nickname or not sex:
         return res(code=Error.PARAMS_REQUIRED)
 
-    is_checked, code = check_filed_type_and_length(email, 'email', min_size=8, max_size=30)
-    if not is_checked:
-        return res(code=code)
+    for i in [
+        (email, 'email'),
+        (password, 'str', 6, 20),
+        (password_confirm, 'str', 6, 20),
+        (nickname, 'str', 1, 12),
+        (sex, 'int', 0, 150),
+        (datetime.strptime(birthday, '%Y-%m-%d'), 'datetime')
+    ]:
+        is_checked, code = check_filed_type_and_length(*i)
+        if not is_checked:
+            return res(code=code)
 
     user = User.from_db(email=email)
-    if not user:
+    if user:
         return res(code=Error.REGISTER_EMAIL_IS_EXISTED)
 
     user = User.from_db(nickname=nickname)
-    if not user:
+    if user:
         return res(code=Error.REGISTER_NICKNAME_IS_EXISTED)
 
     if password != password_confirm:
@@ -104,10 +115,7 @@ def register():
     email = Email(send_email='haner27@126.com', recipients=[user.email], sender='Mocal', subject='账户邮件确认', html=html)
     email.send_email()
 
-    results = {
-        'uid': uid
-    }
-    return res(data=results)
+    return redirect(url_for('auth.login'))
 
 
 @instance.route('/email_confirm/<token>', methods=['GET'])

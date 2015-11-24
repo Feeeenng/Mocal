@@ -42,7 +42,7 @@ class DatabaseObject(db.Model):
                 d[k] = v
         return d
 
-       # todo: logger， pagenatiom
+       # todo: logger， pagenatiom, 注册邮箱提示邮箱后缀
 
     @classmethod
     def from_id(cls, id):
