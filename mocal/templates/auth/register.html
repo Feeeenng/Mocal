@@ -22,6 +22,7 @@
                 show_msg('请输入正确的邮箱格式', 1500);
                 $('#nickname_is_ok').removeClass();
                 $('#nickname_is_ok').addClass('glyphicon glyphicon-remove-sign form-control-feedback');
+                $(obj).focus();
             } else {
                 // 检查邮箱是否存在
                 var url = "{{ url_for('auth.check_email', email='') }}" + email;
@@ -45,6 +46,7 @@
                             show_msg('邮箱已经存在', 1500);
                             $('#email_is_ok').removeClass();
                             $('#email_is_ok').addClass('glyphicon glyphicon-remove-sign form-control-feedback');
+                            $(obj).focus();
                         }
                     }
                 });
@@ -58,67 +60,82 @@
         var nickname = $(obj).val();
         if (nickname != ''){
             // 检查昵称格式是否正确
-            if(check_nickname_format(nickname)){
+            if(check_illegal_character (nickname)){
                 show_msg('非法昵称，昵称不包括特殊字符', 1500);
                 $('#nickname_is_ok').removeClass();
                 $('#nickname_is_ok').addClass('glyphicon glyphicon-remove-sign form-control-feedback');
             } else {
                 // 检查昵称是否存在
-                var url = "{{ url_for('auth.check_nickname', nickname='') }}" + nickname;
-                show_loading();
-                $.ajax({
-                    type: "GET",
-                    async: false,
-                    url: url,
-                    dataType   : "json",
-                    error: function (ret) {
-                        hide_loading();
-                        show_msg("返回数据错误！", 1500);
-                    },
-                    success: function (ret) {
-                        if (ret["detail"] == false) {
-                            hide_loading();
-                            $('#nickname_is_ok').removeClass();
-                            $('#nickname_is_ok').addClass('glyphicon glyphicon-ok-sign form-control-feedback');
-                        } else {
-                            hide_loading();
-                            show_msg('昵称已经存在', 1500);
-                            $('#nickname_is_ok').removeClass();
-                            $('#nickname_is_ok').addClass('glyphicon glyphicon-remove-sign form-control-feedback');
-                        }
-                    }
-                });
+                if(!check_nickname_exist(nickname)){
+                    $('#nickname_is_ok').removeClass();
+                    $('#nickname_is_ok').addClass('glyphicon glyphicon-ok-sign form-control-feedback');
+                } else {
+                    $('#nickname_is_ok').removeClass();
+                    $('#nickname_is_ok').addClass('glyphicon glyphicon-remove-sign form-control-feedback');
+                }
             }
         } else {
             $('#nickname_is_ok').removeClass();
         }
     }
 
+    function check_nickname_exist(nickname){
+        var url = "{{ url_for('auth.check_nickname', nickname='') }}" + nickname;
+        show_loading();
+        var results = false;
+        $.ajax({
+            type: "GET",
+            async: false,
+            url: url,
+            dataType   : "json",
+            error: function (ret) {
+                hide_loading();
+                show_msg("返回数据错误！", 1500);
+            },
+            success: function (ret) {
+                if (ret["detail"] == false) {
+                    hide_loading();
+                    results = false;
+                } else {
+                    hide_loading();
+                    show_msg('昵称已经存在', 1500);
+                    results = true;
+                }
+            }
+        });
+        return results;
+    }
+
     function check_password(obj){
         var password = $(obj).val();
-        if(password.length < 6 || password.length >20){
-            show_msg('密码长度应为6-20位', 1500);
-            $('#password_is_ok').removeClass();
-            $('#password_is_ok').addClass('glyphicon glyphicon-remove-sign form-control-feedback');
-        } else {
-            $('#password_is_ok').removeClass();
-            $('#password_is_ok').addClass('glyphicon glyphicon-ok-sign form-control-feedback');
+        if(password!='') {
+            if (password.length < 6 || password.length > 20) {
+                show_msg('密码长度应为6-20位', 1500);
+                $('#password_is_ok').removeClass();
+                $('#password_is_ok').addClass('glyphicon glyphicon-remove-sign form-control-feedback');
+            } else {
+                $('#password_is_ok').removeClass();
+                $('#password_is_ok').addClass('glyphicon glyphicon-ok-sign form-control-feedback');
+            }
         }
     }
 
     function check_password_confirm(obj){
         var password_confirm = $(obj).val();
-        if(password_confirm!=password){
-            show_msg('密码不一致', 1500);
-            $('#password_confirm_is_ok').removeClass();
-            $('#password_confirm_is_ok').addClass('glyphicon glyphicon-remove-sign form-control-feedback');
-        } else {
-            $('#password_confirm_is_ok').removeClass();
-            $('#password_confirm_is_ok').addClass('glyphicon glyphicon-ok-sign form-control-feedback');
+        var password = $('#password').val();
+        if(password_confirm!=''){
+            if(password_confirm!=password){
+                show_msg('密码不一致', 1500);
+                $('#password_confirm_is_ok').removeClass();
+                $('#password_confirm_is_ok').addClass('glyphicon glyphicon-remove-sign form-control-feedback');
+            } else {
+                $('#password_confirm_is_ok').removeClass();
+                $('#password_confirm_is_ok').addClass('glyphicon glyphicon-ok-sign form-control-feedback');
+            }
         }
     }
 
-    function check_nickname_format(nickname){
+    function check_illegal_character (str){
         var filterString = "";
         filterString = filterString == "" ? "'~`·!@#$%^&*()-+./" : filterString;
         var ch;
@@ -127,7 +144,7 @@
         var error = false; // 当包含非法字符时，返回True
         for (i = 0; i <= (filterString.length - 1); i++) {
             ch = filterString.charAt(i);
-            temp = nickname.indexOf(ch);
+            temp = str.indexOf(ch);
             if (temp != -1) {
                 error = true;
                 break;
@@ -180,6 +197,15 @@
         }
         if(nickname.length < 1 || nickname.length > 12){
             show_msg('昵称应为1-12位', 1500);
+            $('#nickname').focus();
+            return false;
+        }
+        if(check_illegal_character (nickname)){
+            show_msg('非法昵称，昵称不包括特殊字符', 1500);
+            $('#nickname').focus();
+            return false;
+        }
+        if(check_nickname_exist(nickname)){
             $('#nickname').focus();
             return false;
         }

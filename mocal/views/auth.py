@@ -115,6 +115,7 @@ def register():
     email = Email(send_email='haner27@126.com', recipients=[user.email], sender='Mocal', subject='账户邮件确认', html=html)
     email.send_email()
 
+    flash('{0}, 您的邮箱{1}注册完成！请检查登录您的邮箱查看邮件完成激活'.format(nickname, email))
     return redirect(url_for('auth.login'))
 
 
