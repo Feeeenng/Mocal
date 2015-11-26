@@ -5,12 +5,51 @@
 {% block scripts %}
     {{ super() }}
     <script>
+    function add_onblur(){
+        $('#email').blur(function(){
+            check_email(this);
+        })
+    }
+
     $(document).ready(function(){
+        // 时间控件
         $('#birthday').datetimepicker({
         　　minView: "month", //选择日期后，不会再跳转去选择时分秒
         　　format: "yyyy-mm-dd", //选择日期后，文本框显示的日期格式
         　　language: 'zh-CN', //汉化
         　　autoclose:true //选择日期后自动关闭
+        });
+
+        // 自动补全
+        $.fn.typeahead.Constructor.prototype.blur = function(){
+           var that = this;
+           setTimeout(function () { that.hide() }, 250);
+        };
+
+        $('#email').typeahead({
+            source: function(query, process){
+                var keywords = $('#email').val();
+                var postfix = ["@qq.com", "@126.com", "@163.com", "@gmail.com", "@yahoo.com", "@sina.com", "@sohu.com"];
+                var result = [];
+                for(var i in postfix){
+                    var index = $.inArray('@', keywords);
+                    if(index==-1){
+                        result.push(keywords+postfix[i]);
+                    }else{
+                        result.push(keywords.substring(0, index)+postfix[i]);
+                    }
+                }
+                process(result);
+            },
+            // 对item做处理
+            highlighter: function(item) {
+                return item;
+            },
+            // 选择选项后做后续处理
+            updater: function(item) {
+{#                console.log("'" + item + "' selected.");#}
+                return item;
+            }
         });
     });
 
@@ -20,8 +59,8 @@
             // 检查邮箱格式是否正确
             if(!check_email_format(email)){
                 show_msg('请输入正确的邮箱格式', 1500);
-                $('#nickname_is_ok').removeClass();
-                $('#nickname_is_ok').addClass('glyphicon glyphicon-remove-sign form-control-feedback');
+                $('#email_is_ok').removeClass();
+                $('#email_is_ok').addClass('glyphicon glyphicon-remove-sign form-control-feedback');
                 $(obj).focus();
             } else {
                 // 检查邮箱是否存在
@@ -288,7 +327,7 @@
                     <div class="form-group has-feedback">
                         <span class="glyphicon glyphicon-envelope icon form-control-feedback"></span>
                         <input type="email" class="form-control register_input" id="email" placeholder="邮箱"
-                              maxlength="30" name="email" onblur="check_email(this)" autofocus>
+                              maxlength="30" name="email" autofocus data-provide="typeahead" onblur="check_email(this)">
                         <span id="email_is_ok"></span>
                     </div>
 

@@ -67,6 +67,7 @@ def register():
     if not email or not password or not password_confirm or not nickname or not sex:
         return res(code=Error.PARAMS_REQUIRED)
 
+    # 参数检查
     for i in [
         (email, 'email'),
         (password, 'str', 6, 20),
