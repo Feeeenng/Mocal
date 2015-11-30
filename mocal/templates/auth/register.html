@@ -21,36 +21,36 @@
         });
 
         // 自动补全
-        $.fn.typeahead.Constructor.prototype.blur = function(){
-           var that = this;
-           setTimeout(function () { that.hide() }, 250);
-        };
-
-        $('#email').typeahead({
-            source: function(query, process){
-                var keywords = $('#email').val();
-                var postfix = ["@qq.com", "@126.com", "@163.com", "@gmail.com", "@yahoo.com", "@sina.com", "@sohu.com"];
-                var result = [];
-                for(var i in postfix){
-                    var index = $.inArray('@', keywords);
-                    if(index==-1){
-                        result.push(keywords+postfix[i]);
-                    }else{
-                        result.push(keywords.substring(0, index)+postfix[i]);
-                    }
-                }
-                process(result);
-            },
-            // 对item做处理
-            highlighter: function(item) {
-                return item;
-            },
-            // 选择选项后做后续处理
-            updater: function(item) {
+{#        $.fn.typeahead.Constructor.prototype.blur = function(){#}
+{#           var that = this;#}
+{#           setTimeout(function () { that.hide() }, 250);#}
+{#        };#}
+{##}
+{#        $('#email').typeahead({#}
+{#            source: function(query, process){#}
+{#                var keywords = $('#email').val();#}
+{#                var postfix = ["@qq.com", "@126.com", "@163.com", "@gmail.com", "@yahoo.com", "@sina.com", "@sohu.com"];#}
+{#                var result = [];#}
+{#                for(var i in postfix){#}
+{#                    var index = $.inArray('@', keywords);#}
+{#                    if(index==-1){#}
+{#                        result.push(keywords+postfix[i]);#}
+{#                    }else{#}
+{#                        result.push(keywords.substring(0, index)+postfix[i]);#}
+{#                    }#}
+{#                }#}
+{#                process(result);#}
+{#            },#}
+{#            // 对item做处理#}
+{#            highlighter: function(item) {#}
+{#                return item;#}
+{#            },#}
+{#            // 选择选项后做后续处理#}
+{#            updater: function(item) {#}
 {#                console.log("'" + item + "' selected.");#}
-                return item;
-            }
-        });
+{#                return item;#}
+{#            }#}
+{#        });#}
     });
 
     function check_email(obj){
@@ -327,7 +327,7 @@
                     <div class="form-group has-feedback">
                         <span class="glyphicon glyphicon-envelope icon form-control-feedback"></span>
                         <input type="email" class="form-control register_input" id="email" placeholder="邮箱"
-                              maxlength="30" name="email" autofocus data-provide="typeahead" onblur="check_email(this)">
+                              maxlength="30" name="email" autofocus onblur="check_email(this)">
                         <span id="email_is_ok"></span>
                     </div>
 
