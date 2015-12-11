@@ -101,7 +101,7 @@ def register():
     }
 
     user = User(**params)
-    uid = user.save(add=True)
+    user.save(add=True)
 
     # generate confirm token
     token = user.generate_confirmation_token()

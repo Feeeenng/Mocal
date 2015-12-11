@@ -43,7 +43,7 @@ class User(UserMixin, DatabaseObject):
 
     @property
     def privileges_list(self):
-        return self.privileges.split(',')
+        return self.privileges.split(',')  # todo
 
     def generate_confirmation_token(self, expiration=86400):
         s = Serializer(current_app.config['SECRET_KEY'], expires_in=expiration)

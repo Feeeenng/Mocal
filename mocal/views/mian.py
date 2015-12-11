@@ -9,3 +9,8 @@ instance = Blueprint('main', __name__)
 def index():
     carousel_pics = Upload.fetch(page=1, count=3, category='carousel')
     return render_template('index.html', title='Mocal', carousel_pics=carousel_pics)
+
+
+@instance.route('/music')
+def music():
+    return render_template('music.html')

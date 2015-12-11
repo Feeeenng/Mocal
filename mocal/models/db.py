@@ -20,15 +20,14 @@ class DatabaseObject(db.Model):
                 setattr(self, k, v)
 
     def save(self, add=False):
-        if add:
-            db.session.add(self)
-            db.session.commit()
-            return self.id
+        if not add:
+            setattr(self, 'updated_at', db.func.now())
 
-        setattr(self, 'updated_at', db.func.now())
         db.session.add(self)
-        db.session.commit()
-        return None
+        try:
+            db.session.commit()
+        except Exception, ex:
+            db.session.rollback()
 
     def to_json(self, format='%Y-%m-%d %H:%M:%S'):
         d = {}
