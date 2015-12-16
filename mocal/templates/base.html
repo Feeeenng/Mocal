@@ -9,10 +9,21 @@
     <script type="text/javascript" src="../static/js/bootstrap-datetimepicker.min.js"></script>
     <script type="text/javascript" src="../static/js/bootstrap-datetimepicker.zh-CN.js"></script>
     <script type="text/javascript" src="../static/js/bootstrap-typeahead.js"></script>
+    <script>
+        $(document).ready(function(){
+            var cursor_path = "{{ get_cursor_path() }}";
+            $('body').css('cursor', 'url("'+ cursor_path +'"),auto');
+        });
+    </script>
 {% endblock %}
 
 {% block styles %}
     {{ super() }}
+    <style>
+{#        body {#}
+{#            cursor: url("../static/cursor/3.cur"),auto;#}
+{#        }#}
+    </style>
     <link href="../static/css/loading.css" rel="stylesheet" type="text/css">
     <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
     <link href="../static/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">

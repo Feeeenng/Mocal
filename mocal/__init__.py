@@ -13,6 +13,7 @@ from flask_login import LoginManager
 from config import config
 from utils.logger import logger
 from utils.csrf_token import generate_csrf_token
+from utils.random_cursor import get_cursor_path
 
 # setting sys default encode. 用到FLASK-WTF 设置默认编码
 reload(sys)
@@ -82,6 +83,7 @@ def create_app(config_name):
 
     # 防跨站式攻击
     app.jinja_env.globals['csrf_token'] = generate_csrf_token
+    app.jinja_env.globals['get_cursor_path'] = get_cursor_path
 
     # 蓝图注册
     config_blueprint(app)
