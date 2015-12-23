@@ -32,6 +32,11 @@
 {% endblock %}
 
 {% block page_content %}
+    <!-- 天气预报 -->
+    <div class="weather-handle" style="text-align: center">
+        <span class="glyphicon glyphicon-cloud" style="top: 45%"></span>
+    </div>
+
     <div class="weather">
         <button class="l-button"><span class="glyphicon glyphicon-chevron-left" style="color: rgba(255, 255, 255, 0.7)"></span></button>
         {% for item in weather_data%}
@@ -61,6 +66,7 @@
     </div>
 
     <div class="page-header">
+        <!-- 轮播图 -->
         <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
             <!-- Indicators -->
             <ol class="carousel-indicators">

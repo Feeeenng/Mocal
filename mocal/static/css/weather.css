@@ -4,8 +4,25 @@
     left: 82%;
     height: 200px;
     width: 300px;
-    border-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
     background:rgba(0, 0, 0, 0.7);
+}
+
+.weather-handle, .weather-handle-open {
+    z-index: 1100;
+    position: absolute;
+    cursor: pointer;
+    left: 80%;
+    height: 200px;
+    width: 34px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    background: rgba(255, 165, 0, 1);
+}
+
+.weather-handle:hover, .weather-handle-open:hover {
+    background: rgba(255, 165, 0, 0.8);
 }
 
 .l-button {

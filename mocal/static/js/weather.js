@@ -2,7 +2,8 @@
  * Created by Administrator on 2015/12/23.
  */
 $(document).ready(function(){
-    var width = $(".weather-content").width();
+    $('.weather').hide();
+    $('.weather-handle').css('left', '98%');
 
     $(".r-button").click(function(){
         var element;
@@ -38,5 +39,19 @@ $(document).ready(function(){
                 $('#'+(--id)).fadeIn('slow');
             });
         }
+    });
+
+    $(".weather-handle").click(function(){
+        $('.weather-handle').animate({left:'80%'}, 'slow', function(){
+            $('.weather').fadeIn();
+            $(this).attr('class', 'weather-handle-open');
+        });
+    });
+
+    $(".weather-handle-open").click(function(){
+        $('.weather-handle-open').animate({left:'98%'}, 'slow', function(){
+            $('.weather').fadeOut('slow');
+            $(this).attr('class', 'weather-handle');
+        });
     });
 });
