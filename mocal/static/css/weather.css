@@ -9,7 +9,7 @@
     background:rgba(0, 0, 0, 0.7);
 }
 
-.weather-handle, .weather-handle-open {
+.weather-handle {
     z-index: 1100;
     position: absolute;
     cursor: pointer;
@@ -21,7 +21,7 @@
     background: rgba(255, 165, 0, 1);
 }
 
-.weather-handle:hover, .weather-handle-open:hover {
+.weather-handle:hover {
     background: rgba(255, 165, 0, 0.8);
 }
 
@@ -48,11 +48,11 @@
 }
 
 .l-button:hover {
-    background:rgba(0, 0, 0, 0.05);
+    background:rgba(0, 0, 0, 0.1);
 }
 
 .r-button:hover {
-    background:rgba(0, 0, 0, 0.05);
+    background:rgba(0, 0, 0, 0.1);
 }
 
 .weather-content {
@@ -62,4 +62,11 @@
     position: relative;
     z-index: 1101;
     text-align: center;
+}
+
+.weather-data {
+    color: orange;
+    margin: 4%;
+    text-align: left;
+    padding-left: 25%;
 }

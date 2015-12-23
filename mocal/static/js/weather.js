@@ -55,16 +55,44 @@ $(document).ready(function(){
     });
 
     $(".weather-handle").click(function(){
-        $('.weather-handle').animate({left:'80%'}, 'slow', function(){
-            $('.weather').fadeIn();
-            $(this).attr('class', 'weather-handle-open');
-        });
+        var open = $(this).attr('open');
+        if(open){
+            // 关闭
+            $('.weather').fadeOut('normal', function(){
+                $('.weather-handle').animate({left:'98%'}, 'normal', function(){
+                    $(this).removeAttr('open');
+                });
+            });
+        }else{
+            // 打开
+            $('.weather-handle').animate({left:'80%'}, 'normal', function(){
+                $('.weather').fadeIn('normal');
+                $(this).attr('open', 'open');
+            });
+        }
     });
+});
 
-    $(".weather-handle-open").click(function(){
-        $('.weather-handle-open').animate({left:'98%'}, 'slow', function(){
-            $('.weather').fadeOut('slow');
-            $(this).attr('class', 'weather-handle');
-        });
-    });
+var weather_handle = $('.weather-handle');
+var weather = $('.weather');
+
+// 阻止冒泡事件
+weather_handle.bind("click",function(event){
+    event.stopPropagation();    //  阻止事件冒泡
+});
+weather.bind("click",function(event){
+    event.stopPropagation();    //  阻止事件冒泡
+});
+
+$(document).click(function(e) {
+	if(e.target != weather_handle[0] && e.target != weather[0]) {
+        var open = weather_handle.attr('open');
+        if(open) {
+            weather.fadeOut('normal', function () {
+                weather_handle.animate({left: '98%'}, 'normal', function () {
+                    $(this).removeAttr('open');
+                });
+            });
+        }
+	}
 });
