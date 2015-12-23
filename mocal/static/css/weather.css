@@ -1,0 +1,48 @@
+.weather {
+    z-index: 1100;
+    position: absolute;
+    left: 82%;
+    height: 200px;
+    width: 300px;
+    border-radius: 5px;
+    background:rgba(0, 0, 0, 0.7);
+}
+
+.l-button {
+    z-index: 1101;
+    position: relative;
+    float: left;
+    width: 15%;
+    height: 100%;
+    border: none;
+    background:rgba(0, 0, 0, 0);
+    outline:none;
+}
+
+.r-button {
+    z-index: 1101;
+    position: relative;
+    float: right;
+    width: 15%;
+    height: 100%;
+    border: none;
+    background:rgba(0, 0, 0, 0);
+    outline:none;
+}
+
+.l-button:hover {
+    background:rgba(0, 0, 0, 0.05);
+}
+
+.r-button:hover {
+    background:rgba(0, 0, 0, 0.05);
+}
+
+.weather-content {
+    float: left;
+    width: 70%;
+    height: 100%;
+    position: relative;
+    z-index: 1101;
+    text-align: center;
+}

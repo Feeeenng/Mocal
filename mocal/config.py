@@ -26,6 +26,11 @@ class Config:
     SINA_APP_KEY = 3058213685
     SINA_SECRET = 'b46f30e6ca313fef81beba2360a70616'
 
+    # 百度LBS
+    BAIDU_LBS_SK = '7OqY0apBPyHMMkRMokabgvC8IrhhpLcF'
+    BAIDU_LBS_AK = 'a7CxbjMO5TP5AdQvWEQzfZiT'
+    BAIDU_LBS_API_HOST = 'http://api.map.baidu.com'
+
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://root:haner27@127.0.0.1:3306/mocal?charset=utf8'
