@@ -1,5 +1,5 @@
 # -*- coding: utf8 -*-
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 from mocal.models.upload import Upload
 from datetime import datetime, timedelta
 
@@ -13,7 +13,10 @@ def index():
 
     # 天气
     from mocal.utils.get_weather_info import get_weather_city_info
-    success, weather_info = get_weather_city_info('北京')
+    from mocal.utils.get_ip_info import get_ip_city_by_ip
+    ip = request.remote_addr  # 获取访问ip地址
+    city = get_ip_city_by_ip(ip)  # 根据ip地址获取城市名
+    success, weather_info = get_weather_city_info(city)  # 根据城市名获取天气状况
     results = weather_info['results'][0]
     date = weather_info['date']
     dates = [(datetime.strptime(date, '%Y-%m-%d') + timedelta(days=i)).strftime('%m月%d日')
