@@ -4,6 +4,7 @@
 $(document).ready(function(){
     $('.weather').hide();
     $('.weather-handle').css('left', '98%');
+    $('#l-btn-flag').hide();
 
     $(".r-button").click(function(){
         var element;
@@ -19,6 +20,12 @@ $(document).ready(function(){
         if(id>=0&&id<=2){
             $("#"+item_id).fadeOut('slow', function(){
                 $('#'+(++id)).fadeIn('slow');
+                if(id==3){
+                    $('#r-btn-flag').hide();
+                }else{
+                    $('#l-btn-flag').show();
+                    $('#r-btn-flag').show();
+                }
             });
         }
     });
@@ -37,6 +44,12 @@ $(document).ready(function(){
         if(id>=1&&id<=3){
             $("#"+item_id).fadeOut('slow', function (){
                 $('#'+(--id)).fadeIn('slow');
+                if(id==0){
+                    $('#l-btn-flag').hide();
+                }else{
+                    $('#l-btn-flag').show();
+                    $('#r-btn-flag').show();
+                }
             });
         }
     });

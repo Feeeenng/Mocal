@@ -38,7 +38,7 @@
     </div>
 
     <div class="weather">
-        <button class="l-button"><span class="glyphicon glyphicon-chevron-left" style="color: rgba(255, 255, 255, 0.7)"></span></button>
+        <button class="l-button"><span id="l-btn-flag" class="glyphicon glyphicon-chevron-left" style="color: rgba(255, 255, 255, 0.7)"></span></button>
         {% for item in weather_data%}
             {% if weather_data.index(item) == 0 %}
                 <div class="weather-content" id="{{ weather_data.index(item) }}">
@@ -53,7 +53,7 @@
             {% else %}
                 <div class="weather-content" id="{{ weather_data.index(item) }}" hidden>
                     <h1 style="color: orange;"><strong>{{ current_city }}</strong></h1>
-                    <h5 style="color: white">{{ item['date'] }}</h5>
+                    <h5 style="color: white">{{ item['date'] }} {{ dates[weather_data.index(item)] }}</h5>
                     <img src="{{ item['dayPictureUrl'] }}" style="float: left"/>
                     <img src="{{ item['nightPictureUrl'] }}" style="float: right"/>
                     <p style="color: #29bcff">天气：{{ item['weather'] }}</p>
@@ -62,7 +62,7 @@
                 </div>
             {% endif %}
         {% endfor %}
-        <button class="r-button"><span class="glyphicon glyphicon-chevron-right" style="color: rgba(255, 255, 255, 0.7)"></span></button>
+        <button class="r-button"><span id="r-btn-flag" class="glyphicon glyphicon-chevron-right" style="color: rgba(255, 255, 255, 0.7)"></span></button>
     </div>
 
     <div class="page-header">
