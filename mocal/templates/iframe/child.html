@@ -81,7 +81,7 @@
             color: white;
         }
 
-        .music_box button:hover{
+        .music_box button:hover {
             color: white;
             background-color: #29bcff;
             border:none;
@@ -99,10 +99,23 @@
             cursor: pointer;
         }
 
-        .hide_tag span{
+        .hide_tag span {
             position: relative;
             top: 30%;
             color: black;
+        }
+
+        .music_desc {
+            color: white;
+            text-align: center;
+            position: relative;
+            float: left;
+            left: 10%;
+            width: 20%;
+            top: 20%;
+            height: 60%;
+            border-radius: 20px;
+            background-color: #2aff8e;
         }
 
 
@@ -157,6 +170,13 @@
 
         <button class="glyphicon glyphicon-step-forward next_song" id="next_song">
         </button>
+
+        <div class="music_desc">
+            <marquee scrollamount="3" hspace="5" direction="right" onmouseout="this.start()" 
+                     onmouseover="this.stop()">
+                李荣浩--李白.pm3
+            </marquee>
+        </div>
 
         <div class="hide_tag">
             <span class="glyphicon glyphicon-lock"></span>
