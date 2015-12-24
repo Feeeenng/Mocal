@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.0.0-alpha1/jquery.js"></script>
+    <style>
+        .music_box {
+            position: absolute;
+            z-index: 11111;
+            top: 95%;
+            height: 4%;
+            left: 20%;
+            width: 60%;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .music_time {
+            position: relative;
+            float: left;
+            top: 20%;
+            height: 60%;
+            left: 15px;
+            text-align: center;
+            width: 3%;
+            color: white;
+        }
+
+        .music_progress {
+            position: relative;
+            left: 1%;
+            width: 50%;
+            top: 20%;
+            height: 60%;
+            border-radius: 20px;
+            background-color: orange;
+            float: left;
+        }
+
+        .divide_line {
+            position: relative;
+            left: 7%;
+            width: 2px;
+            top: 20%;
+            height: 60%;
+            background-color: rgba(179, 179, 179, 0.54);
+            float: left;
+        }
+
+        .prev_song {
+            left: 8%;
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+
+         .play_or_pause{
+             left: 8%;
+         }
+
+        .next_song{
+            left: 8%;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        .music_box button {
+            position: relative;
+            top: 20%;
+            height: 60%;
+            width: 3%;
+            float: left;
+            outline: none;
+            color: rgba(0, 0, 0, 1);
+            border:none;
+            background-color: orange;
+        }
+
+        .music_box span {
+            color: white;
+        }
+
+        .music_box button:hover{
+            color: white;
+            background-color: #29bcff;
+            border:none;
+        }
+
+        .hide_tag {
+            text-align: center;
+            position: relative;
+            float: right;
+            background-color: orange;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            width: 5%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .hide_tag span{
+            position: relative;
+            top: 30%;
+            color: black;
+        }
+
+
+    </style>
+
+    <script>
+        $(document).ready(function(){
+            $('.hide_tag').bind("click",function(event){
+                event.stopPropagation();    //  阻止事件冒泡
+                var name = $(this).find('span').attr('name');
+                if(name=='white'){
+                    $(this).find('span').css('color', 'black');
+                    $(this).css('background-color', 'orange');
+                    $(this).find('span').attr('name', 'black');
+                }else{
+                    $(this).find('span').css('color', 'white');
+                    $(this).css('background-color', '#29bcff');
+                    $(this).find('span').attr('name', 'white');
+                }
+            });
+
+            $('#play_or_pause').click(function(){
+                var name = $(this).attr('name');
+                if(name=='play'){
+                    $(this).attr('class', 'glyphicon glyphicon-pause play_or_pause');
+                    $(this).attr('name', 'pause');
+                }else{
+                    $(this).attr('class', 'glyphicon glyphicon-play play_or_pause');
+                    $(this).attr('name', 'play');
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="music_box">
+        <div class="music_progress">
+        </div>
+
+        <div class="music_time">
+            00:00/00:00
+        </div>
+
+        <div class="divide_line">
+        </div>
+
+        <button class="glyphicon glyphicon-step-backward prev_song" id="prev_song">
+        </button>
+
+        <button class="glyphicon glyphicon-play play_or_pause" id="play_or_pause" name="play">
+        </button>
+
+        <button class="glyphicon glyphicon-step-forward next_song" id="next_song">
+        </button>
+
+        <div class="hide_tag">
+            <span class="glyphicon glyphicon-lock"></span>
+        </div>
+    </div>
+</body>
+</html>
