@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title></title>
-    <link href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.css" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="//cdn.bootcss.com/jquery/3.0.0-alpha1/jquery.js"></script>
+    <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+   <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+   <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
     <style>
         .music_box {
             position: absolute;
@@ -190,22 +191,30 @@
             $(document).mouseup(function(){
                 status = false;
             });
-            
+
             // 点击滑动进度
             $('.music_box').mousemove(function(e){
-            if(status){
-                left = e.pageX - ox;
-                if(left < 0){
-                    left = 0;
-                }
-                if(left > 0.5 * width){
-                    left = 0.5 * width;
-                }
-                $('.music_cursor').css('left',left+0.005*width);
-                $('.music_progress_bar').width(left);
+                if(status){
+                    left = e.pageX - ox;
+                    if(left < 0){
+                        left = 0;
+                    }
+                    if(left > 0.5 * width){
+                        left = 0.5 * width;
+                    }
+                    var percent = left/(0.5*width);
+                    if(percent>1){
+                        percent = 1;
+                    }
+                    var duration = music_audio.duration;
+                    var ct = duration*percent;
+                    set_time_play(ct);
+
+                    $('.music_cursor').css('left',left+0.005*width);
+                    $('.music_progress_bar').width(left);
                 }
             });
-            
+
             // 点击定点播放
             $('.music_progress').click(function(e){
                 if(!status){
@@ -217,11 +226,19 @@
                     if(left > 0.5 * width){
                         left = 0.5 * width;
                     }
+                    var percent = left/(0.5*width);
+                    if(percent>1){
+                        percent = 1;
+                    }
+                    var duration = music_audio.duration;
+                    var ct = duration*percent;
+                    set_time_play(ct);
+
                     $('.music_cursor').css('left',left+0.005*width);
                     $('.music_progress_bar').width(left);
                 }
             });
-            
+
             // 点击定点播放
             $('.music_progress_bar').click(function(e){
                 if(!status){
@@ -233,17 +250,137 @@
                     if(left > 0.5 * width){
                         left = 0.5 * width;
                     }
+                    var percent = left/(0.5*width);
+                    if(percent>1){
+                        percent = 1;
+                    }
+                    var duration = music_audio.duration;
+                    var ct = duration*percent;
+                    set_time_play(ct);
+
                     $('.music_cursor').css('left',left+0.005*width);
                     $('.music_progress_bar').width(left);
                 }
             });
 
+            // 初始化audio元素
+            window.onload = function(){
+                initAudio();
+            };
         });
+
+
+        ///////////////////// audio/////////////////////
+        var initAudio = function() {
+            // 添加时间变化事件
+            music_audio = document.getElementById('audio');
+            music_audio.addEventListener("timeupdate", function () {
+                var ct_str = getCurrentTime();
+                var dur_str = getDuration();
+                $('.music_time').text(ct_str + '/' + dur_str);
+
+                var percent = (music_audio.currentTime / music_audio.duration) * 100 / 2;  // 因为总长是50%，所以除以2
+                $('.music_cursor').css('left', (percent + 0.5)+'%');
+                $('.music_progress_bar').width(percent+'%');
+            });
+        };
+
+        // 获取当前播放时间
+        function getCurrentTime(){
+            var ctime = parseInt(music_audio.currentTime);
+            return timestampToTimeFormat(ctime);
+        }
+
+        // 获取音乐总时间
+        function getDuration(){
+            var duration = parseInt(music_audio.duration);
+            return timestampToTimeFormat(duration);
+        }
+
+        // 播发or暂停
+        function playOrPaused(){
+            if(music_audio.paused){
+                music_audio.play();
+                return;
+            }
+            music_audio.pause();
+        }
+
+        // 停止
+        function stop(obj){
+            music_audio.pause();
+            music_audio.currentTime = 0.0;
+        }
+
+        // 音量控制
+        function vol(type, obj){
+            if(type == 'up'){
+                var volume = music_audio.volume + 0.1;
+                if(volume >=1 ){
+                    volume = 1 ;
+                }
+
+                music_audio.volume = volume;
+            }else if(type == 'down'){
+                var volume = music_audio.volume - 0.1;
+                if(volume <=0 ){
+                    volume = 0 ;
+                }
+                music_audio.volume = volume;
+            }
+            document.getElementById('nowVol').innerHTML = returnFloat1(music_audio.volume);
+        }
+
+        // 静音
+        function muted(obj){
+            if(music_audio.muted){
+                music_audio.muted = false;
+                obj.innerHTML = '开启静音';
+            }else{
+                music_audio.muted = true;
+                obj.innerHTML = '关闭静音';
+            }
+        }
+
+        //保留一位小数点
+        function returnFloat1(value) {
+            value = Math.round(parseFloat(value) * 10) / 10;
+            if (value.toString().indexOf(".") < 0){
+                value = value.toString() + ".0";
+            }
+            return value;
+        }
+
+        function timestampToTimeFormat(timestamp){
+            var h = parseInt(timestamp / 3600);
+            var m = parseInt((timestamp - h * 3600) / 60);
+            var s = parseInt(timestamp - h * 3600 - m * 60);
+            if(h!=0){
+                timeStr = doubleNumFormat(h) + ':' + doubleNumFormat(m) + ':' + doubleNumFormat(s);
+            }else{
+                timeStr = doubleNumFormat(m) + ':' + doubleNumFormat(s);
+            }
+            return timeStr;
+        }
+
+        function doubleNumFormat(num) {
+            if (num < 10) {
+                num = '0' + num;
+            }
+            return '' + num;
+        }
+
+        // 快进和倒退
+        function set_time_play(seconds){
+            music_audio.currentTime = seconds;
+            music_audio.play();
+        }
     </script>
 </head>
 <body>
-    <div id="text">
-    </div>
+    <audio id="audio">
+        <source src="http://v.65dj.com/wailian/0c9d31678d28e9b23cf7db6ea99442ca.mp3" type="audio/mp3">
+    </audio>
 
     <div class="music_box">
         <div class="music_progress">
@@ -259,7 +396,8 @@
         <button class="glyphicon glyphicon-step-backward prev_song" id="prev_song">
         </button>
 
-        <button class="glyphicon glyphicon-play play_or_pause" id="play_or_pause" name="play">
+        <button class="glyphicon glyphicon-play play_or_pause" id="play_or_pause" name="play"
+                onclick="playOrPaused();">
         </button>
 
         <button class="glyphicon glyphicon-step-forward next_song" id="next_song">
