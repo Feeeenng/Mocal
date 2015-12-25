@@ -164,17 +164,6 @@
                 }
             });
 
-            $('#play_or_pause').click(function(){
-                var name = $(this).attr('name');
-                if(name=='play'){
-                    $(this).attr('class', 'glyphicon glyphicon-pause play_or_pause');
-                    $(this).attr('name', 'pause');
-                }else{
-                    $(this).attr('class', 'glyphicon glyphicon-play play_or_pause');
-                    $(this).attr('name', 'play');
-                }
-            });
-
             // 计算歌曲播放进度
             var width = $('.music_box').width();
             var status = false;
@@ -298,11 +287,13 @@
         }
 
         // 播发or暂停
-        function playOrPaused(){
+        function playOrPaused(obj){
             if(music_audio.paused){
+                $(obj).attr('class', 'glyphicon glyphicon-pause play_or_pause');
                 music_audio.play();
                 return;
             }
+            $(obj).attr('class', 'glyphicon glyphicon-play play_or_pause');
             music_audio.pause();
         }
 
@@ -374,6 +365,7 @@
         function set_time_play(seconds){
             music_audio.currentTime = seconds;
             music_audio.play();
+            $('#play_or_pause').attr('class', 'glyphicon glyphicon-pause play_or_pause');
         }
     </script>
 </head>
@@ -396,8 +388,7 @@
         <button class="glyphicon glyphicon-step-backward prev_song" id="prev_song">
         </button>
 
-        <button class="glyphicon glyphicon-play play_or_pause" id="play_or_pause" name="play"
-                onclick="playOrPaused();">
+        <button class="glyphicon glyphicon-play play_or_pause" id="play_or_pause" onclick="playOrPaused(this);">
         </button>
 
         <button class="glyphicon glyphicon-step-forward next_song" id="next_song">
