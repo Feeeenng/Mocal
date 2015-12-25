@@ -22,21 +22,47 @@
             float: left;
             top: 20%;
             height: 60%;
-            left: 15px;
+            left: 20px;
             text-align: center;
             width: 3%;
             color: white;
         }
 
         .music_progress {
+            overflow: hidden;
             position: relative;
             left: 1%;
             width: 50%;
-            top: 20%;
-            height: 60%;
+            top: 40%;
+            height: 20%;
             border-radius: 20px;
             background-color: orange;
             float: left;
+            cursor: pointer;
+        }
+
+        .music_progress_bar {
+            width: 0%;
+            left: 1%;
+            position: relative;
+            /*z-index: 12000;*/
+            top: 40%;
+            height: 20%;
+            border-radius: 20px;
+            background-color: #2aff8e;
+            cursor: pointer;
+        }
+
+        .music_cursor {
+            left: 0.5%;
+            width: 1%;
+            position: absolute;
+            /*z-index: 12001;*/
+            top: 35%;
+            height: 30%;
+            border-radius: 20px;
+            background-color: white;
+            cursor: pointer;
         }
 
         .divide_line {
@@ -83,7 +109,7 @@
 
         .music_box button:hover {
             color: white;
-            background-color: #29bcff;
+            background-color: #2aff8e;
             border:none;
         }
 
@@ -116,8 +142,8 @@
             height: 60%;
             border-radius: 20px;
             background-color: #2aff8e;
+            /*29bcff*/
         }
-
 
     </style>
 
@@ -132,7 +158,7 @@
                     $(this).find('span').attr('name', 'black');
                 }else{
                     $(this).find('span').css('color', 'white');
-                    $(this).css('background-color', '#29bcff');
+                    $(this).css('background-color', '#2aff8e');
                     $(this).find('span').attr('name', 'white');
                 }
             });
@@ -147,10 +173,78 @@
                     $(this).attr('name', 'play');
                 }
             });
+
+            // 计算歌曲播放进度
+            var width = $('.music_box').width();
+            var status = false;
+            var ox = 0;
+            var lx = 0;
+            var left = 0.05*width;
+            var bgleft = 0;
+            $('.music_cursor').mousedown(function(e){
+                lx = $(this).offset().left;
+                ox = e.pageX - left;
+                status = true;
+            });
+
+            $(document).mouseup(function(){
+                status = false;
+            });
+            
+            // 点击滑动进度
+            $('.music_box').mousemove(function(e){
+            if(status){
+                left = e.pageX - ox;
+                if(left < 0){
+                    left = 0;
+                }
+                if(left > 0.5 * width){
+                    left = 0.5 * width;
+                }
+                $('.music_cursor').css('left',left+0.005*width);
+                $('.music_progress_bar').width(left);
+                }
+            });
+            
+            // 点击定点播放
+            $('.music_progress').click(function(e){
+                if(!status){
+                    bgleft = $(this).offset().left;
+                    left = e.pageX - bgleft;
+                    if(left < 0){
+                        left = 0;
+                    }
+                    if(left > 0.5 * width){
+                        left = 0.5 * width;
+                    }
+                    $('.music_cursor').css('left',left+0.005*width);
+                    $('.music_progress_bar').width(left);
+                }
+            });
+            
+            // 点击定点播放
+            $('.music_progress_bar').click(function(e){
+                if(!status){
+                    bgleft = $('.music_progress').offset().left;
+                    left = e.pageX - bgleft;
+                    if(left < 0){
+                        left = 0;
+                    }
+                    if(left > 0.5 * width){
+                        left = 0.5 * width;
+                    }
+                    $('.music_cursor').css('left',left+0.005*width);
+                    $('.music_progress_bar').width(left);
+                }
+            });
+
         });
     </script>
 </head>
 <body>
+    <div id="text">
+    </div>
+
     <div class="music_box">
         <div class="music_progress">
         </div>
@@ -172,14 +266,20 @@
         </button>
 
         <div class="music_desc">
-            <marquee scrollamount="3" hspace="5" direction="right" onmouseout="this.start()" 
+            <marquee scrollamount="3" hspace="5" direction="right" onmouseout="this.start()"
                      onmouseover="this.stop()">
-                李荣浩--李白.pm3
+                <strong>李荣浩--李白.mp3</strong>
             </marquee>
         </div>
 
         <div class="hide_tag">
             <span class="glyphicon glyphicon-lock"></span>
+        </div>
+
+        <div class="music_progress_bar" style="width: 0%">
+        </div>
+
+        <div class="music_cursor" style="left: 0.5%">
         </div>
     </div>
 </body>
