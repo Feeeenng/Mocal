@@ -121,7 +121,7 @@
             background-color: orange;
             border-top-right-radius: 10px;
             border-bottom-right-radius: 10px;
-            width: 5%;
+            width: 4%;
             height: 100%;
             cursor: pointer;
         }
@@ -146,6 +146,64 @@
             /*29bcff*/
         }
 
+        .music_vol {
+            text-align: center;
+            position: relative;
+            float: left;
+            left: 10%;
+            width: 4%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .music_vol span {
+            position: relative;
+            top: 30%;
+            color: white;
+        }
+
+        .music_vol_ctrl_box {
+            position: absolute;
+            top: 85%;
+            height: 10%;
+            left: 75.5%;
+            width: 2.1%;
+            border-top-right-radius: 10px;
+            border-top-left-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .music_vol_ctrl_progress {
+            position: relative;
+            top: 10%;
+            height: 80%;
+            width: 10%;
+            left: 45%;
+            background: orange;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .music_vol_ctrl_progress_bar {
+            position: relative;
+            background-color: #2aff8e;
+            top: 0%;
+            height: 100%;
+            width: 100%;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .music_vol_ctrl_cursor{
+            position: absolute;
+            top: 0%;
+            height: 10%;
+            width: 400%;
+            left: -150%;
+            background-color: white;
+            border-radius: 20px;
+            cursor: pointer;
+        }
     </style>
 
     <script>
@@ -161,6 +219,34 @@
                     $(this).find('span').css('color', 'white');
                     $(this).css('background-color', '#2aff8e');
                     $(this).find('span').attr('name', 'white');
+                }
+            });
+
+            // 初始化audio元素
+            window.onload = function(){
+                initAudio();
+            };
+
+            // 控制声音控制条的出现
+            var music_vol_ctrl_box = $('.music_vol_ctrl_box');
+            var music_vol = $('.music_vol');
+            music_vol_ctrl_box.hide();
+            music_vol.mouseover(function(){
+                if(!music_audio.muted){
+                    music_vol_ctrl_box.show();
+                }
+            });
+            // 阻止冒泡事件
+            music_vol.bind("mouseout",function(event){
+                event.stopPropagation();    //  阻止事件冒泡
+            });
+            music_vol_ctrl_box.bind("mouseout",function(event){
+                event.stopPropagation();    //  阻止事件冒泡
+            });
+
+            $(document).mouseout(function(e) {
+                if(e.target != music_vol_ctrl_box[0] && e.target != music_vol[0]) {
+                    music_vol_ctrl_box.hide();
                 }
             });
 
@@ -252,10 +338,90 @@
                 }
             });
 
-            // 初始化audio元素
-            window.onload = function(){
-                initAudio();
-            };
+            // 音量控制
+            var v_status = false;
+
+            $('.music_vol_ctrl_cursor').mousedown(function(e){
+                var v_height = $('.music_vol_ctrl_progress').height();
+                var v_top = $('.music_vol_ctrl_progress').offset().top;
+                var total_height = v_height+v_top;
+                var v_cursor_top = $(this).pageY;
+                v_status = true;
+            });
+
+            $(document).mouseup(function(){
+                v_status = false;
+            });
+
+            // 点击滑动声量
+            $('.music_vol_ctrl_box').mousemove(function(e){
+                var v_height = $('.music_vol_ctrl_progress').height();
+                var v_top = $('.music_vol_ctrl_progress').offset().top;
+                var total_height = v_height+v_top;
+                if(v_status){
+                    var vol_height = total_height - e.pageY;
+                    if(vol_height < 0){
+                        vol_height = 0;
+                    }
+                    if(vol_height > v_height){
+                        vol_height = v_height;
+                    }
+                    var v_percent = vol_height/v_height;
+                    if(v_percent>1){
+                        v_percent = 1;
+                    }
+                    vol(v_percent);
+                    $('.music_vol_ctrl_progress_bar').css('top',v_height-vol_height+0.01*v_height).css('height',vol_height);
+                    $('.music_vol_ctrl_cursor').css('top',v_height-vol_height);
+                }
+            });
+
+            // 点击定点声量
+            $('.music_vol_ctrl_progress_bar').click(function(e){
+                var v_height = $('.music_vol_ctrl_progress').height();
+                var v_top = $('.music_vol_ctrl_progress').offset().top;
+                var total_height = v_height+v_top;
+                if(!status){
+                    var vol_height = total_height - e.pageY;
+                    if(vol_height < 0){
+                        vol_height = 0;
+                    }
+                    if(vol_height > v_height){
+                        vol_height = v_height;
+                    }
+                    var v_percent = vol_height/v_height;
+                    if(v_percent>1){
+                        v_percent = 1;
+                    }
+                    vol(v_percent);
+                    $('.music_vol_ctrl_progress_bar').css('top',v_height-vol_height+0.01*v_height).css('height',vol_height);
+                    $('.music_vol_ctrl_cursor').css('top',v_height-vol_height);
+                }
+            });
+
+            // 点击定点声量
+            $('.music_vol_ctrl_progress').click(function(e){
+                var v_height = $('.music_vol_ctrl_progress').height();
+                var v_top = $('.music_vol_ctrl_progress').offset().top;
+                var total_height = v_height+v_top;
+                if(!status){
+                    var vol_height = total_height - e.pageY;
+                    if(vol_height < 0){
+                        vol_height = 0;
+                    }
+                    if(vol_height > v_height){
+                        vol_height = v_height;
+                    }
+                    var v_percent = vol_height/v_height;
+                    if(v_percent>1){
+                        v_percent = 1;
+                    }
+                    vol(v_percent);
+                    $('.music_vol_ctrl_progress_bar').css('top',v_height-vol_height+0.01*v_height).css('height',vol_height);
+                    $('.music_vol_ctrl_cursor').css('top',v_height-vol_height);
+                }
+            });
+
         });
 
 
@@ -304,32 +470,33 @@
         }
 
         // 音量控制
-        function vol(type, obj){
-            if(type == 'up'){
-                var volume = music_audio.volume + 0.1;
-                if(volume >=1 ){
-                    volume = 1 ;
-                }
-
-                music_audio.volume = volume;
-            }else if(type == 'down'){
-                var volume = music_audio.volume - 0.1;
-                if(volume <=0 ){
-                    volume = 0 ;
-                }
-                music_audio.volume = volume;
+        function vol(percent){
+            var volume = percent;
+            if(volume >=1 ){
+                volume = 1;
             }
-            document.getElementById('nowVol').innerHTML = returnFloat1(music_audio.volume);
+            if(volume <=0 ){
+                volume = 0;
+            }
+            music_audio.volume = volume;
         }
 
         // 静音
         function muted(obj){
             if(music_audio.muted){
+                $('.music_vol_ctrl_box').show();
                 music_audio.muted = false;
-                obj.innerHTML = '开启静音';
+                $('#music_vol_tag').attr('class', 'glyphicon glyphicon-volume-up');
+                var volume = music_audio.volume;
+                var v_height = $('.music_vol_ctrl_progress').height();
+                var vol_height = volume * v_height;
+                $('.music_vol_ctrl_progress_bar').css('top',v_height-vol_height+0.01*v_height).css('height',vol_height);
+                $('.music_vol_ctrl_cursor').css('top',v_height-vol_height);
+
             }else{
                 music_audio.muted = true;
-                obj.innerHTML = '关闭静音';
+                $('#music_vol_tag').attr('class', 'glyphicon glyphicon-volume-off');
+                $('.music_vol_ctrl_box').hide();
             }
         }
 
@@ -374,6 +541,15 @@
         <source src="http://v.65dj.com/wailian/0c9d31678d28e9b23cf7db6ea99442ca.mp3" type="audio/mp3">
     </audio>
 
+    <div class="music_vol_ctrl_box">
+        <div class="music_vol_ctrl_progress">
+            <div class="music_vol_ctrl_progress_bar" style="top: 0%;height: 100%">
+            </div>
+            <div class="music_vol_ctrl_cursor" style="top: 0%">
+            </div>
+        </div>
+    </div>
+
     <div class="music_box">
         <div class="music_progress">
         </div>
@@ -399,6 +575,10 @@
                      onmouseover="this.stop()">
                 <strong>李荣浩--李白.mp3</strong>
             </marquee>
+        </div>
+
+        <div class="music_vol" onclick="muted(this)">
+            <span id="music_vol_tag" class="glyphicon glyphicon-volume-up"></span>
         </div>
 
         <div class="hide_tag">
