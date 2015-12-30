@@ -204,6 +204,14 @@
             border-radius: 20px;
             cursor: pointer;
         }
+
+        .show_field {
+            position: absolute;
+            z-index: 11111;
+            top: 99%;
+            height: 1%;
+            width: 100%;
+        }
     </style>
 
     <script>
@@ -222,6 +230,38 @@
                 }
             });
 
+            // 展现播放器
+            var music_box = $('.music_box');
+            var show_field = $('.show_field');
+            music_box.bind("mouseover",function(event) {
+                event.stopPropagation(); // 阻止冒泡事件
+            });
+            music_box.bind("mouseout",function(event) {
+                event.stopPropagation(); // 阻止冒泡事件
+            });
+            show_field.bind("mouseover",function(event) {
+                event.stopPropagation(); // 阻止冒泡事件
+            });
+            show_field.bind("mouseout",function(event) {
+                event.stopPropagation(); // 阻止冒泡事件
+            });
+
+            music_box.mouseout(function(){
+                var name = $('.hide_tag').find('span').attr('name');
+                if(name=='white'){
+                    music_box.hide();
+                    $('.music_vol_ctrl_box').hide();
+                }
+            });
+
+            show_field.mouseover(function(){
+                $('.music_box').show();
+            });
+
+            music_box.mouseover(function(){
+                $('.music_box').show();
+            });
+
             // 初始化audio元素
             window.onload = function(){
                 initAudio();
@@ -230,12 +270,6 @@
             // 控制声音控制条的出现
             var music_vol_ctrl_box = $('.music_vol_ctrl_box');
             var music_vol = $('.music_vol');
-            music_vol_ctrl_box.hide();
-            music_vol.mouseover(function(){
-                if(!music_audio.muted){
-                    music_vol_ctrl_box.show();
-                }
-            });
             // 阻止冒泡事件
             music_vol.bind("mouseout",function(event){
                 event.stopPropagation();    //  阻止事件冒泡
@@ -244,10 +278,19 @@
                 event.stopPropagation();    //  阻止事件冒泡
             });
 
-            $(document).mouseout(function(e) {
-                if(e.target != music_vol_ctrl_box[0] && e.target != music_vol[0]) {
-                    music_vol_ctrl_box.hide();
+            music_vol_ctrl_box.hide();
+            music_vol.mouseover(function(){
+                if(!music_audio.muted){
+                    music_vol_ctrl_box.show();
                 }
+            });
+            music_vol_ctrl_box.mouseover(function(){
+                if(!music_audio.muted){
+                    music_vol_ctrl_box.show();
+                }
+            });
+            music_vol_ctrl_box.mouseout(function(){
+                music_vol_ctrl_box.hide();
             });
 
             // 计算歌曲播放进度
@@ -537,6 +580,9 @@
     </script>
 </head>
 <body>
+    <div class="show_field">
+    </div>
+
     <audio id="audio">
         <source src="http://v.65dj.com/wailian/0c9d31678d28e9b23cf7db6ea99442ca.mp3" type="audio/mp3">
     </audio>
@@ -582,7 +628,7 @@
         </div>
 
         <div class="hide_tag">
-            <span class="glyphicon glyphicon-lock"></span>
+            <span class="glyphicon glyphicon-lock" name="black"></span>
         </div>
 
         <div class="music_progress_bar" style="width: 0%">
