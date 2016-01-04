@@ -1,20 +1,651 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="http://libs.baidu.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+   <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+   <script src="http://libs.baidu.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <style>
+        .music_box {
+            position: absolute;
+            z-index: 11111;
+            top: 95%;
+            height: 4%;
+            left: 20%;
+            width: 60%;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
 
-{% block title %} Mocal音乐 {% endblock %}
+        .music_time {
+            position: relative;
+            float: left;
+            top: 20%;
+            height: 60%;
+            left: 20px;
+            text-align: center;
+            width: 3%;
+            color: white;
+        }
 
-{% block scripts %}
-    {{ super() }}
+        .music_progress {
+            overflow: hidden;
+            position: relative;
+            left: 1%;
+            width: 50%;
+            top: 40%;
+            height: 20%;
+            border-radius: 20px;
+            background-color: orange;
+            float: left;
+            cursor: pointer;
+        }
+
+        .music_progress_bar {
+            width: 0%;
+            left: 1%;
+            position: relative;
+            /*z-index: 12000;*/
+            top: 40%;
+            height: 20%;
+            border-radius: 20px;
+            background-color: #2aff8e;
+            cursor: pointer;
+        }
+
+        .music_cursor {
+            left: 0.5%;
+            width: 1%;
+            position: absolute;
+            /*z-index: 12001;*/
+            top: 35%;
+            height: 30%;
+            border-radius: 20px;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .divide_line {
+            position: relative;
+            left: 7%;
+            width: 2px;
+            top: 20%;
+            height: 60%;
+            background-color: rgba(179, 179, 179, 0.54);
+            float: left;
+        }
+
+        .prev_song {
+            left: 8%;
+            border-top-left-radius: 10px;
+            border-bottom-left-radius: 10px;
+        }
+
+         .play_or_pause{
+             left: 8%;
+         }
+
+        .next_song{
+            left: 8%;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        .music_box button {
+            position: relative;
+            top: 20%;
+            height: 60%;
+            width: 3%;
+            float: left;
+            outline: none;
+            color: rgba(0, 0, 0, 1);
+            border:none;
+            background-color: orange;
+        }
+
+        .music_box span {
+            color: white;
+        }
+
+        .music_box button:hover {
+            color: white;
+            background-color: #2aff8e;
+            border:none;
+        }
+
+        .hide_tag {
+            text-align: center;
+            position: relative;
+            float: right;
+            background-color: orange;
+            border-top-right-radius: 10px;
+            border-bottom-right-radius: 10px;
+            width: 4%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .hide_tag span {
+            position: relative;
+            top: 30%;
+            color: black;
+        }
+
+        .music_desc {
+            color: white;
+            text-align: center;
+            position: relative;
+            float: left;
+            left: 10%;
+            width: 20%;
+            top: 20%;
+            height: 60%;
+            border-radius: 20px;
+            background-color: #2aff8e;
+            /*29bcff*/
+        }
+
+        .music_vol {
+            text-align: center;
+            position: relative;
+            float: left;
+            left: 10%;
+            width: 4%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .music_vol span {
+            position: relative;
+            top: 30%;
+            color: white;
+        }
+
+        .music_vol_ctrl_box {
+            position: absolute;
+            top: 85%;
+            height: 10%;
+            left: 75.5%;
+            width: 2.1%;
+            border-top-right-radius: 10px;
+            border-top-left-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .music_vol_ctrl_progress {
+            position: relative;
+            top: 10%;
+            height: 80%;
+            width: 10%;
+            left: 45%;
+            background: orange;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .music_vol_ctrl_progress_bar {
+            position: relative;
+            background-color: #2aff8e;
+            top: 0%;
+            height: 100%;
+            width: 100%;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .music_vol_ctrl_cursor{
+            position: absolute;
+            top: 0%;
+            height: 10%;
+            width: 400%;
+            left: -150%;
+            background-color: white;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .show_field {
+            position: absolute;
+            z-index: 11111;
+            top: 99%;
+            height: 1%;
+            width: 100%;
+        }
+    </style>
+
     <script>
+        $(document).ready(function(){
+            $('.hide_tag').bind("click",function(event){
+                event.stopPropagation();    //  阻止事件冒泡
+                var name = $(this).find('span').attr('name');
+                if(name=='white'){
+                    $(this).find('span').css('color', 'black');
+                    $(this).css('background-color', 'orange');
+                    $(this).find('span').attr('name', 'black');
+                }else{
+                    $(this).find('span').css('color', 'white');
+                    $(this).css('background-color', '#2aff8e');
+                    $(this).find('span').attr('name', 'white');
+                }
+            });
 
+            // 展现播放器
+            var music_box = $('.music_box');
+            var show_field = $('.show_field');
+            music_box.bind("mouseover",function(event) {
+                event.stopPropagation(); // 阻止冒泡事件
+            });
+            music_box.bind("mouseout",function(event) {
+                event.stopPropagation(); // 阻止冒泡事件
+            });
+            show_field.bind("mouseover",function(event) {
+                event.stopPropagation(); // 阻止冒泡事件
+            });
+            show_field.bind("mouseout",function(event) {
+                event.stopPropagation(); // 阻止冒泡事件
+            });
+
+            music_box.mouseout(function(){
+                var name = $('.hide_tag').find('span').attr('name');
+                if(name=='white'){
+                    music_box.hide();
+                    music_vol_ctrl_box.hide();
+                }
+            });
+
+            show_field.mouseover(function(){
+                $('.music_box').show();
+            });
+
+            music_box.mouseover(function(){
+                $('.music_box').show();
+            });
+
+            // 初始化audio元素
+            window.onload = function(){
+                initAudio();
+            };
+
+            // 控制声音控制条的出现
+            var music_vol_ctrl_box = $('.music_vol_ctrl_box');
+            var music_vol = $('.music_vol');
+            // 阻止冒泡事件
+            music_vol.bind("click",function(event){
+                event.stopPropagation();    //  阻止事件冒泡
+            });
+            music_vol_ctrl_box.bind("click",function(event){
+                event.stopPropagation();    //  阻止事件冒泡
+            });
+
+            music_vol_ctrl_box.hide();
+            music_vol.mouseover(function(){
+                if(!music_audio.muted){
+                    music_vol_ctrl_box.show();
+                }
+            });
+            music_vol_ctrl_box.mouseover(function(){
+                if(!music_audio.muted){
+                    music_vol_ctrl_box.show();
+                    music_box.show();
+                }
+            });
+
+            /////////////////////////////////////////////
+            $(document).click(function(e) {
+                if(e.target != music_vol[0] && e.target != music_vol_ctrl_box[0]) {
+                    music_vol_ctrl_box.hide();
+                    var name = $('.hide_tag').find('span').attr('name');
+                    if(name=='white'){
+                        music_box.hide();
+                    }
+                }
+            });
+            /////////////////////////////////////////////
+
+            // 计算歌曲播放进度
+            var width = $('.music_box').width();
+            var status = false;
+            var ox = 0;
+            var lx = 0;
+            var left = 0.05*width;
+            var bgleft = 0;
+            $('.music_cursor').mousedown(function(e){
+                lx = $(this).offset().left;
+                ox = e.pageX - left;
+                status = true;
+            });
+
+            $(document).mouseup(function(){
+                status = false;
+            });
+
+            // 点击滑动进度
+            $('.music_box').mousemove(function(e){
+                if(status){
+                    left = e.pageX - ox;
+                    if(left < 0){
+                        left = 0;
+                    }
+                    if(left > 0.5 * width){
+                        left = 0.5 * width;
+                    }
+                    var percent = left/(0.5*width);
+                    if(percent>1){
+                        percent = 1;
+                    }
+                    var duration = music_audio.duration;
+                    var ct = duration*percent;
+                    set_time_play(ct);
+
+                    $('.music_cursor').css('left',left+0.005*width);
+                    $('.music_progress_bar').width(left);
+                }
+            });
+
+            // 点击定点播放
+            $('.music_progress').click(function(e){
+                if(!status){
+                    bgleft = $(this).offset().left;
+                    left = e.pageX - bgleft;
+                    if(left < 0){
+                        left = 0;
+                    }
+                    if(left > 0.5 * width){
+                        left = 0.5 * width;
+                    }
+                    var percent = left/(0.5*width);
+                    if(percent>1){
+                        percent = 1;
+                    }
+                    var duration = music_audio.duration;
+                    var ct = duration*percent;
+                    set_time_play(ct);
+
+                    $('.music_cursor').css('left',left+0.005*width);
+                    $('.music_progress_bar').width(left);
+                }
+            });
+
+            // 点击定点播放
+            $('.music_progress_bar').click(function(e){
+                if(!status){
+                    bgleft = $('.music_progress').offset().left;
+                    left = e.pageX - bgleft;
+                    if(left < 0){
+                        left = 0;
+                    }
+                    if(left > 0.5 * width){
+                        left = 0.5 * width;
+                    }
+                    var percent = left/(0.5*width);
+                    if(percent>1){
+                        percent = 1;
+                    }
+                    var duration = music_audio.duration;
+                    var ct = duration*percent;
+                    set_time_play(ct);
+
+                    $('.music_cursor').css('left',left+0.005*width);
+                    $('.music_progress_bar').width(left);
+                }
+            });
+
+            // 音量控制
+            var v_status = false;
+
+            $('.music_vol_ctrl_cursor').mousedown(function(e){
+                var v_height = $('.music_vol_ctrl_progress').height();
+                var v_top = $('.music_vol_ctrl_progress').offset().top;
+                var total_height = v_height+v_top;
+                var v_cursor_top = $(this).pageY;
+                v_status = true;
+            });
+
+            $(document).mouseup(function(){
+                v_status = false;
+            });
+
+            // 点击滑动声量
+            $('.music_vol_ctrl_box').mousemove(function(e){
+                var v_height = $('.music_vol_ctrl_progress').height();
+                var v_top = $('.music_vol_ctrl_progress').offset().top;
+                var total_height = v_height+v_top;
+                if(v_status){
+                    var vol_height = total_height - e.pageY;
+                    if(vol_height < 0){
+                        vol_height = 0;
+                    }
+                    if(vol_height > v_height){
+                        vol_height = v_height;
+                    }
+                    var v_percent = vol_height/v_height;
+                    if(v_percent>1){
+                        v_percent = 1;
+                    }
+                    vol(v_percent);
+                    $('.music_vol_ctrl_progress_bar').css('top',v_height-vol_height+0.01*v_height).css('height',vol_height);
+                    $('.music_vol_ctrl_cursor').css('top',v_height-vol_height);
+                }
+            });
+
+            // 点击定点声量
+            $('.music_vol_ctrl_progress_bar').click(function(e){
+                var v_height = $('.music_vol_ctrl_progress').height();
+                var v_top = $('.music_vol_ctrl_progress').offset().top;
+                var total_height = v_height+v_top;
+                if(!status){
+                    var vol_height = total_height - e.pageY;
+                    if(vol_height < 0){
+                        vol_height = 0;
+                    }
+                    if(vol_height > v_height){
+                        vol_height = v_height;
+                    }
+                    var v_percent = vol_height/v_height;
+                    if(v_percent>1){
+                        v_percent = 1;
+                    }
+                    vol(v_percent);
+                    $('.music_vol_ctrl_progress_bar').css('top',v_height-vol_height+0.01*v_height).css('height',vol_height);
+                    $('.music_vol_ctrl_cursor').css('top',v_height-vol_height);
+                }
+            });
+
+            // 点击定点声量
+            $('.music_vol_ctrl_progress').click(function(e){
+                var v_height = $('.music_vol_ctrl_progress').height();
+                var v_top = $('.music_vol_ctrl_progress').offset().top;
+                var total_height = v_height+v_top;
+                if(!status){
+                    var vol_height = total_height - e.pageY;
+                    if(vol_height < 0){
+                        vol_height = 0;
+                    }
+                    if(vol_height > v_height){
+                        vol_height = v_height;
+                    }
+                    var v_percent = vol_height/v_height;
+                    if(v_percent>1){
+                        v_percent = 1;
+                    }
+                    vol(v_percent);
+                    $('.music_vol_ctrl_progress_bar').css('top',v_height-vol_height+0.01*v_height).css('height',vol_height);
+                    $('.music_vol_ctrl_cursor').css('top',v_height-vol_height);
+                }
+            });
+
+        });
+
+
+        ///////////////////// audio/////////////////////
+        var initAudio = function() {
+            // 添加时间变化事件
+            music_audio = document.getElementById('audio');
+            music_audio.addEventListener("timeupdate", function () {
+                var ct_str = getCurrentTime();
+                var dur_str = getDuration();
+                $('.music_time').text(ct_str + '/' + dur_str);
+
+                var percent = (music_audio.currentTime / music_audio.duration) * 100 / 2;  // 因为总长是50%，所以除以2
+                $('.music_cursor').css('left', (percent + 0.5)+'%');
+                $('.music_progress_bar').width(percent+'%');
+            });
+        };
+
+        // 获取当前播放时间
+        function getCurrentTime(){
+            var ctime = parseInt(music_audio.currentTime);
+            return timestampToTimeFormat(ctime);
+        }
+
+        // 获取音乐总时间
+        function getDuration(){
+            var duration = parseInt(music_audio.duration);
+            return timestampToTimeFormat(duration);
+        }
+
+        // 播发or暂停
+        function playOrPaused(obj){
+            if(music_audio.paused){
+                $(obj).attr('class', 'glyphicon glyphicon-pause play_or_pause');
+                music_audio.play();
+                return;
+            }
+            $(obj).attr('class', 'glyphicon glyphicon-play play_or_pause');
+            music_audio.pause();
+        }
+
+        // 停止
+        function stop(obj){
+            music_audio.pause();
+            music_audio.currentTime = 0.0;
+        }
+
+        // 音量控制
+        function vol(percent){
+            var volume = percent;
+            if(volume >=1 ){
+                volume = 1;
+            }
+            if(volume <=0 ){
+                volume = 0;
+            }
+            music_audio.volume = volume;
+        }
+
+        // 静音
+        function muted(obj){
+            if(music_audio.muted){
+                $('.music_vol_ctrl_box').show();
+                music_audio.muted = false;
+                $('#music_vol_tag').attr('class', 'glyphicon glyphicon-volume-up');
+                var volume = music_audio.volume;
+                var v_height = $('.music_vol_ctrl_progress').height();
+                var vol_height = volume * v_height;
+                $('.music_vol_ctrl_progress_bar').css('top',v_height-vol_height+0.01*v_height).css('height',vol_height);
+                $('.music_vol_ctrl_cursor').css('top',v_height-vol_height);
+
+            }else{
+                music_audio.muted = true;
+                $('#music_vol_tag').attr('class', 'glyphicon glyphicon-volume-off');
+                $('.music_vol_ctrl_box').hide();
+            }
+        }
+
+        //保留一位小数点
+        function returnFloat1(value) {
+            value = Math.round(parseFloat(value) * 10) / 10;
+            if (value.toString().indexOf(".") < 0){
+                value = value.toString() + ".0";
+            }
+            return value;
+        }
+
+        function timestampToTimeFormat(timestamp){
+            var h = parseInt(timestamp / 3600);
+            var m = parseInt((timestamp - h * 3600) / 60);
+            var s = parseInt(timestamp - h * 3600 - m * 60);
+            if(h!=0){
+                timeStr = doubleNumFormat(h) + ':' + doubleNumFormat(m) + ':' + doubleNumFormat(s);
+            }else{
+                timeStr = doubleNumFormat(m) + ':' + doubleNumFormat(s);
+            }
+            return timeStr;
+        }
+
+        function doubleNumFormat(num) {
+            if (num < 10) {
+                num = '0' + num;
+            }
+            return '' + num;
+        }
+
+        // 快进和倒退
+        function set_time_play(seconds){
+            music_audio.currentTime = seconds;
+            music_audio.play();
+            $('#play_or_pause').attr('class', 'glyphicon glyphicon-pause play_or_pause');
+        }
     </script>
-{% endblock %}
+</head>
+<body>
+    <div class="show_field">
+    </div>
 
-{% block styles %}
-    {{ super() }}
-{% endblock %}
+    <audio id="audio">
+        <source src="http://v.65dj.com/wailian/0c9d31678d28e9b23cf7db6ea99442ca.mp3" type="audio/mp3">
+    </audio>
 
-{% block page_content %}
+    <div class="music_vol_ctrl_box">
+        <div class="music_vol_ctrl_progress">
+            <div class="music_vol_ctrl_progress_bar" style="top: 0%;height: 100%">
+            </div>
+            <div class="music_vol_ctrl_cursor" style="top: 0%">
+            </div>
+        </div>
+    </div>
 
+    <div class="music_box">
+        <div class="music_progress">
+        </div>
 
+        <div class="music_time">
+            00:00/00:00
+        </div>
 
-{% endblock %}
+        <div class="divide_line">
+        </div>
+
+        <button class="glyphicon glyphicon-step-backward prev_song" id="prev_song">
+        </button>
+
+        <button class="glyphicon glyphicon-play play_or_pause" id="play_or_pause" onclick="playOrPaused(this);">
+        </button>
+
+        <button class="glyphicon glyphicon-step-forward next_song" id="next_song">
+        </button>
+
+        <div class="music_desc">
+            <marquee scrollamount="3" hspace="5" direction="right" onmouseout="this.start()"
+                     onmouseover="this.stop()">
+                <strong>李荣浩--李白.mp3</strong>
+            </marquee>
+        </div>
+
+        <div class="music_vol" onclick="muted(this)">
+            <span id="music_vol_tag" class="glyphicon glyphicon-volume-up"></span>
+        </div>
+
+        <div class="hide_tag">
+            <span class="glyphicon glyphicon-lock" name="black"></span>
+        </div>
+
+        <div class="music_progress_bar" style="width: 0%">
+        </div>
+
+        <div class="music_cursor" style="left: 0.5%">
+        </div>
+    </div>
+</body>
+</html>
