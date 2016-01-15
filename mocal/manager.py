@@ -2,13 +2,16 @@
 from flask import render_template, session, g, request, abort
 from flask_login import current_user
 from flask_script import Manager, Server
-
 from mocal import create_app
+
+
 '''
 development: 开发环境
 production: 生产环境
 default: 默认开发环境
 '''
+
+
 mocal = create_app('development')
 
 

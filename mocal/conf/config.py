@@ -2,6 +2,7 @@
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+
 class Config:
     SECRET_KEY = 'h!a@n#n$e%n^g&f*a(n)g_m+o.c<a?l'
 

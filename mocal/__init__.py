@@ -10,10 +10,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cache import Cache
 from flask_login import LoginManager
 
-from config import config
+from mocal.conf.config import config
 from utils.logger import logger
 from utils.csrf_token import generate_csrf_token
 from utils.random_cursor import get_cursor_path
+
 
 # setting sys default encode. 用到FLASK-WTF 设置默认编码
 reload(sys)
