@@ -18,8 +18,14 @@ then
     fi
 
 elif [ $1 = stop ];then
-    killall -9 uwsgi
-    echo "Stop mocald service [OK]"
+    if [ $psid -lt 4 ]
+    then
+        echo "mocald is stopped!"
+        exit 0
+    else
+        killall -9 uwsgi
+        echo "Stop mocald service [OK]"
+    if
 
 elif [ $1 = restart ];then
     killall -9 uwsgi
