@@ -25,7 +25,7 @@ elif [ $1 = stop ];then
     else
         killall -9 uwsgi
         echo "Stop mocald service [OK]"
-    if
+    fi
 
 elif [ $1 = restart ];then
     killall -9 uwsgi
