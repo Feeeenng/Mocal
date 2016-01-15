@@ -1,5 +1,5 @@
-echo "更新代码库"
+echo "靠靠"
 git pull origin master
-echo "重启uwsgi"
+echo "靠uwsgi"
 uwsgi --reload mocal.pid
-echo "更新结束"
+echo "靠靠"
