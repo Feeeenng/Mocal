@@ -1,5 +1,5 @@
-echo "真真"
+echo "update code"
 git pull origin master
-echo "真uwsgi"
+echo "reload uwsgi"
 uwsgi --reload mocal.pid
-echo "真真"
+echo "ending"
