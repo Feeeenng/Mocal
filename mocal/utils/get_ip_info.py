@@ -16,4 +16,5 @@ def get_ip_city_by_ip(ip_address):
 def get_ip_info(ip_address):
     data = requests.get('http://ip.taobao.com/service/getIpInfo.php?ip=' + ip_address)
     res = json.loads(data.content)
+    print res
     return res
