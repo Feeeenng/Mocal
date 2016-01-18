@@ -10,6 +10,8 @@ def get_ip_city_by_ip(ip_address):
     else:
         res = get_ip_info(ip_address).get('data')
         city = res.get('city')
+        city = str(city)
+        print city
     return city
 
 
