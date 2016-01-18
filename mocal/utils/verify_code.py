@@ -78,7 +78,7 @@ def rndColor():
 
 # 随机字体
 def rndFont():
-    font_list = ['C:\Windows\Fonts\STHUPO.TTF']  # ['/Library/Fonts/华文细黑.ttf', '/Library/Fonts/yuanti.ttc', '/Library/Fonts/Xingkai.ttc']
+    font_list = ['static/font/STHUPO.TTF']  # ['/Library/Fonts/华文细黑.ttf', '/Library/Fonts/yuanti.ttc', '/Library/Fonts/Xingkai.ttc']
     return random.choice(font_list)
 
 # 随机字体大小
