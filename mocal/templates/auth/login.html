@@ -84,10 +84,10 @@
 {% endblock %}
 
 {% block content %}
-    <div class="ui center aligned teal segment" style="top: 10%;left: 20%;width: 60%;height: 55%">
+    <div class="ui center aligned teal segment" style="top: 10%;left: 20%;width: 60%;height: 60%">
         <div class="ui two column middle aligned very relaxed stackable grid">
             <div class="column">
-                <form class="ui form" action="{{ url_for('auth.login') }}" method="post">
+                <form class="ui form teal segment" action="{{ url_for('auth.login') }}" method="post">
                     <div class="field">
                         <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
                     </div>
@@ -111,12 +111,12 @@
                         </div>
                     </div>
 
-                    <div class="field">
+                    <div class="ui teal segment">
                         <div id="div_id_float">
                         </div>
                     </div>
 
-                    <div class="ui animated teal submit button" tabindex="0" id="login_btn">
+                    <div class="ui fluid animated teal submit button" tabindex="0" id="login_btn">
                         <div class="visible content">登录</div>
                         <div class="hidden content">
                             <i class="sign in icon"></i>
