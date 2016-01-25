@@ -34,7 +34,7 @@ def teardown_request(exception):
 
 
 manager = Manager(mocal)
-manager.add_command("runserver", Server(threaded=True))
+manager.add_command("runserver", Server(threaded=True, port=8000))
 
 if __name__ == '__main__':
     manager.run()

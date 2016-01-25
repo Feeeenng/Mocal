@@ -32,6 +32,11 @@ class Config:
     BAIDU_LBS_AK = 'a7CxbjMO5TP5AdQvWEQzfZiT'
     BAIDU_LBS_API_HOST = 'http://api.map.baidu.com'
 
+    # 极验
+    GEETEST_ID = '37e833eb1a44d15dc6c1fd6656005136'
+    GEETEST_KEY = '7a4584597e4f610f4a33eebc0c3bb90a'
+
+
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://root:haner27@127.0.0.1:3306/mocal?charset=utf8'

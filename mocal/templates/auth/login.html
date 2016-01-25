@@ -1,232 +1,172 @@
-{% extends "base.html" %}
+{% extends "index.html" %}
 
 {% block title %} Mocal登陆 {% endblock %}
-
-{% block scripts %}
-    {{ super() }}
-    <script>
-    function change_verify_code(){
-        var url = "{{ url_for('auth.change_verify_code') }}";
-        show_loading();
-        $.ajax({
-            type: "GET",
-            async: false,
-            url: url,
-            dataType   : "json",
-            error: function (ret) {
-                hide_loading();
-                show_msg("返回数据错误！", 1500);
-            },
-            success: function (ret) {
-                hide_loading();
-                $('#verify_code').attr('src', "data:image/jpg;base64," + ret["detail"]);
-                $('#vc').val('');
-                $('#vc').focus();
-                $('#is_verify_passed').removeAttr('class');
-            }
-        });
-    }
-
-    function check_verify_code(obj){
-        var v = $(obj).val();
-
-        // 判断没有内容的时候 删除图标
-        if(v.length<1){
-            $('#is_verify_passed').removeAttr('class');
-            $('#vc').focus();
-            return;
-        }
-
-        // 判断是否是是数字
-        var real_v = v.replace(/\D/g,'');
-        $(obj).val(real_v);
-
-        if(!real_v){
-            return;
-        }
-
-        // 检查验证码
-        var url = "{{ url_for('auth.check_verify_code', code='') }}" + real_v;
-        show_loading();
-        $.ajax({
-            type: "GET",
-            async: false,
-            url: url,
-            dataType   : "json",
-            error: function (ret) {
-                hide_loading();
-                show_msg("返回数据错误！", 1500);
-            },
-            success: function (ret) {
-                if (ret["detail"] == false) {
-                    hide_loading();
-                    $('#is_verify_passed').attr('class', 'glyphicon glyphicon-remove');
-                } else {
-                    hide_loading();
-                    $('#is_verify_passed').attr('class', 'glyphicon glyphicon-ok');
-                }
-            }
-        });
-    }
-
-    function check_login(){
-        var email = $('#email').val();
-        if(!email){
-            show_msg('用户名不能为空', 1500);
-            $('#email').focus();
-            return false;
-        }else{
-            if(!check_email_format(email)){
-                show_msg('请输入正确的邮箱格式', 1500);
-                $('#email').focus();
-                return false;
-            }
-        }
-
-        var password = $('#password').val();
-        if(!password){
-            show_msg('密码不能为空', 1500);
-            $('#password').focus();
-            return false;
-        }
-
-        if($('#vc').length>0){  // $('#vc')是一个对象，要知道是否存在就看长度，这个对象是具备长度属性的
-            var captcha = $('#vc').val();
-            if(!captcha){
-                $('#vc').focus();
-                show_msg('请输入验证码计算结果', 1500);
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    function check_email(obj){
-        var email = $(obj).val();
-        if (email != ''){
-            if(!check_email_format(email)){
-                show_msg('请输入正确的邮箱格式', 1500);
-                $(obj).focus();
-            }
-        }
-    }
-
-    $(document).ready(function(){
-        var msg = '{{ msg }}';
-        if(msg){
-            show_msg(msg, 1500);
-        }
-
-        // verify_code
-        change_verify_code();
-    });
-    </script>
-{% endblock %}
 
 {% block styles %}
     {{ super() }}
     <style>
-    .login {
-        background:rgba(0, 0, 0, 0.7);
-        padding-top: 0.1%;
-        margin-top: 10%;
-        margin-left: 35%;
-        margin-right: 35%;
-        padding-bottom: 5%;
-        border-radius: 15px;
+    .ui.toggle.checkbox input:focus:checked~.box:before, .ui.toggle.checkbox input:focus:checked~label:before {
+        background-color: #009c95!important;
     }
-    .login_form {
-        margin-top: 20%;
-        margin-left: 10%;
-        margin-right: 10%;
-    }
-    .login_input {
-        padding-left: 12%;
-    }
-    .icon.form-control-feedback {
-        left: 0
-    }
-    .login_submit {
-        width: 100%;
-        margin-bottom: 2%;
-    }
-    .register_submit {
-        width: 100%;
-        margin-bottom: 2%;
-    }
-    .forget_submit {
-        width: 100%;
-        margin-bottom: 2%;
-    }
-    .captcha {
-       margin-bottom: 10%;
-    }
-    .captcha_pic {
-        border: 1px solid;
-        border-radius: 5px;
-        width: 50%;
-        height: 20%;
-    }
-    .captcha_refresh {
-        color: #ffffff;
-        width: 10%;
-        margin-left: 5%;
+
+    .ui.toggle.checkbox input:checked~.box:before, .ui.toggle.checkbox input:checked~label:before {
+        background-color: #00B5AD!important;
     }
     </style>
 {% endblock %}
 
-{% block background %}
-        <!-- 背景图 -->
-    <div id="Layer1" style="position:absolute; width:100%; height:100%; z-index:-1">
-        <img src="{{ url_for('static', filename='upload/background/login/background.jpg') }}" height="100%" width="100%"/>
-    </div>
+{% block scripts %}
+    {{ super() }}
+    <script>
+        $(document).ready(function () {
+            $('.ui.form').form({
+                email: {
+                    identifier: 'email',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '邮箱必填哦！'
+                        },
+                        {
+                            type: 'email',
+                            prompt: '填写一个有效的邮箱哦！'
+                        }
+                    ]
+                },
+                password: {
+                    identifier: 'password',
+                    rules: [
+                        {
+                            type: 'length[6]',
+                            prompt: '密码最少6位了！'
+                        }
+                    ]
+                }
+            }, {
+                on: 'submit'
+            });
+
+            $('#login_btn').click(function(){
+                $('#login').submit();
+            });
+
+            $('.ui.checkbox').checkbox();
+
+            var remember_me = {{ remember_me|tojson }};
+            if(remember_me){
+                $('#remember_me').addClass('checked');
+            }
+
+            ////////////////////// 验证码 ////////////////////////
+            var gt_captcha_obj = new window.Geetest({
+                gt: "{{gt}}",
+                challenge:"{{challenge}}",
+                product: "float"
+            });
+            gt_captcha_obj.appendTo("#div_id_float");
+
+            gt_captcha_obj.onSuccess(function() {
+                $.ajax({
+                    data: float.getValidate()
+                })
+            });
+
+            $.ajax({
+                url : "/change_verify_code",
+                type : "get",
+                dataType : 'JSON',
+                success : function(result) {
+                }
+            });
+            ////////////////////// 验证码 ////////////////////////
+        });
+    </script>
 {% endblock %}
 
-{% block page_content %}
-    <div class="container-fluid">
-        <div class="row">
-            <div class=".col-md-8 .col-md-offset-2">
-                <div class="login">
-                    <form class="login_form" action="{{ request.url }}" method="post" onsubmit="return check_login()">
-                        <h1 style="color: white" class="text-center">Mocal</h1>
-                        <input id="csrf_token" name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
-
-                        <div class="form-group has-feedback">
-                            <span class="glyphicon glyphicon-envelope icon form-control-feedback"></span>
-                            <input type="email" class="form-control login_input" id="email" placeholder="邮箱"
-                                  maxlength="30" name="email" value="{{ email }}" onblur="check_email(this)" autofocus>
+{% block content %}
+    <div class="ui center aligned teal segment" style="top: 10%;left: 20%;width: 60%;height: 55%">
+        <div class="ui two column middle aligned very relaxed stackable grid">
+            <div class="column">
+                <form class="ui form" action="{{ url_for('auth.login') }}" method="post">
+                    <div class="field">
+                        <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+                    </div>
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <input type="email" name="email" placeholder="用户名" maxlength="40">
+                            <i class="user icon"></i>
                         </div>
-
-                        <div class="form-group has-feedback">
-                            <span class="glyphicon glyphicon-lock icon form-control-feedback"></span>
-                            <input type="password" class="form-control login_input" id="password" name="password"
-                                   maxlength="20" placeholder="密码">
+                    </div>
+                    <div class="field">
+                        <div class="ui left icon input">
+                            <input type="password"  name="password" placeholder="密码" maxlength="20">
+                            <i class="lock icon"></i>
                         </div>
+                    </div>
 
-                        <div class="checkbox">
-                            <label style="color: white">
-                                {% if remember_me %}
-                                    <input type="checkbox" value="remember_me" name="remember_me" checked>记住我
-                                {% else %}
-                                    <input type="checkbox" value="remember_me" name="remember_me">记住我
-                                {% endif %}
-                            </label>
+                    <div class="inline field" style="text-align: left;">
+                        <div class="ui toggle checkbox" id="remember_me">
+                            <input type="checkbox" name="remember_me" value="remember_me" tabindex="0" class="hidden">
+                            <label><b>记住我</b></label>
                         </div>
+                    </div>
 
-                        <div class="form-group form-inline captcha">
-                            <!-- captcha -->
-                            <img id="verify_code" class="captcha_pic" onclick="change_verify_code()" style="cursor: pointer">
-                            <span id="is_verify_passed" style="color: white;margin-left: 10%"></span>
-                            <input id="vc" name="captcha" type="text" class="form-control" style="width: 30%;text-align:center;float: right;"
-                               onkeyup="check_verify_code(this)" placeholder="计算结果" maxlength="2">
+                    <div class="field">
+                        <div id="div_id_float">
                         </div>
-                        <button type="submit" class="btn btn-primary login_submit">登录</button>
-                        <input type="button" value="注册" class="btn btn-success register_submit" onclick="javascript:location.href='{{ url_for('auth.register') }}'">
-                        <input type="button" value="忘记密码" class="btn btn-danger forget_submit" onclick="">
-                    </form>
+                    </div>
+
+                    <div class="ui animated teal submit button" tabindex="0" id="login_btn">
+                        <div class="visible content">登录</div>
+                        <div class="hidden content">
+                            <i class="sign in icon"></i>
+                        </div>
+                    </div>
+
+                    <div class="ui error message"></div>
+
+                </form>
+
+                <div class="ui horizontal divider" style="color: teal">社交帐号登录</div>
+                <!--第三方登录-->
+                <div class="ui buttons">
+                    <div class="ui animated teal button" tabindex="0">
+                        <div class="hidden content">QQ</div>
+                        <div class="visible content">
+                            <i class="qq icon"></i>
+                        </div>
+                    </div>
+                    <div class="or"></div>
+                    <div class="ui animated teal button" tabindex="0">
+                        <div class="hidden content">微信</div>
+                        <div class="visible content">
+                            <i class="wechat icon"></i>
+                        </div>
+                    </div>
+                    <div class="or"></div>
+                    <div class="ui animated teal button" tabindex="0">
+                        <div class="hidden content">微博</div>
+                        <div class="visible content">
+                            <i class="weibo icon"></i>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="ui vertical divider">Or </div>
+            <div class="center aligned column">
+                <div class="ui animated big teal labeled icon button" tabindex="0">
+                    <i class="signup icon"></i>
+                    <div class="visible content">加入mocal</div>
+                    <div class="hidden content">
+                        注册
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block footer %}
+
 {% endblock %}

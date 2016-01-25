@@ -1,5 +1,5 @@
 # -*- coding: utf8 -*-
-from  flask import current_app
+from flask import current_app
 from flask_login import UserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 

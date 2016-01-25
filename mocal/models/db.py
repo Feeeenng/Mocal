@@ -6,7 +6,6 @@ from mocal import db
 
 class DatabaseObject(db.Model):
     __abstract__ = True
-
     _reservedColumnName = ['id', 'created_at', 'updated_at']
 
     id = db.Column('id', db.Integer, primary_key=True, autoincrement=True)

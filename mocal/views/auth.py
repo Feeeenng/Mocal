@@ -9,38 +9,52 @@ from mocal.views import res, check_filed_type_and_length
 from mocal.models.user import User
 from mocal.error import Error
 from mocal.utils.md5 import MD5
-from mocal.utils.verify_code import generate_verify_code
 from mocal.utils.email import Email
+from mocal.third_lib.geetest import GeetestLib
 
 instance = Blueprint('auth', __name__)
 
 
 @instance.route('/login', methods=['GET', 'POST'])
 def login():
+    gt_id = current_app.config.get('GEETEST_ID')
+    gt_key = current_app.config.get('GEETEST_KEY')
     if request.method == 'GET':
-        return render_template('auth/login.html', msg='', email='', remember_me='')
+        return render_template('auth/login.html', msg='', email='', remember_me=False, gt=gt_id)
 
     email = request.form.get('email')
     password = request.form.get('password')
-    captcha = request.form.get('captcha')
     remember_me = True if request.form.get('remember_me') else False
+    geetest_challenge = request.form.get('geetest_challenge')
+    geetest_validate = request.form.get('geetest_validate')
+    geetest_seccode = request.form.get('geetest_seccode')
+
+    # 验证码
+    status = session['gt_server_status']
+    gt = GeetestLib(gt_id, gt_key)
+    result = gt.validate(status, geetest_challenge, geetest_validate, geetest_seccode)
+    if result == 'success':
+        result = True
+    else:
+        result = False
+    if not result:
+        return render_template('auth/login.html', msg=Error.error_map[Error.LOGIN_CAPTCHA_ERROR], email=email,
+                               remember_me=remember_me, gt=gt_id)
 
     # 接口检查
-    if not email or not password or not captcha:
+    if not email or not password:
         return res(code=Error.PARAMS_REQUIRED)
-
-    if int(captcha) != session.get('verify_code'):
-        return render_template('auth/login.html', msg=Error.error_map[Error.LOGIN_CAPTCHA_ERROR], email=email, remember_me=remember_me)
 
     user = User.from_db(email=email)
     if not user or not user.verify_password(password):
-        return render_template('auth/login.html', msg=Error.error_map[Error.LOGIN_INFO_ERROR], email=email, remember_me=remember_me)
+        return render_template('auth/login.html', msg=Error.error_map[Error.LOGIN_INFO_ERROR], email=email,
+                               remember_me=remember_me, gt=gt_id)
 
     # 登录
     login_user(user, remember=remember_me)
 
     # 清除session
-    del session['verify_code']
+    del session['gt_server_status']
     return redirect(request.args.get('next') or url_for('main.index'))
 
 
@@ -159,9 +173,12 @@ def check_verify_code(code):
 
 @instance.route('/change_verify_code', methods=['GET'])
 def change_verify_code():
-    results, img_base64 = generate_verify_code()
-    session['verify_code'] = results
-    return res(data=img_base64)
+    gt_id = current_app.config.get('GEETEST_ID')
+    gt_key = current_app.config.get('GEETEST_KEY')
+    gt = GeetestLib(gt_id, gt_key)
+    status, response_str = gt.pre_process()
+    session['gt_server_status'] = status
+    return response_str
 
 
 @instance.route('/change_password', methods=['GET', 'POST'])

@@ -10,12 +10,6 @@
     <script type="text/javascript" src="../static/js/bootstrap-datetimepicker.zh-CN.js"></script>
     <script type="text/javascript" src="../static/js/bootstrap-typeahead.js"></script>
     <script type="text/javascript" src="../static/js/weather.js"></script>
-    <script>
-        $(document).ready(function(){
-            var cursor_path = "{{ get_cursor_path() }}";
-            $('body').css('cursor', 'url("'+ cursor_path +'"),auto');
-        });
-    </script>
 {% endblock %}
 
 {% block styles %}
