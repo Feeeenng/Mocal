@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/mocal/static/font/STHUPO.TTF" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mocal/static/icon/mocal.ico" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mocal/static/logo/mocal128.png" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mocal/static/logo/mocal16.png" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mocal/static/logo/mocal256.png" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mocal/static/logo/mocal32.png" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mocal/static/logo/mocal48.png" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mocal/static/semantic/dist" charset="UTF-8" />
+  </component>
+</project>
