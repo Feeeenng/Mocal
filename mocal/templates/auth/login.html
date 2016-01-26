@@ -87,7 +87,7 @@
     <div class="ui center aligned teal segment" style="top: 10%;left: 20%;width: 60%;height: 60%">
         <div class="ui two column middle aligned very relaxed stackable grid">
             <div class="column">
-                <form class="ui form teal segment" action="{{ url_for('auth.login') }}" method="post">
+                <form class="ui form teal segment {{ 'error' if msg else '' }}" action="{{ url_for('auth.login') }}" method="post">
                     <div class="field">
                         <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
                     </div>
@@ -123,8 +123,11 @@
                         </div>
                     </div>
 
-                    <div class="ui error message"></div>
-
+                    <div class="ui error message">
+                        <ui class="list">
+                            <li>{{ msg }}</li>
+                        </ui>
+                    </div>
                 </form>
 
                 <div class="ui horizontal divider" style="color: teal">社交帐号登录</div>
