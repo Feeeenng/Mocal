@@ -39,7 +39,7 @@ class User(UserMixin, DatabaseObject):
 
     def verify_password(self, password):
         md5 = MD5(password)
-        return True if self.password == md5.add_salt(current_app.config.get('SALT')) else False
+        return self.password == md5.add_salt(current_app.config.get('SALT'))
 
     @property
     def privileges_list(self):
