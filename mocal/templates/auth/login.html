@@ -88,7 +88,7 @@
     <div class="ui center aligned teal segment">
         <div class="ui two column middle aligned very relaxed stackable grid">
             <div class="column">
-                <form class="ui form teal segment {{ 'error' if msg else '' }}" action="{{ url_for('auth.login') }}" method="post">
+                <form class="ui form teal segment {{ 'error' if msg else '' }}" action="{{ request.url }}" method="post">
                     <div class="field">
                         <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
                     </div>

@@ -18,6 +18,13 @@
         <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
         <script src="static/semantic/dist/semantic.min.js"></script>
         <script src="http://api.geetest.com/get.php"></script>
+        <script>
+            $(document).ready(function(){
+                $('.message .close').on('click', function() {
+                    $(this).closest('.message').transition('fade');
+                });
+            });
+        </script>
     {% endblock %}
 </head>
 
@@ -84,6 +91,17 @@
             </div>
         </div>
     {% endblock %}
+
+    <div class="ui center aligned basic segment" style="position: absolute;top: 10%;width: 60%;left: 20%;">
+        {% if get_flashed_messages()%}
+            <div class="ui floating teal compact message">
+                <i class="close icon"></i>
+                {% for message in get_flashed_messages() %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
 
     {% block content %}  <!-- 内容区 -->
         <div class="ui center aligned basic segment" style="position: absolute;top: 25%">

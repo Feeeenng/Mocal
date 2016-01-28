@@ -11,6 +11,7 @@ from mocal.error import Error
 from mocal.utils.md5 import MD5
 from mocal.utils.email import Email
 from mocal.third_lib.geetest import GeetestLib
+from flask_login import current_user
 
 instance = Blueprint('auth', __name__)
 
@@ -59,13 +60,17 @@ def login():
 
     # 清除session
     del session['gt_server_status']
+    flash('你好,{0}!欢迎登录'.format(user.nickname))
+    x = request.args.get('next')
     return redirect(request.args.get('next') or url_for('main.index'))
 
 
 @instance.route('/logout', methods=['GET'])
 @login_required
 def logout():
+    nickname = current_user.nickname
     logout_user()
+    flash('88,{0}!'.format(nickname))
     return redirect(url_for('main.index'))
 
 
@@ -121,8 +126,8 @@ def register():
         confirm_url=confirm_url)
 
     # send activate email
-    email = Email(send_email='haner27@126.com', recipients=[user.email], sender='Mocal', subject='账户邮件确认', html=html)
-    email.send_email()
+    email_obj = Email(send_email='haner27@126.com', recipients=[user.email], sender='Mocal', subject='账户邮件确认', html=html)
+    email_obj.send_email()
 
     flash('{0}, 您的邮箱{1}注册完成！请检查登录您的邮箱查看邮件完成激活'.format(nickname, email))
     return redirect(url_for('auth.login'))
