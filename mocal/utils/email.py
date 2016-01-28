@@ -6,7 +6,7 @@ from threading import Thread
 from flask_mail import Message
 
 from mocal import mail
-from mocal.manager import mocal as app
+from mocal.manager import mocal_app as app
 from mocal.utils.mimetype import get_mimetype
 
 
