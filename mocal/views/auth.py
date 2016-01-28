@@ -30,6 +30,10 @@ def login():
     geetest_seccode = request.form.get('geetest_seccode')
 
     # 验证码
+    if not geetest_challenge or not geetest_validate or not geetest_seccode:
+        return render_template('auth/login.html', msg=Error.error_map[Error.LOGIN_CAPTCHA_REQUIRED], email=email,
+                               remember_me=remember_me, gt=gt_id)
+
     status = session['gt_server_status']
     gt = GeetestLib(gt_id, gt_key)
     result = gt.validate(status, geetest_challenge, geetest_validate, geetest_seccode)
@@ -72,23 +76,18 @@ def register():
 
     email = request.form.get('email')
     password = request.form.get('password')
-    password_confirm = request.form.get('password_confirm')
     nickname = request.form.get('nickname')
-    sex = request.form.get('sex')
-    birthday = request.form.get('birthday')
+    gender = request.form.get('gender')
 
     # 接口检查
-    if not email or not password or not password_confirm or not nickname or not sex:
+    if not email or not password or not nickname or not gender:
         return res(code=Error.PARAMS_REQUIRED)
 
     # 参数检查
     for i in [
         (email, 'email'),
         (password, 'str', 6, 20),
-        (password_confirm, 'str', 6, 20),
-        (nickname, 'str', 1, 12),
-        (sex, 'int', 0, 150),
-        (datetime.strptime(birthday, '%Y-%m-%d'), 'datetime')
+        (nickname, 'str', 1, 10)
     ]:
         is_checked, code = check_filed_type_and_length(*i)
         if not is_checked:
@@ -102,16 +101,11 @@ def register():
     if user:
         return res(code=Error.REGISTER_NICKNAME_IS_EXISTED)
 
-    if password != password_confirm:
-        return res(code=Error.REGISTER_DIFFERENT_PASSWORD)
-
     params = {
         'email': email,
         'password': MD5(password).add_salt(current_app.config.get('SALT')),
-        'password_confirm': password_confirm,
         'nickname': nickname,
-        'sex': sex,
-        'birthday': birthday
+        'gender': gender
     }
 
     user = User(**params)

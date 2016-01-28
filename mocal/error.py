@@ -8,9 +8,9 @@ class Error:
     # login
     LOGIN_INFO_ERROR = 100
     LOGIN_CAPTCHA_ERROR = 101
+    LOGIN_CAPTCHA_REQUIRED = 102
 
     # register
-    REGISTER_DIFFERENT_PASSWORD = 200
     REGISTER_EMAIL_IS_EXISTED = 201
     REGISTER_NICKNAME_IS_EXISTED = 202
     REGISTER_EMAIL_FORMAT_ERROR = 203
@@ -27,7 +27,7 @@ class Error:
         PARAMS_REQUIRED: '参数缺失',
         LOGIN_INFO_ERROR: '用户名或密码错误',
         LOGIN_CAPTCHA_ERROR: '验证码错误',
-        REGISTER_DIFFERENT_PASSWORD: '密码不一致',
+        LOGIN_CAPTCHA_REQUIRED: '请填写验证码',
         REGISTER_EMAIL_IS_EXISTED: '邮箱已存在',
         REGISTER_NICKNAME_IS_EXISTED: '昵称已存在',
         REGISTER_EMAIL_FORMAT_ERROR: '邮箱格式错误',

@@ -1,370 +1,131 @@
-{% extends "base.html" %}
+{% extends "index.html" %}
 
 {% block title %} Mocal注册 {% endblock %}
-
-{% block scripts %}
-    {{ super() }}
-    <script>
-    function add_onblur(){
-        $('#email').blur(function(){
-            check_email(this);
-        })
-    }
-
-    $(document).ready(function(){
-        // 时间控件
-        $('#birthday').datetimepicker({
-        　　minView: "month", //选择日期后，不会再跳转去选择时分秒
-        　　format: "yyyy-mm-dd", //选择日期后，文本框显示的日期格式
-        　　language: 'zh-CN', //汉化
-        　　autoclose:true //选择日期后自动关闭
-        });
-
-        // 自动补全
-{#        $.fn.typeahead.Constructor.prototype.blur = function(){#}
-{#           var that = this;#}
-{#           setTimeout(function () { that.hide() }, 250);#}
-{#        };#}
-{##}
-{#        $('#email').typeahead({#}
-{#            source: function(query, process){#}
-{#                var keywords = $('#email').val();#}
-{#                var postfix = ["@qq.com", "@126.com", "@163.com", "@gmail.com", "@yahoo.com", "@sina.com", "@sohu.com"];#}
-{#                var result = [];#}
-{#                for(var i in postfix){#}
-{#                    var index = $.inArray('@', keywords);#}
-{#                    if(index==-1){#}
-{#                        result.push(keywords+postfix[i]);#}
-{#                    }else{#}
-{#                        result.push(keywords.substring(0, index)+postfix[i]);#}
-{#                    }#}
-{#                }#}
-{#                process(result);#}
-{#            },#}
-{#            // 对item做处理#}
-{#            highlighter: function(item) {#}
-{#                return item;#}
-{#            },#}
-{#            // 选择选项后做后续处理#}
-{#            updater: function(item) {#}
-{#                console.log("'" + item + "' selected.");#}
-{#                return item;#}
-{#            }#}
-{#        });#}
-    });
-
-    function check_email(obj){
-        var email = $(obj).val();
-        if (email != ''){
-            // 检查邮箱格式是否正确
-            if(!check_email_format(email)){
-                show_msg('请输入正确的邮箱格式', 1500);
-                $('#email_is_ok').removeClass();
-                $('#email_is_ok').addClass('glyphicon glyphicon-remove-sign form-control-feedback');
-                $(obj).focus();
-            } else {
-                // 检查邮箱是否存在
-                var url = "{{ url_for('auth.check_email', email='') }}" + email;
-                show_loading();
-                $.ajax({
-                    type: "GET",
-                    async: false,
-                    url: url,
-                    dataType   : "json",
-                    error: function (ret) {
-                        hide_loading();
-                        show_msg("返回数据错误！", 1500);
-                    },
-                    success: function (ret) {
-                        if (ret["detail"] == false) {
-                            hide_loading();
-                            $('#email_is_ok').removeClass();
-                            $('#email_is_ok').addClass('glyphicon glyphicon-ok-sign form-control-feedback');
-                        } else {
-                            hide_loading();
-                            show_msg('邮箱已经存在', 1500);
-                            $('#email_is_ok').removeClass();
-                            $('#email_is_ok').addClass('glyphicon glyphicon-remove-sign form-control-feedback');
-                            $(obj).focus();
-                        }
-                    }
-                });
-            }
-        } else {
-            $('#email_is_ok').removeClass();
-        }
-    }
-
-    function check_nickname(obj){
-        var nickname = $(obj).val();
-        if (nickname != ''){
-            // 检查昵称格式是否正确
-            if(check_illegal_character (nickname)){
-                show_msg('非法昵称，昵称不包括特殊字符', 1500);
-                $('#nickname_is_ok').removeClass();
-                $('#nickname_is_ok').addClass('glyphicon glyphicon-remove-sign form-control-feedback');
-            } else {
-                // 检查昵称是否存在
-                if(!check_nickname_exist(nickname)){
-                    $('#nickname_is_ok').removeClass();
-                    $('#nickname_is_ok').addClass('glyphicon glyphicon-ok-sign form-control-feedback');
-                } else {
-                    $('#nickname_is_ok').removeClass();
-                    $('#nickname_is_ok').addClass('glyphicon glyphicon-remove-sign form-control-feedback');
-                }
-            }
-        } else {
-            $('#nickname_is_ok').removeClass();
-        }
-    }
-
-    function check_nickname_exist(nickname){
-        var url = "{{ url_for('auth.check_nickname', nickname='') }}" + nickname;
-        show_loading();
-        var results = false;
-        $.ajax({
-            type: "GET",
-            async: false,
-            url: url,
-            dataType   : "json",
-            error: function (ret) {
-                hide_loading();
-                show_msg("返回数据错误！", 1500);
-            },
-            success: function (ret) {
-                if (ret["detail"] == false) {
-                    hide_loading();
-                    results = false;
-                } else {
-                    hide_loading();
-                    show_msg('昵称已经存在', 1500);
-                    results = true;
-                }
-            }
-        });
-        return results;
-    }
-
-    function check_password(obj){
-        var password = $(obj).val();
-        if(password!='') {
-            if (password.length < 6 || password.length > 20) {
-                show_msg('密码长度应为6-20位', 1500);
-                $('#password_is_ok').removeClass();
-                $('#password_is_ok').addClass('glyphicon glyphicon-remove-sign form-control-feedback');
-            } else {
-                $('#password_is_ok').removeClass();
-                $('#password_is_ok').addClass('glyphicon glyphicon-ok-sign form-control-feedback');
-            }
-        }
-    }
-
-    function check_password_confirm(obj){
-        var password_confirm = $(obj).val();
-        var password = $('#password').val();
-        if(password_confirm!=''){
-            if(password_confirm!=password){
-                show_msg('密码不一致', 1500);
-                $('#password_confirm_is_ok').removeClass();
-                $('#password_confirm_is_ok').addClass('glyphicon glyphicon-remove-sign form-control-feedback');
-            } else {
-                $('#password_confirm_is_ok').removeClass();
-                $('#password_confirm_is_ok').addClass('glyphicon glyphicon-ok-sign form-control-feedback');
-            }
-        }
-    }
-
-    function check_illegal_character (str){
-        var filterString = "";
-        filterString = filterString == "" ? "'~`·!@#$%^&*()-+./" : filterString;
-        var ch;
-        var i;
-        var temp;
-        var error = false; // 当包含非法字符时，返回True
-        for (i = 0; i <= (filterString.length - 1); i++) {
-            ch = filterString.charAt(i);
-            temp = str.indexOf(ch);
-            if (temp != -1) {
-                error = true;
-                break;
-            }
-        }
-        return error;
-    }
-
-    function check_register(){
-        // 邮箱
-        var email = $('#email').val();
-        if(!email){
-            show_msg('邮箱不能为空', 1500);
-            $('#email').focus();
-            return false;
-        }
-
-        // 密码
-        var password = $('#password').val();
-        if(!password){
-            show_msg('密码不能为空', 1500);
-            $('#password').focus();
-            return false;
-        }
-        if(password.length < 6 || password.length > 20){
-            show_msg('密码应为6-20位', 1500);
-            $('#password').focus();
-            return false;
-        }
-
-        // 确认密码
-        var password_confirm = $('#password_confirm').val();
-        if(!password_confirm){
-            show_msg('密码不能为空', 1500);
-            $('#password_confirm').focus();
-            return false;
-        }
-        if(password_confirm != password){
-            show_msg('密码不一致', 1500);
-            $('#password_confirm').focus();
-            return false;
-        }
-
-        // 昵称
-        var nickname = $('#nickname').val();
-        if(!nickname){
-            show_msg('昵称不能为空', 1500);
-            $('#nickname').focus();
-            return false;
-        }
-        if(nickname.length < 1 || nickname.length > 12){
-            show_msg('昵称应为1-12位', 1500);
-            $('#nickname').focus();
-            return false;
-        }
-        if(check_illegal_character (nickname)){
-            show_msg('非法昵称，昵称不包括特殊字符', 1500);
-            $('#nickname').focus();
-            return false;
-        }
-        if(check_nickname_exist(nickname)){
-            $('#nickname').focus();
-            return false;
-        }
-
-        // 性别
-        var sex = $('#sex').val();
-        if(!sex){
-            show_msg('请选择性别', 1500);
-            $('#sex').focus();
-            return false;
-        }
-
-        return true;
-    }
-
-    function select_sex(obj){
-        var sex = $('#sex').val();
-        if(!sex){
-            $('#sex').val(1);
-            $(obj).attr('class', 'btn btn-info');
-            $(obj).val('男');
-        } else {
-            if(sex == 1){
-                $('#sex').val(2);
-                $(obj).attr('class', 'btn btn-danger');
-                $(obj).val('女');
-            }else{
-                $('#sex').val(1);
-                $(obj).attr('class', 'btn btn-info');
-                $(obj).val('男');
-            }
-        }
-    }
-    </script>
-{% endblock %}
 
 {% block styles %}
     {{ super() }}
     <style>
-    .register {
-        background:rgba(255, 255, 255, 0.7);
-        padding-top: 0.1%;
-        margin-top: 10%;
-        margin-left: 10%;
-        margin-right: 10%;
-        padding-bottom: 5%;
-        border-radius: 15px;
+    .ui.toggle.checkbox input:focus:checked~.box:before, .ui.toggle.checkbox input:focus:checked~label:before {
+        background-color: #009c95!important;
     }
-    .register-form{
-        margin-left: 10%;
-        margin-right: 10%;
-    }
-    .icon.form-control-feedback {
-        left: 0
-    }
-    .register_input {
-        padding-left: 10%;
-    }
-    .register_submit {
-        margin-top: 1%;
+
+    .ui.toggle.checkbox input:checked~.box:before, .ui.toggle.checkbox input:checked~label:before {
+        background-color: #00B5AD!important;
     }
     </style>
 {% endblock %}
 
-{% block background %}
-        <!-- 背景图 -->
-    <div id="Layer1" style="position:absolute; width:100%; height:100%; z-index:-1">
-        <img src="{{ url_for('static', filename='upload/background/register/background.jpg') }}" height="100%" width="100%"/>
+{% block scripts %}
+    {{ super() }}
+    <script>
+        $(document).ready(function () {
+            $('#register_btn').click(function(){
+                $('#register').submit();
+            });
+
+            $('.ui.checkbox').checkbox({
+                onChecked: function() {
+                    $('#register_btn').attr('class', 'ui teal submit button');
+                },
+                onUnchecked: function() {
+                    $('#register_btn').attr('class', 'ui teal submit disabled button');
+                }
+            });
+
+            $('.ui.dropdown').dropdown('set selected', 'secret');
+
+            $('.ui.form').form({
+                email: {
+                    identifier: 'email',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '邮箱必填哦！'
+                        },
+                        {
+                            type: 'email',
+                            prompt: '填写一个有效的邮箱哦！'
+                        }
+                    ]
+                },
+                password: {
+                    identifier: 'password',
+                    rules: [
+                        {
+                            type: 'length[6]',
+                            prompt: '密码最少6位了！'
+                        }
+                    ]
+                },
+                nickname:{
+                    identifier: 'nickname',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '起一个炫酷的昵称吧！'
+                        },
+                        {
+                            type: 'maxLength[10]',
+                            prompt: '昵称再炫酷也不能超过10位！'
+                        }
+                    ]
+                }
+            }, {
+                inline : true,
+                on: 'submit'
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="ui main container" style="position: absolute;top: 20%;width: 60%;left: 20%">
+        <form class="ui form teal segment" id="register" action="{{ url_for('auth.register') }}" method="post">
+            <div class="field">
+                <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+            </div>
+            <div class="two fields">
+                <div class="field">
+                    <label>昵称</label>
+                    <input placeholder="昵称" name="nickname" type="text" maxlength="20">
+                </div>
+                <div class="field">
+                    <label>性别</label>
+                    <div class="ui selection dropdown">
+                        <input name="gender" type="hidden">
+                        <div class="default text">性别</div>
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <div class="item" data-value="secret">保密</div>
+                            <div class="item" data-value="male">男</div>
+                            <div class="item" data-value="female">女</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field">
+                <label>邮箱</label>
+                <input placeholder="邮箱" name="email" type="email" maxlength="40">
+            </div>
+
+            <div class="field">
+                <label>密码</label>
+                <input placeholder="密码" name="password" type="password"  maxlength="20">
+            </div>
+
+            <div class="inline field">
+                <div class="ui toggle checkbox">
+                    <input type="checkbox" name="agree" value="agree" tabindex="0" class="hidden">
+                    <label><b>我同意本条款和条件</b></label>
+                </div>
+            </div>
+
+            <div class="ui teal submit disabled button" id="register_btn">提交</div>
+            <div class="ui reset button">重置</div>
+        </form>
     </div>
 {% endblock %}
 
-{% block page_content %}
-    <div class="row">
-        <div class="col-md-6 col-md-offset-3">
-            <div class="register">
-                <form class="register-form" action="{{ request.url }}" method="post" onsubmit="return check_register()">
-                    <h1 style="color: black" class="text-center"><strong>注册</strong></h1>
-                    <input id="csrf_token" name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
-
-                    <div class="form-group has-feedback">
-                        <span class="glyphicon glyphicon-envelope icon form-control-feedback"></span>
-                        <input type="email" class="form-control register_input" id="email" placeholder="邮箱"
-                              maxlength="30" name="email" autofocus onblur="check_email(this)">
-                        <span id="email_is_ok"></span>
-                    </div>
-
-                    <div class="form-group has-feedback">
-                        <span class="glyphicon glyphicon-lock icon form-control-feedback"></span>
-                        <input type="password" class="form-control register_input" id="password" name="password"
-                               maxlength="20" placeholder="密码" onblur="check_password(this)">
-                        <span id="password_is_ok"></span>
-                    </div>
-
-                    <div class="form-group has-feedback">
-                        <span class="glyphicon glyphicon-check icon form-control-feedback"></span>
-                        <input type="password" class="form-control register_input" id="password_confirm"
-                               maxlength="20" name="password_confirm" placeholder="确认密码"
-                               onblur="check_password_confirm(this)">
-                        <span id="password_confirm_is_ok"></span>
-                    </div>
-
-                    <div class="form-group has-feedback">
-                        <span class="glyphicon glyphicon-user icon form-control-feedback"></span>
-                        <input type="text" class="form-control register_input" id="nickname" name="nickname"
-                               maxlength="12" placeholder="昵称" onblur="check_nickname(this)">
-                        <span id="nickname_is_ok"></span>
-                    </div>
-
-                    <div class="form-group has-feedback">
-                        <span class="glyphicon glyphicon-calendar icon form-control-feedback"></span>
-                        <input type="text" class="form-control register_input" id="birthday" name="birthday"
-                                placeholder="生日" readonly>
-                    </div>
-
-                    <input type="hidden" id="sex" name="sex">
-                    <input type="button" class="btn btn-success" style="width: 100%" value="性别" onclick="select_sex(this)">
-
-                    <button type="submit" class="btn btn-primary register_submit" style="width: 100%">提交</button>
-                </form>
-            </div>
-        </div>
-    </div>
+{% block footer %}
 {% endblock %}
