@@ -75,8 +75,9 @@ def logout():
 
 @instance.route('/register', methods=['GET', 'POST'])
 def register():
+    msgs = []
     if request.method == 'GET':
-        return render_template('auth/register.html')
+        return render_template('auth/register.html', msgs=msgs)
 
     email = request.form.get('email')
     password = request.form.get('password')
@@ -99,11 +100,14 @@ def register():
 
     user = User.from_db(email=email)
     if user:
-        return res(code=Error.REGISTER_EMAIL_IS_EXISTED)
+        msgs.append(Error.error_map.get(Error.REGISTER_EMAIL_IS_EXISTED))
 
     user = User.from_db(nickname=nickname)
     if user:
-        return res(code=Error.REGISTER_NICKNAME_IS_EXISTED)
+        msgs.append(Error.error_map.get(Error.REGISTER_NICKNAME_IS_EXISTED))
+
+    if msgs:
+        return render_template('auth/register.html', msgs=msgs)
 
     params = {
         'email': email,
