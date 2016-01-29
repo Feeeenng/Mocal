@@ -27,8 +27,9 @@
 
                 $('#main_logo').mouseover(function(){
                     $(this).transition('set looping').transition('jiggle', '2000ms');
-                }).mouseout(function(){
-                    $(this).transition('remove looping');
+                });
+                $('.menu').mouseover(function(){
+                    $('#main_logo').transition('remove looping');
                 });
 
             });
