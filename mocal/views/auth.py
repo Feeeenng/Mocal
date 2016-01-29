@@ -162,13 +162,6 @@ def check_email(email):
     return res(data=True)
 
 
-@instance.route('/check_verify_code/<code>', methods=['GET'])
-def check_verify_code(code):
-    if code and session.get('verify_code') == int(code):
-        return res(data=True)
-    return res(data=False)
-
-
 @instance.route('/change_verify_code', methods=['GET'])
 def change_verify_code():
     gt_id = current_app.config.get('GEETEST_ID')
@@ -187,15 +180,11 @@ def change_password():
 
     old_password = request.form.get('old_password', '')
     new_password = request.form.get('new_password', '')
-    confirm_new_password = request.form.get('confirm_new_password', '')
     if current_user.verify_password(old_password):
-        if new_password != confirm_new_password:
-            flash('重置的密码不一致！')
-        else:
-            current_user.password = MD5(new_password).add_salt(current_app.config.get('SALT'))
-            current_user.save()
-            flash('重置密码的成功！')
-            return redirect(url_for('main.index'))
+        current_user.password = MD5(new_password).add_salt(current_app.config.get('SALT'))
+        current_user.save()
+        flash('重置密码的成功！')
+        return redirect(url_for('main.index'))
     else:
         flash('原密码错误！')
     return render_template('auth/change_password.html')

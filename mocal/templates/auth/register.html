@@ -24,6 +24,7 @@
             });
             $('#reset_btn').click(function(){
                 $('#register_btn').attr('class', 'ui teal submit disabled button');
+                $('#error_msg').empty();
             });
 
             $('.ui.checkbox').checkbox({
@@ -46,6 +47,50 @@
                     hide: 200
                 }
             });
+{##}
+{#            function ajax_return_error (results, error_msg){#}
+{#                if(results){#}
+{#                    $('nickname_field').attr('class', 'field');#}
+{#                    $('#register').attr('class', 'ui form teal segment');#}
+{#                    $('#error_msg').empty();#}
+{#                }else{#}
+{#                    $('nickname_field').attr('class', 'error field');#}
+{#                    $('#register').attr('class', 'ui form teal segment error');#}
+{#                    $('#error_msg').append('<ui class="list"><li>' + error_msg + '</li></ui>');#}
+{#                }#}
+{#            }#}
+{##}
+{#            $('#nickname').blur(function(){#}
+{#                $('#error_msg').empty();#}
+{#                var nickname = $(this).val();#}
+{#                if (nickname != '') {#}
+{#                    var error_msg = '';#}
+{#                    // 检查昵称格式是否正确#}
+{#                    if (check_illegal_character(nickname)) {#}
+{#                        error_msg = '非法昵称，昵称不包括特殊字符';#}
+{#                        ajax_return_error(false, error_msg);#}
+{#                        return;#}
+{#                    }#}
+{#                    // 检查昵称是否存在#}
+{#                    $.ajax({#}
+{#                        type: "GET",#}
+{#                        async: true,#}
+{#                        url: "{{ url_for('auth.check_nickname', nickname='') }}" + nickname,#}
+{#                        dataType: "json",#}
+{#                        error: function (ret) {#}
+{#                            alert("返回数据错误！");#}
+{#                        },#}
+{#                        success: function (ret) {#}
+{#                            if (ret["detail"] == true) {#}
+{#                                error_msg = '昵称<' + nickname + '>已经存在';#}
+{#                                ajax_return_error(false, error_msg);#}
+{#                            }else{#}
+{#                                ajax_return_error(true);#}
+{#                            }#}
+{#                        }#}
+{#                    });#}
+{#                }#}
+{#            });#}
 
             $('.ui.form').form({
                 email: {
@@ -84,7 +129,6 @@
                     ]
                 }
             }, {
-                inline : true,
                 on: 'submit'
             });
         });
@@ -98,10 +142,10 @@
                 <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
             </div>
             <div class="two fields">
-                <div class="field">
+                <div class="field" id="nickname_field">
                     <label>昵称</label>
                     <div class="ui left icon input">
-                        <input placeholder="昵称" name="nickname" type="text" maxlength="20">
+                        <input placeholder="昵称" name="nickname" type="text" maxlength="20" id="nickname">
                         <i class="user icon"></i>
                     </div>
                 </div>
@@ -159,6 +203,12 @@
                 <div class="ui reset button" tabindex="0" id="reset_btn">
                     重置  <i class="undo icon"></i>
                 </div>
+            </div>
+
+            <div class="ui error message" id="error_msg">
+                <ui class="list">
+                    <li></li>
+                </ui>
             </div>
         </form>
     </div>
