@@ -61,7 +61,6 @@ def login():
     # 清除session
     del session['gt_server_status']
     flash('你好,{0}!欢迎登录'.format(user.nickname))
-    x = request.args.get('next')
     return redirect(request.args.get('next') or url_for('main.index'))
 
 

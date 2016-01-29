@@ -22,6 +22,9 @@
             $('#register_btn').click(function(){
                 $('#register').submit();
             });
+            $('#reset_btn').click(function(){
+                $('#register_btn').attr('class', 'ui teal submit disabled button');
+            });
 
             $('.ui.checkbox').checkbox({
                 onChecked: function() {
@@ -33,6 +36,11 @@
             });
 
             $('.ui.dropdown').dropdown('set selected', 'secret');
+
+            $('#login_email').popup({
+                on: 'focus',
+                inline: true
+            });
 
             $('.ui.form').form({
                 email: {
@@ -87,18 +95,27 @@
             <div class="two fields">
                 <div class="field">
                     <label>昵称</label>
-                    <input placeholder="昵称" name="nickname" type="text" maxlength="20">
+                    <div class="ui left icon input">
+                        <input placeholder="昵称" name="nickname" type="text" maxlength="20">
+                        <i class="user icon"></i>
+                    </div>
                 </div>
                 <div class="field">
                     <label>性别</label>
                     <div class="ui selection dropdown">
-                        <input name="gender" type="hidden">
+                        <input name="gender" type="hidden" value="secret">
                         <div class="default text">性别</div>
                         <i class="dropdown icon"></i>
                         <div class="menu">
-                            <div class="item" data-value="secret">保密</div>
-                            <div class="item" data-value="male">男</div>
-                            <div class="item" data-value="female">女</div>
+                            <div class="item" data-value="secret">
+                                <i class="spy icon"></i>保密
+                            </div>
+                            <div class="item" data-value="male">
+                                <i class="male icon"></i>男
+                            </div>
+                            <div class="item" data-value="female">
+                                <i class="female icon"></i>女
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -106,12 +123,20 @@
 
             <div class="field">
                 <label>邮箱</label>
-                <input placeholder="邮箱" name="email" type="email" maxlength="40">
+                <div class="ui left icon input">
+                    <input placeholder="邮箱" name="email" type="email" maxlength="40" id="login_email"
+                            data-content="是用于登录mocal的有效邮箱地址"
+                            data-title="登录邮箱">
+                    <i class="mail icon"></i>
+                </div>
             </div>
 
             <div class="field">
                 <label>密码</label>
-                <input placeholder="密码" name="password" type="password"  maxlength="20">
+                <div class="ui left icon input">
+                    <input placeholder="密码" name="password" type="password"  maxlength="20">
+                    <i class="lock icon"></i>
+                </div>
             </div>
 
             <div class="inline field">
@@ -121,8 +146,15 @@
                 </div>
             </div>
 
-            <div class="ui teal submit disabled button" id="register_btn">提交</div>
-            <div class="ui reset button">重置</div>
+            <div class="ui buttons">
+                <div class="ui teal submit disabled button" tabindex="0" id="register_btn">
+                    <i class="external icon"></i>提交
+                </div>
+            <div class="or"></div>
+                <div class="ui reset button" tabindex="0" id="reset_btn">
+                    重置  <i class="undo icon"></i>
+                </div>
+            </div>
         </form>
     </div>
 {% endblock %}

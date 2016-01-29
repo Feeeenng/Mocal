@@ -92,15 +92,28 @@
         </div>
     {% endblock %}
 
-    <div class="ui center aligned basic segment" style="position: absolute;top: 10%;width: 60%;left: 20%;">
+    <div class="ui center aligned basic segment" style="position: absolute;top: 5%;width: 60%;left: 20%;z-index: 10000">
         {% if get_flashed_messages()%}
             <div class="ui floating teal compact message">
                 <i class="close icon"></i>
+                <div class="header"></div>
+                <ul class="list">
                 {% for message in get_flashed_messages() %}
-                    <p>{{ message }}</p>
+                    <li>{{ message }}</li>
                 {% endfor %}
+                </ul>
             </div>
         {% endif %}
+
+    <div class="ui floating teal compact message">
+        <i class="close icon"></i>
+        <div class="header"></div>
+          <ul class="list">
+            <li>You can now have cover images on blog pages</li>
+            <li>Drafts will now auto-save while writing</li>
+          </ul>
+    </div>
+
     </div>
 
     {% block content %}  <!-- 内容区 -->
