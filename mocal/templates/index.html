@@ -23,6 +23,13 @@
                 $('.message .close').on('click', function() {
                     $(this).closest('.message').transition('fade');
                 });
+
+                $('#main_logo').mouseover(function(){
+                    $(this).transition('set looping').transition('jiggle', '2000ms');
+                }).mouseout(function(){
+                    $(this).transition('remove looping');
+                });
+
             });
         </script>
     {% endblock %}
@@ -38,7 +45,7 @@
 
                 <div class="item">
                     <div class="ui buttons">
-                        <div class="ui animated button" tabindex="0">
+                        <div class="ui animated button" tabindex="0" onclick="location.href='/'">
                             <div class="visible content">首页</div>
                             <div class="hidden content">
                                 <i class="home icon"></i>
@@ -109,7 +116,9 @@
     {% block content %}  <!-- 内容区 -->
         <div class="ui center aligned basic segment" style="position: absolute;top: 25%">
             <h2 class="ui center aligned header">
-                <img class="ui tiny circular image" style="margin-bottom: 1%" src="{{ url_for('static', filename='logo/mocal128.png') }}">
+                <img class="ui tiny circular image" style="cursor: pointer;margin-bottom: 1%"
+                     src="{{ url_for('static', filename='logo/mocal128.png') }}" onclick="location.href='/'"
+                        id="main_logo">
                 <div class="sub header" style="margin-bottom: 2%"><h4>mocal|默默做客</h4></div>
             </h2>
 

@@ -39,7 +39,12 @@
 
             $('#login_email').popup({
                 on: 'focus',
-                inline: true
+                inline: true,
+                transition: 'horizontal flip',
+                delay:{
+                    show: 200,
+                    hide: 200
+                }
             });
 
             $('.ui.form').form({
