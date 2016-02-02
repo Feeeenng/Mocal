@@ -1,0 +1,13 @@
+requests
+qiniu
+qrcode
+redis
+rq
+pypinyin
+mysql-python
+flask
+flask-login
+flask-email
+flask-script
+flask-sqlalchemy
+flask-cache

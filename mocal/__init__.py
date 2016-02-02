@@ -4,7 +4,6 @@ import sys
 import glob
 
 from flask import Flask
-from flask_bootstrap import Bootstrap
 from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_cache import Cache
@@ -58,7 +57,6 @@ def import_instance(instance_name):
 
 
 # 初始化扩展包
-bootstrap = Bootstrap()
 mail = Mail()
 db = DataBase()
 cache = Cache()
@@ -74,7 +72,6 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
 
     # flask扩展
-    bootstrap.init_app(app)
     mail.init_app(app)
     db.init_app(app)
     cache.init_app(app, config={'CACHE_TYPE': 'simple'})

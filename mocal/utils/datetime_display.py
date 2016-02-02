@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 
+
 def datetime_op(date_time):
     now = datetime.datetime.now()
     seconds = int((now - date_time).seconds)

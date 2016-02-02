@@ -4,7 +4,6 @@ from datetime import datetime
 
 from flask import Blueprint, render_template, url_for, request, redirect, session, flash, current_app
 from flask.ext.login import current_user, login_user, logout_user, login_required
-
 from mocal.views import res, check_filed_type_and_length
 from mocal.models.user import User
 from mocal.error import Error
