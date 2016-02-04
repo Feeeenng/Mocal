@@ -9,4 +9,4 @@ def upload_to_qn(access_key, secret_key, bucket_name, data, key):
     if ret is not None:
         print('All is OK')
     else:
-        print(info) # error message in info
+        print(info)  # error message in info

@@ -56,6 +56,8 @@ def login():
 
     # 登录
     login_user(user, remember=remember_me)
+    user.login()
+    user.save()
 
     # 清除session
     del session['gt_server_status']
@@ -67,6 +69,8 @@ def login():
 @login_required
 def logout():
     nickname = current_user.nickname
+    current_user.logout()
+    current_user.save()
     logout_user()
     flash('88,{0}!'.format(nickname))
     return redirect(url_for('main.index'))

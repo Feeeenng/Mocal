@@ -7,6 +7,7 @@ from db import DatabaseObject
 from mocal import login_manager
 from mocal.constant import VIP_USER, CAN_CREATE, CAN_DELETE, CAN_SELECT, CAN_UPDATE
 from mocal.utils.md5 import MD5
+from datetime import datetime
 
 
 @login_manager.user_loader
@@ -40,6 +41,12 @@ class User(UserMixin, DatabaseObject):
     def verify_password(self, password):
         md5 = MD5(password)
         return self.password == md5.add_salt(current_app.config.get('SALT'))
+
+    def login(self):
+        self.sign_in_at = datetime.now()
+
+    def logout(self):
+        self.sign_out_at = datetime.now()
 
     @property
     def privileges_list(self):
