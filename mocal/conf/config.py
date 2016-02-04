@@ -36,6 +36,10 @@ class Config:
     GEETEST_ID = '37e833eb1a44d15dc6c1fd6656005136'
     GEETEST_KEY = '7a4584597e4f610f4a33eebc0c3bb90a'
 
+    # 七牛
+    QINIU_AK = 'xgEGg5aWlWSjuzplwL7VB9NxevnP1AThULMXSv_M'
+    QINIU_SK = '9U2uN-KpWLPtoCoXeKdEqbJnGxLFnYHtgm0kIOli'
+
 
 class DevelopmentConfig(Config):
     DEBUG = True
