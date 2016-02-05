@@ -27,4 +27,7 @@ ROLE_TEXT = {
 }
 
 # 上传文件格式设置
-ALLOWED_FILES = ['jpg', 'png', 'jpeg']
+ALLOWED_FORMATS = ['jpg', 'png', 'jpeg']
+
+# 上传文件大小上线
+ALLOWED_MAX_SIZE = 10 * 1024 ** 2  # 10M

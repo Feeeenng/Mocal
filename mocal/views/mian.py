@@ -9,7 +9,6 @@ instance = Blueprint('main', __name__)
 @instance.route('/')
 def index():
     # 轮播图
-    carousel_pics = Upload.fetch(page=1, count=3, category='carousel')
 
     # 天气
     from mocal.utils.get_weather_info import get_weather_city_info
@@ -22,6 +21,6 @@ def index():
     dates = [(datetime.strptime(date, '%Y-%m-%d') + timedelta(days=i)).strftime('%m月%d日')
              for i in [0, 1, 2, 3]]
     year = datetime.now().year
-    return render_template('index.html', title='Mocal', carousel_pics=carousel_pics, index=results['index'],
+    return render_template('index.html', title='Mocal', index=results['index'],
                            current_city=results['currentCity'], weather_data=results['weather_data'], dates=dates,
                            year=year)

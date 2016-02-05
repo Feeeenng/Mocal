@@ -17,9 +17,6 @@ class Config:
     MAIL_MAX_EMAILS = 25
     MAIL_ASCII_ATTACHMENTS = True
 
-    # 上传文件夹
-    UPLOAD_FOLDER = 'static/upload'
-
     # 加密salt
     SALT = '*^)h#a&n@#$;.'
 
@@ -39,6 +36,8 @@ class Config:
     # 七牛
     QINIU_AK = 'xgEGg5aWlWSjuzplwL7VB9NxevnP1AThULMXSv_M'
     QINIU_SK = '9U2uN-KpWLPtoCoXeKdEqbJnGxLFnYHtgm0kIOli'
+    QINIU_BUCKET_NAME = 'mocal'
+    QINIU_DOMAIN = '7xqnoy.com1.z0.glb.clouddn.com'
 
 
 class DevelopmentConfig(Config):

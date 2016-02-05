@@ -19,6 +19,10 @@ class Error:
     REGISTER_FIELD_TYPE_ERROR = 206
     REGISTER_FIELD_LIMIT_TYPE_NOT_EXISTED = 207
 
+    # upload
+    UPLOAD_FORMAT_LIMITATION = 300
+    UPLOAD_SIZE_LIMITATION = 301
+
     UNKNOWN = 999
 
     # error map
@@ -35,6 +39,8 @@ class Error:
         REGISTER_FIELD_LENGTH_UNQUALIFIED: '字段长度未达到最低标准',
         REGISTER_FIELD_TYPE_ERROR: '字段类型错误',
         REGISTER_FIELD_LIMIT_TYPE_NOT_EXISTED: '字段的限制类型不存在',
+        UPLOAD_FORMAT_LIMITATION: '上传文件格式受限',
+        UPLOAD_SIZE_LIMITATION: '上传文件大小受限',
         UNKNOWN: '未知错误'
     }
 
