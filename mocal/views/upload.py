@@ -19,7 +19,7 @@ from mocal.error import Error
 instance = Blueprint('upload', __name__)
 
 
-@instance.route('/upload', methods=['GET', 'POST'])
+@instance.route('/upload', methods=['POST'])
 @login_required
 def upload_file():
     f = request.files['file']
