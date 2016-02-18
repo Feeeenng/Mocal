@@ -11,6 +11,7 @@ from flask_login import LoginManager
 
 from mocal.conf.config import config
 from utils.csrf_token import generate_csrf_token
+from mongoengine import connect
 
 
 # setting sys default encode. 用到FLASK-WTF 设置默认编码
@@ -45,6 +46,7 @@ def config_blueprint(application):
     for blue_print in register_blueprints:
         application.register_blueprint(blue_print)
 
+
 def import_instance(instance_name):
     package = instance_name[:instance_name.rindex('.')]
 
@@ -76,6 +78,11 @@ def create_app(config_name):
     db.init_app(app)
     cache.init_app(app, config={'CACHE_TYPE': 'simple'})
     login_manager.init_app(app)
+
+    # mongo数据库初始化
+    res = connect(app.config.get('MONGO_DATABASE_NAME'), host=app.config.get('MONGO_DATABASE_HOST'),
+                  port=app.config.get('MONGO_DATABASE_PORT'), username=app.config.get('MONGO_DATABASE_USERNAME'),
+                  password=app.config.get('MONGO_DATABASE_PASSWORD'))
 
     # 防跨站式攻击
     app.jinja_env.globals['csrf_token'] = generate_csrf_token

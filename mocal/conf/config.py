@@ -33,20 +33,29 @@ class Config:
     GEETEST_ID = '37e833eb1a44d15dc6c1fd6656005136'
     GEETEST_KEY = '7a4584597e4f610f4a33eebc0c3bb90a'
 
-    # 七牛
-    QINIU_AK = 'xgEGg5aWlWSjuzplwL7VB9NxevnP1AThULMXSv_M'
-    QINIU_SK = '9U2uN-KpWLPtoCoXeKdEqbJnGxLFnYHtgm0kIOli'
-    QINIU_BUCKET_NAME = 'mocal'
-    QINIU_DOMAIN = '7xqnoy.com1.z0.glb.clouddn.com'
-
 
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://root:haner27@127.0.0.1:3306/mocal?charset=utf8'
 
+    # mongo数据库名
+    MONGO_DATABASE_NAME = 'mocal'
+    MONGO_DATABASE_HOST = '127.0.0.1'
+    MONGO_DATABASE_PORT = 27017
+    MONGO_DATABASE_USERNAME = None
+    MONGO_DATABASE_PASSWORD = None
+
 
 class ProductionConfig(Config):
+    SERVER_NAME = 'mocal.cn'
     SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://root:haner27@127.0.0.1:3306/mocal?charset=utf8'
+
+    # mongo数据库名
+    MONGO_DATABASE_NAME = 'mocal'
+    MONGO_DATABASE_HOST = '127.0.0.1'
+    MONGO_DATABASE_PORT = 27017
+    MONGO_DATABASE_USERNAME = None
+    MONGO_DATABASE_PASSWORD = None
 
 
 config = {

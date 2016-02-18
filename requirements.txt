@@ -5,6 +5,7 @@ redis
 rq
 pypinyin
 mysql-python
+mongoengine
 flask
 flask-login
 flask-email

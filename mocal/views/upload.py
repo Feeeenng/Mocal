@@ -5,15 +5,15 @@ from cStringIO import StringIO
 from urllib import urlopen
 from datetime import datetime
 from random import randint
+import base64
 
-from flask import Blueprint, render_template, flash, send_file, request, current_app
+from flask import Blueprint, flash, send_file, request, url_for, render_template
 from flask_login import login_required
 
 from mocal.views import res
-from mocal.models.upload import Upload
+from mocal.mongo_models.mocal_file import MocalFile
 from mocal.utils.md5 import MD5
 from mocal.constant import ALLOWED_FORMATS, ALLOWED_MAX_SIZE
-from mocal.utils.cloud_storage import upload_to_qn, make_download_url
 from mocal.error import Error
 
 instance = Blueprint('upload', __name__)
@@ -22,7 +22,7 @@ instance = Blueprint('upload', __name__)
 @instance.route('/upload', methods=['POST'])
 @login_required
 def upload_file():
-    f = request.files['file']
+    f = request.files.get('file')
     if not is_allowed_format(f.filename):
         return res(code=Error.UPLOAD_FORMAT_LIMITATION)
 
@@ -30,35 +30,24 @@ def upload_file():
         return res(code=Error.UPLOAD_SIZE_LIMITATION)
 
     # 获取文件内容MD5码
-    bucket_name = current_app.config.get('QINIU_BUCKET_NAME')
     ext = os.path.splitext(f.filename)[-1].strip('.')
-    md5 = MD5(f.stream.read()).md5_content
-    upload = Upload.from_db(md5=md5)
-    if not upload:
-        # 上传七牛
-        ak = current_app.config.get('QINIU_AK')
-        sk = current_app.config.get('QINIU_SK')
-        key = get_unique_name(ext)
-        ret = upload_to_qn(ak, sk, bucket_name, f, key)
+    data = f.stream.read()
+    md5 = MD5(data).md5_content
+    file_name = get_unique_name(ext)
+    content_type = f.content_type
+    mc_f = MocalFile.objects(md5=md5).first()
+    if not mc_f:
+        # 上传文件到mongo
+        mc_f = MocalFile()
+        mc_f.ext = ext
+        mc_f.filename = file_name
+        mc_f.mimetype = content_type
+        mc_f.md5 = md5
+        mc_f.file_obj.put(data, content_type=content_type)
+        mc_f.save()
 
-        # 上传信息入库
-        hash = ret['hash']
-        key = ret['key']
-        mimetype = f.content_type
-        properties = {
-            'key': key,
-            'hash': hash,
-            'ext': ext,
-            'mimetype': mimetype,
-            'md5': md5
-        }
-        upload = Upload(**properties)
-        upload.save(add=True)
-
-    flash('上传成功！')
-    domain = current_app.config.get('QINIU_DOMAIN')
-    url = make_download_url(domain, upload.key)
-    return res(data=dict(id=upload.id, url=url, key=upload.key))
+    url = url_for('upload.show_file', file_id=mc_f.id, _external=True)
+    return res(data=dict(id=mc_f.id, name=file_name, url=url))
 
 
 def is_allowed_format(file_name):
@@ -78,12 +67,18 @@ def is_allowed_size(f):
     return True
 
 
-@instance.route('/download/<key>', methods=['GET'])
-def download_file(key):
-    domain = current_app.config.get('QINIU_DOMAIN')
-    url = make_download_url(domain, key)
-    io = StringIO(urlopen(url).read())
-    return send_file(io, attachment_filename=key, as_attachment=True)
+@instance.route('/download/<file_id>', methods=['GET'])
+def download_file(file_id):
+    mf = MocalFile.objects.with_id(file_id)
+    io = StringIO(mf.file_obj.read())
+    return send_file(io, attachment_filename=mf.filename, as_attachment=True)
+
+
+@instance.route('/file/<file_id>', methods=['GET'])
+def show_file(file_id):
+    mf = MocalFile.objects.with_id(file_id)
+    io = StringIO(mf.file_obj.read())
+    return send_file(io, mimetype=mf.mimetype)  # 指定相关mimetype
 
 
 def get_unique_name(ext):
