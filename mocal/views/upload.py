@@ -46,7 +46,7 @@ def upload_file():
         mc_f.file_obj.put(data, content_type=content_type)
         mc_f.save()
 
-    url = url_for('upload.show_file', file_id=mc_f.id, _external=True)
+    url = url_for('upload.show_file', file_id=mc_f.id)
     return res(data=dict(id=mc_f.id, name=file_name, url=url))
 
 
