@@ -2,12 +2,10 @@
 
 import os
 from cStringIO import StringIO
-from urllib import urlopen
 from datetime import datetime
 from random import randint
-import base64
 
-from flask import Blueprint, flash, send_file, request, url_for, render_template
+from flask import Blueprint, flash, send_file, request, url_for
 from flask_login import login_required
 
 from mocal.views import res
