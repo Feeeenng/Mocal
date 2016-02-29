@@ -6,6 +6,11 @@ from mocal.views import res
 instance = Blueprint('chat', __name__)
 
 
+@instance.before_request
+def before_request():
+    pass
+
+
 @instance.route('/chat_msg', methods=['GET', 'POST'])
 def chat_msg():
     return res(data='good')

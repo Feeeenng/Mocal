@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import render_template, session, g, request, abort
+from flask import g
 from flask_login import current_user
 from flask_script import Manager, Server
 from mocal import create_app
@@ -19,12 +19,6 @@ mocal_app = create_app('development')
 @mocal_app.before_request
 def before_request():
     g.current_user = current_user
-
-    # 防跨站攻击
-    if request.method == "POST":
-        token = session.pop('_csrf_token', None)
-        if not token or token != request.form.get('_csrf_token'):
-            abort(403)
 
 
 # 每个请求结束后的操作

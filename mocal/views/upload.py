@@ -17,6 +17,12 @@ from mocal.error import Error
 instance = Blueprint('upload', __name__)
 
 
+@instance.before_request
+def before_request():
+    # 防跨站攻击
+    pass
+
+
 @instance.route('/upload', methods=['POST'])
 @login_required
 def upload_file():

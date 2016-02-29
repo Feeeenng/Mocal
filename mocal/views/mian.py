@@ -6,6 +6,11 @@ from datetime import datetime, timedelta
 instance = Blueprint('main', __name__)
 
 
+@instance.before_request
+def before_request():
+    pass
+
+
 @instance.route('/')
 def index():
     # 轮播图

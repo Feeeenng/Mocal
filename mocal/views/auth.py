@@ -1,9 +1,7 @@
 # -*- coding: utf8 -*-
 
-from datetime import datetime
-
-from flask import Blueprint, render_template, url_for, request, redirect, session, flash, current_app
-from flask.ext.login import current_user, login_user, logout_user, login_required
+from flask import Blueprint, render_template, url_for, request, redirect, session, flash, current_app, abort
+from flask.ext.login import login_user, logout_user, login_required
 from mocal.views import res, check_filed_type_and_length
 from mocal.models.user import User
 from mocal.error import Error
@@ -13,6 +11,15 @@ from mocal.third_lib.geetest import GeetestLib
 from flask_login import current_user
 
 instance = Blueprint('auth', __name__)
+
+
+@instance.before_request
+def before_request():
+    # 防跨站攻击
+    if request.method == "POST":
+        token = session.pop('_csrf_token', None)
+        if not token or token != request.form.get('_csrf_token'):
+            abort(403)
 
 
 @instance.route('/login', methods=['GET', 'POST'])

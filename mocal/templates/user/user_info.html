@@ -1,0 +1,106 @@
+{% extends "index.html" %}
+
+{% block title %} Mocal用户管理 {% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <style>
+        .qz {
+            position: relative;
+            margin-top: 5%;
+        }
+    </style>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="static/js/ajaxfileupload.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.image').dimmer({
+                on: 'hover'
+            });
+        });
+
+        function fileSelect(){
+            $('#photo').click();
+        }
+
+        function upload_photo(){
+            $.ajaxFileUpload({
+                url: "{{ url_for('upload.upload_file') }}",
+                secureuri:false,
+                fileElementId:'photo',
+                dataType:'json',
+                data:{name: 'file'},
+                success: function (data, status) {
+                    if(data.result){
+                        var url = data['detail']['url'];
+                        $('#photo_url').attr('src', url);
+                        $('#url').val(url);
+                    }else{
+                        alert(data['msg']);
+                    }
+                },
+                error: function (data, status, e) {
+                    showMsg(e, 1500);
+                }
+            });
+        }
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="qz">
+    </div>
+    <div class="ui main container">
+        <div class="ui piled segments">
+            <h5 class="ui top attached header">用户管理</h5>
+            <form class="ui form teal segment" action="" method="post">
+                <div class="field">
+                    <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+                </div>
+
+                <input type="file" name="file" style="display: none" id="photo" onchange="upload_photo()">
+
+                <div class="field" id="photo_field">
+                    <input name="photo" type="hidden" value="" id="url">
+                </div>
+
+
+                <div class="ui small circular image" style="margin-bottom: 3%">
+                    <div class="ui dimmer">
+                        <div class="content">
+                            <div class="center">
+                                <div class="ui small primary button" onclick="fileSelect();">修改头像</div>
+                            </div>
+                        </div>
+                    </div>
+                    <img src="{{ photo_default }}" id="photo_url">
+                </div>
+
+
+                <div class="field" id="nickname_field">
+                    <label>昵称</label>
+                    <div class="ui left icon input">
+                        <input placeholder="昵称" name="nickname" type="text" maxlength="20"
+                               id="nickname" value="{{ current_user.nickname }}">
+                        <i class="user icon"></i>
+                    </div>
+                </div>
+
+                <div class="field" id="desc">
+                    <label>个性签名</label>
+                    <div class="ui left icon input">
+                        <input placeholder="个性签名" name="desc" type="text" style="height: 10%" maxlength="20" id="desc">
+                        <i class="write square icon"></i>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
