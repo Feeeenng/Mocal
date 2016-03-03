@@ -45,6 +45,11 @@ class DevelopmentConfig(Config):
     MONGO_DATABASE_USERNAME = None
     MONGO_DATABASE_PASSWORD = None
 
+    # 用户默认头像
+    PHOTO_DEFAULT_MALE = '/file/MF20160229150302536?size=256'
+    PHOTO_DEFAULT_FEMALE = '/file/MF20160229150458205?size=256'
+    PHOTO_DEFAULT_SECRET = '/file/MF20160229151816258?size=256'
+
 
 class ProductionConfig(Config):
     SERVER_NAME = 'mocal.cn'
@@ -56,6 +61,11 @@ class ProductionConfig(Config):
     MONGO_DATABASE_PORT = 27017
     MONGO_DATABASE_USERNAME = None
     MONGO_DATABASE_PASSWORD = None
+
+    # 用户默认头像
+    PHOTO_DEFAULT_MALE = '/file/MF20160229150302536?size=256'
+    PHOTO_DEFAULT_FEMALE = '/file/MF20160229150458205?size=256'
+    PHOTO_DEFAULT_SECRET = '/file/MF20160229151816258?size=256'
 
 
 config = {
