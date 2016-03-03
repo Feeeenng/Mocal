@@ -46,9 +46,9 @@ class DevelopmentConfig(Config):
     MONGO_DATABASE_PASSWORD = None
 
     # 用户默认头像
-    PHOTO_DEFAULT_MALE = '/file/MF20160303163649153?size=256'
-    PHOTO_DEFAULT_FEMALE = '/file/MF20160303163537835?size=256'
-    PHOTO_DEFAULT_SECRET = '/file/MF20160303163719570?size=256'
+    PHOTO_DEFAULT_MALE = 'http://mocal.cn/file/MF20160303163649153?size=256'
+    PHOTO_DEFAULT_FEMALE = 'http://mocal.cn/file/MF20160303163537835?size=256'
+    PHOTO_DEFAULT_SECRET = 'http://mocal.cn/file/MF20160303163719570?size=256'
 
 
 class ProductionConfig(Config):

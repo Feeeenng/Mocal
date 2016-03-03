@@ -88,7 +88,9 @@ def show_file(file_id):
         img_op.resize(size, size)
         io = img_op.save_io()
     else:
-        io = StringIO(mf.file_obj.read())
+        img_op = ImgOperate(mf.file_obj)
+        img_op.water_mark(img_op.im)
+        io = img_op.save_io()
     return send_file(io, mimetype=mf.mimetype)  # 指定相关mimetype
 
 
