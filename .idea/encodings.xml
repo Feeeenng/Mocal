@@ -3,6 +3,13 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/mocal/static/font/STHUPO.TTF" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/mocal/static/icon/mocal.ico" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mocal/static/image/error/403.jpg" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mocal/static/image/error/404.jpg" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mocal/static/image/error/500.jpg" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mocal/static/image/user/default_female.jpg" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mocal/static/image/user/default_male.jpg" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mocal/static/image/user/default_secret.jpg" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mocal/static/js/ajaxfileupload.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/mocal/static/logo/mocal128.png" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/mocal/static/logo/mocal16.png" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/mocal/static/logo/mocal256.png" charset="UTF-8" />
