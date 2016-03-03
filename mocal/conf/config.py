@@ -52,7 +52,7 @@ class DevelopmentConfig(Config):
 
 
 class ProductionConfig(Config):
-    SERVER_NAME = 'mocal.cn'
+    DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'mysql+mysqldb://root:haner27@127.0.0.1:3306/mocal?charset=utf8'
 
     # mongo数据库名
