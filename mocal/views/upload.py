@@ -11,6 +11,7 @@ from flask_login import login_required
 from mocal.views import res
 from mocal.mongo_models.mocal_file import MocalFile
 from mocal.utils.md5 import MD5
+from mocal.utils.image_operate import ImgOperate
 from mocal.constant import ALLOWED_FORMATS, ALLOWED_MAX_SIZE
 from mocal.error import Error
 
@@ -80,8 +81,14 @@ def download_file(file_id):
 
 @instance.route('/file/<file_id>', methods=['GET'])
 def show_file(file_id):
+    size = request.args.get('size', 0, int)
     mf = MocalFile.objects.with_id(file_id)
-    io = StringIO(mf.file_obj.read())
+    if size:
+        img_op = ImgOperate(mf.file_obj)
+        img_op.resize(size, size)
+        io = img_op.save_io()
+    else:
+        io = StringIO(mf.file_obj.read())
     return send_file(io, mimetype=mf.mimetype)  # 指定相关mimetype
 
 

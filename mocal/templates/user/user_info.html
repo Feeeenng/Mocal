@@ -35,7 +35,7 @@
                 data:{name: 'file'},
                 success: function (data, status) {
                     if(data.result){
-                        var url = data['detail']['url'];
+                        var url = data['detail']['url'] + '?size=255';
                         $('#photo_url').attr('src', url);
                         $('#url').val(url);
                     }else{

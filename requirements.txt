@@ -6,6 +6,7 @@ rq
 pypinyin
 mysql-python
 pymongo
+Pillow
 mongoengine
 flask
 flask-login
