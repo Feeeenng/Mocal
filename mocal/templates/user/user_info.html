@@ -17,9 +17,39 @@
     <script src="static/js/ajaxfileupload.js"></script>
     <script>
         $(document).ready(function(){
-            $('.image').dimmer({
+            $('#dimmer').dimmer({
                 on: 'hover'
             });
+
+            $('#gender_field').dropdown('set selected', '{{ user.gender }}');
+            $('#year').dropdown('set selected', {{ year }});
+            $('#month').dropdown('set selected', {{ month }});
+            $('input[name="month"]').change(function(){
+                var year = $('input[name="year"]').val();
+                var month = $(this).val();
+                var data = {
+                    'year': year,
+                    'month': month
+                };
+                var url = "{{ url_for('service.get_days') }}";
+                $.ajax({
+                    url : url,
+                    type : "post",
+                    data: data,
+                    dataType : 'JSON',
+                    success : function(result) {
+                        var days = result['days'];
+                        $('.days').remove();
+
+                        for(var i in days){
+                            console.log(i);
+                            $('#days_menu').append('<div class="days item" data-value="' + days[i] + '">' + days[i] + '</div>');
+                        }
+                    }
+                });
+            });
+
+            $('#day').dropdown('set selected', {{ day }});
         });
 
         function fileSelect(){
@@ -27,6 +57,7 @@
         }
 
         function upload_photo(){
+            $('#loading').show();
             $.ajaxFileUpload({
                 url: "{{ url_for('upload.upload_file') }}",
                 secureuri:false,
@@ -34,6 +65,7 @@
                 dataType:'json',
                 data:{name: 'file'},
                 success: function (data, status) {
+                    $('#loading').hide();
                     if(data.result){
                         var url = data['detail']['url'] + '?size=255';
                         $('#photo_url').attr('src', url);
@@ -43,6 +75,7 @@
                     }
                 },
                 error: function (data, status, e) {
+                    $('#loading').hide();
                     showMsg(e, 1500);
                 }
             });
@@ -67,9 +100,11 @@
                     <input name="photo" type="hidden" value="" id="url">
                 </div>
 
-
                 <div class="ui small circular image" style="margin-bottom: 3%">
-                    <div class="ui dimmer">
+                    <div class="ui active dimmer" style="display: none" id="loading">
+                        <div class="ui text loader">记载中</div>
+                    </div>
+                    <div class="ui dimmer" id="dimmer">
                         <div class="content">
                             <div class="center">
                                 <div class="ui small primary button" onclick="fileSelect();">修改头像</div>
@@ -79,9 +114,9 @@
                     <img src="{{ photo_default }}" id="photo_url">
                 </div>
 
+                <h6 class="ui horizontal divider header"><i class="user icon"></i> 昵称 </h6>
 
                 <div class="field" id="nickname_field">
-                    <label>昵称</label>
                     <div class="ui left icon input">
                         <input placeholder="昵称" name="nickname" type="text" maxlength="20"
                                id="nickname" value="{{ current_user.nickname }}">
@@ -89,11 +124,82 @@
                     </div>
                 </div>
 
+                <h6 class="ui horizontal divider header"><i class="write square icon"></i> 签名 </h6>
+
                 <div class="field" id="desc">
-                    <label>个性签名</label>
                     <div class="ui left icon input">
                         <input placeholder="个性签名" name="desc" type="text" style="height: 10%" maxlength="20" id="desc">
                         <i class="write square icon"></i>
+                    </div>
+                </div>
+
+                <h6 class="ui horizontal divider header"><i class="intergender icon"></i> 性别 </h6>
+
+                <div class="field">
+                    <div class="ui selection dropdown" id="gender_field">
+                        <input name="gender" type="hidden" value="secret">
+                        <div class="default text">性别</div>
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <div class="item" data-value="secret">
+                                <i class="spy icon"></i>保密
+                            </div>
+                            <div class="item" data-value="male">
+                                <i class="male icon"></i>男
+                            </div>
+                            <div class="item" data-value="female">
+                                <i class="female icon"></i>女
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h6 class="ui horizontal divider header"><i class="birthday icon"></i> 生日 </h6>
+                <div class="three fields">
+                    <div class="field">
+                        <label>年</label>
+                        <div class="ui selection dropdown" id="year">
+                            <input name="year" type="hidden">
+                            <div class="default text">年</div>
+                            <i class="dropdown icon"></i>
+                            <div class="menu">
+                                {% for y in years %}
+                                    <div class="item" data-value={{ y }}>
+                                        {{ y }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>月</label>
+                        <div class="ui selection dropdown" id="month">
+                            <input name="month" type="hidden">
+                            <div class="default text">月</div>
+                            <i class="dropdown icon"></i>
+                            <div class="menu">
+                                {% for m in months %}
+                                    <div class="item" data-value={{ m }}>
+                                        {{ m }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>日</label>
+                        <div class="ui selection dropdown" id="day">
+                            <input name="day" type="hidden">
+                            <div class="default text">日</div>
+                            <i class="dropdown icon"></i>
+                            <div class="menu" id="days_menu">
+                                {% for d in days %}
+                                    <div class="days item" data-value={{ d }}>
+                                        {{ d }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
                 </div>
 
