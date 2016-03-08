@@ -23,13 +23,12 @@ elif [ $1 = stop ];then
         echo "mocald is stopped!"
         exit 0
     else
-        killall -9 uwsgi
+        uwsgi --stop /data/Mocal/mocal/mocal.pid
         echo "Stop mocald service [OK]"
     fi
 
 elif [ $1 = restart ];then
-    killall -9 uwsgi
-    uwsgi --ini /data/Mocal/mocal/conf/uwsgi-mocal.production.ini
+    uwsgi --reload /data/Mocal/mocal/mocal.pid
     echo "Restart mocald service [OK]"
 
 elif [ $1 = update ];then
