@@ -31,15 +31,11 @@ def user_info():
         years = [y for y in xrange(now.year, now.year - 120, -1)]
         months = [m for m in xrange(1, 13)]
 
-        birthday = user_info.birthday
-        year = 0
-        month = 0
-        day = 0
+        year = user_info.year
+        month = user_info.month
+        day = user_info.day
         days = []
-        if birthday:
-            year = birthday.year
-            month = birthday.month
-            day = birthday.day
+        if year and month:
             days = get_days_by_year_and_month(year, month)
 
         constellation = user_info.constellation or 0
@@ -61,7 +57,15 @@ def user_info():
     current_user.gender = gender
     current_user.user_info.photo = photo
     current_user.user_info.desc = desc
-    current_user.user_info.birthday = datetime(year=year, month=month, day=day)
+    current_user.user_info.year = year
+    current_user.user_info.month = month
+    current_user.user_info.day = day
+
+    if year and month and day:
+        current_user.user_info.birthday = datetime(year=year, month=month, day=day)
+    else:
+        current_user.user_info.birthday = None
+
     current_user.user_info.constellation = constellation
     current_user.save()
 

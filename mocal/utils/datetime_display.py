@@ -68,6 +68,9 @@ constellations = {
 
 
 def get_constellation_by_month_and_day(month, day):
+    if not month or not day:
+        return 0
+
     dt = datetime.datetime(year=2016, month=month, day=day)
     if dt >= datetime.datetime(year=2016, month=1, day=21) and dt <= datetime.datetime(year=2016, month=2, day=19):
         return 1

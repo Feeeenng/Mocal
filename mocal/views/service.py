@@ -18,7 +18,9 @@ def before_request():
 def get_days():
     year = request.form.get('year', 0, int)
     month = request.form.get('month', 0, int)
-    days = get_days_by_year_and_month(year, month)
+    days = []
+    if year and month:
+        days = get_days_by_year_and_month(year, month)
     return jsonify(success=True, days=days)
 
 

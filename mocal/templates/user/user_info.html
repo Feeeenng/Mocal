@@ -23,6 +23,18 @@
 
             $('#gender_field').dropdown('set selected', '{{ user.gender }}');
             $('#year').dropdown('set selected', "{{ year }}");
+            $('input[name="year"]').change(function() {
+                var year = $(this).val();
+                $('.months').remove();
+                if(year!='0'){
+                    var months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+                    for(var i in months){
+                        $('#months_menu').append('<div class="months item" data-value="' + months[i] + '">' + months[i] + '</div>');
+                    }
+                }
+                $('#month').dropdown('set selected', "0");
+            });
+
             $('#month').dropdown('set selected', "{{ month }}");
             $('input[name="month"]').change(function(){
                 var year = $('input[name="year"]').val();
@@ -42,15 +54,14 @@
                         $('.days').remove();
 
                         for(var i in days){
-                            console.log(i);
                             $('#days_menu').append('<div class="days item" data-value="' + days[i] + '">' + days[i] + '</div>');
                         }
+                        $('#day').dropdown('set selected', "0");
                     }
                 });
             });
 
             $('#day').dropdown('set selected', "{{ day }}");
-
             $('input[name="day"]').change(function(){
                 var month = $('input[name="month"]').val();
                 var day = $(this).val();
@@ -113,7 +124,7 @@
     <div class="qz">
     </div>
     <div class="ui main container">
-        <div class="ui piled segments">
+        <div class="ui piled segments" style="width: 70%;left: 15%">
             <h5 class="ui top attached header">用户信息</h5>
             <form class="ui form teal segment" action="{{ url_for('user.user_info') }}" method="post" id="user_info">
                 <div class="field">
@@ -139,6 +150,14 @@
                     </div>
                     <img src="{{ photo_default }}?size=255" id="photo_url">
                 </div>
+
+                <h2 class="ui header">
+                    <div class="content">
+                        <div class="sub header">
+                            {{ current_user.email }}
+                        </div>
+                    </div>
+                </h2>
 
                 <h6 class="ui horizontal divider header"><i class="user icon"></i> 昵称 </h6>
 
@@ -202,24 +221,26 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="field">
                         <label>月</label>
                         <div class="ui selection dropdown" id="month">
                             <input name="month" type="hidden" value="{{ month }}">
                             <div class="default text">月</div>
                             <i class="dropdown icon"></i>
-                            <div class="menu">
+                            <div class="menu" id="months_menu">
                                 <div class="item" data-value=0>
                                     保密
                                 </div>
                                 {% for m in months %}
-                                    <div class="item" data-value={{ m }}>
+                                    <div class="months item" data-value={{ m }}>
                                         {{ m }}
                                     </div>
                                 {% endfor %}
                             </div>
                         </div>
                     </div>
+
                     <div class="field">
                         <label>日</label>
                         <div class="ui selection dropdown" id="day">
