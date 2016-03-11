@@ -19,35 +19,6 @@
     {{ super() }}
     <script>
         $(document).ready(function () {
-            // 定义semantic 表单验证的方法  自定义哦
-            $.fn.form.settings.rules.checkNickname = function(nickname){
-                var flag = false;
-                $.ajax({
-                    async : false,
-                    url: "{{ url_for('auth.check_nickname', nickname='') }}" + nickname,
-                    type: "GET",
-                    dataType   : "json",
-                    success: function(ret){
-                        flag = ret["detail"];
-                    }
-                });
-                return !flag;
-            };
-
-            $.fn.form.settings.rules.checkEmail = function(email){
-                var flag = false;
-                $.ajax({
-                    async : false,
-                    url: "{{ url_for('auth.check_email', email='') }}" + email,
-                    type: "GET",
-                    dataType   : "json",
-                    success: function(ret){
-                        flag = ret["detail"];
-                    }
-                });
-                return !flag;
-            };
-
             $('#register_btn').click(function(){
                 $('#register').submit();
             });

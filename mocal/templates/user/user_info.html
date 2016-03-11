@@ -82,10 +82,68 @@
                 });
             });
 
+            $('#desc').keyup(function(){
+                var desc = $(this).val();
+                var desc_count = desc.length;
+                if(desc_count>120){
+                    $('#desc_count').css('color', 'red');
+                    $('#desc_count').html(desc_count+'/120');
+                }else{
+                    $('#desc_count').css('color', 'black');
+                    $('#desc_count').html(desc_count+'/120');
+                }
+            });
+
             $('#constellation_field').dropdown('set selected', "{{ constellation }}");
 
             $('#submit_btn').click(function(){
                 $('#user_info').submit();
+            });
+
+            $('#user_info').form({
+                nickname:{
+                    identifier: 'nickname',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '起一个炫酷的昵称吧！'
+                        },
+                        {
+                            type: 'maxLength[10]',
+                            prompt: '昵称再炫酷也不能超过10位！'
+                        },
+                        {
+                            type   : 'regExp[/^[\u4E00-\u9FA5A-Za-z0-9_]*$/]',
+                            prompt : '昵称不能含有非法字符'
+                        },
+                        {
+                            type : 'checkNickname',
+                            prompt : '昵称已存在！'
+                        }
+                    ]
+                },
+                url:{
+                    identifier: 'url',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '好歹晒张照片吧！'
+                        }
+                    ]
+                },
+                desc:{
+                    identifier: 'desc',
+                    rules: [
+                        {
+                            type: 'maxLength[120]',
+                            prompt: '个性签名超过120个字就不个性了！'
+                        }
+                    ]
+                }
+            },
+            {
+                on: 'submit',
+                inline: true
             });
         });
 
@@ -171,11 +229,12 @@
 
                 <h6 class="ui horizontal divider header"><i class="write square icon"></i> 签名 </h6>
 
-                <div class="field" id="desc">
-                    <div class="ui left icon input">
+                <div class="field" id="desc_field">
+                    <div class="ui left icon right labeled input">
                         <input placeholder="个性签名" name="desc" type="text" style="height: 10%"
-                               maxlength="20" id="desc" value="{{ desc }}">
+                               id="desc" value="{{ desc }}" maxlength="140">
                         <i class="write square icon"></i>
+                        <div class="ui basic label" id="desc_count">{{ desc_count }}/120</div>
                     </div>
                 </div>
 

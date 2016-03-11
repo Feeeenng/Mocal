@@ -42,19 +42,17 @@ def user_info():
 
         return render_template('user/user_info.html', photo_default=photo_default, user=current_user, months=months,
                                years=years, days=days, year=year, month=month, day=day, constellation=constellation,
-                               constellations=constellations.items(), desc=desc)
+                               constellations=constellations.items(), desc=desc, desc_count=len(desc))
 
     photo = request.form.get('photo')
     nickname = request.form.get('nickname')
     desc = request.form.get('desc')
-    gender = request.form.get('gender')
     year = request.form.get('year', 0, int)
     month = request.form.get('month', 0, int)
     day = request.form.get('day', 0, int)
     constellation = request.form.get('constellation', 0, int)
 
     current_user.nickname = nickname
-    current_user.gender = gender
     current_user.user_info.photo = photo
     current_user.user_info.desc = desc
     current_user.user_info.year = year

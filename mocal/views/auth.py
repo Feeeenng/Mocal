@@ -175,6 +175,10 @@ def check_nickname(nickname):
     user = User.from_db(nickname=nickname, status=1)
     if not user:
         return res(data=False)
+
+    if hasattr(current_user, 'id'):
+        if current_user.id == user.id:
+            return res(data=False)
     return res(data=True)
 
 
