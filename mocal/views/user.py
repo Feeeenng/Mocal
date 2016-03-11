@@ -25,7 +25,7 @@ def user_info():
     if request.method == 'GET':
         user_info = current_user.user_info
         photo_default = user_info.photo
-        desc = user_info.desc
+        desc = user_info.desc or ''
 
         now = datetime.now()
         years = [y for y in xrange(now.year, now.year - 120, -1)]
