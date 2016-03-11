@@ -52,7 +52,6 @@ def get_days_by_year_and_month(year, month):
 
 
 constellations = {
-    0: u'未知',
     1: u'水瓶座',
     2: u'双鱼座',
     3: u'白羊座',
@@ -68,7 +67,7 @@ constellations = {
 }
 
 
-def get_constellation(month, day):
+def get_constellation_by_month_and_day(month, day):
     dt = datetime.datetime(year=2016, month=month, day=day)
     if dt >= datetime.datetime(year=2016, month=1, day=21) and dt <= datetime.datetime(year=2016, month=2, day=19):
         return 1

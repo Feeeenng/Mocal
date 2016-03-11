@@ -4,6 +4,7 @@ from flask import Blueprint, render_template, url_for, request, redirect, sessio
 from flask.ext.login import login_user, logout_user, login_required
 from mocal.views import res, check_filed_type_and_length
 from mocal.models.user import User
+from mocal.models.user_info import UserInfo
 from mocal.error import Error
 from mocal.utils.md5 import MD5
 from mocal.utils.email import Email
@@ -128,6 +129,15 @@ def register():
 
     user = User(**params)
     user.save(add=True)
+
+    if gender == 'male':
+        photo = current_app.config.get('PHOTO_DEFAULT_MALE')
+    elif gender == 'female':
+        photo = current_app.config.get('PHOTO_DEFAULT_FEMALE')
+    else:
+        photo = current_app.config.get('PHOTO_DEFAULT_SECRET')
+    user_info = UserInfo(uid=user.id, photo=photo)
+    user_info.save(add=True)
 
     # generate confirm token
     token = user.generate_confirmation_token()

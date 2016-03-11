@@ -22,8 +22,8 @@
             });
 
             $('#gender_field').dropdown('set selected', '{{ user.gender }}');
-            $('#year').dropdown('set selected', {{ year }});
-            $('#month').dropdown('set selected', {{ month }});
+            $('#year').dropdown('set selected', "{{ year }}");
+            $('#month').dropdown('set selected', "{{ month }}");
             $('input[name="month"]').change(function(){
                 var year = $('input[name="year"]').val();
                 var month = $(this).val();
@@ -49,7 +49,33 @@
                 });
             });
 
-            $('#day').dropdown('set selected', {{ day }});
+            $('#day').dropdown('set selected', "{{ day }}");
+
+            $('input[name="day"]').change(function(){
+                var month = $('input[name="month"]').val();
+                var day = $(this).val();
+                var data = {
+                    'day': day,
+                    'month': month
+                };
+                var url = "{{ url_for('service.get_constellation') }}";
+                $.ajax({
+                    url : url,
+                    type : "post",
+                    data: data,
+                    dataType : 'JSON',
+                    success : function(result) {
+                        var constellation = result['constellation'];
+                        $('#constellation_field').dropdown('set selected', ""+constellation);
+                    }
+                });
+            });
+
+            $('#constellation_field').dropdown('set selected', "{{ constellation }}");
+
+            $('#submit_btn').click(function(){
+                $('#user_info').submit();
+            });
         });
 
         function fileSelect(){
@@ -69,7 +95,7 @@
                     if(data.result){
                         var url = data['detail']['url'] + '?size=255';
                         $('#photo_url').attr('src', url);
-                        $('#url').val(url);
+                        $('#url').val(data['detail']['url']);
                     }else{
                         alert(data['msg']);
                     }
@@ -88,8 +114,8 @@
     </div>
     <div class="ui main container">
         <div class="ui piled segments">
-            <h5 class="ui top attached header">用户管理</h5>
-            <form class="ui form teal segment" action="" method="post">
+            <h5 class="ui top attached header">用户信息</h5>
+            <form class="ui form teal segment" action="{{ url_for('user.user_info') }}" method="post" id="user_info">
                 <div class="field">
                     <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
                 </div>
@@ -97,7 +123,7 @@
                 <input type="file" name="file" style="display: none" id="photo" onchange="upload_photo()">
 
                 <div class="field" id="photo_field">
-                    <input name="photo" type="hidden" value="" id="url">
+                    <input name="photo" type="hidden" value="{{ photo_default }}" id="url">
                 </div>
 
                 <div class="ui small circular image" style="margin-bottom: 3%">
@@ -111,7 +137,7 @@
                             </div>
                         </div>
                     </div>
-                    <img src="{{ photo_default }}" id="photo_url">
+                    <img src="{{ photo_default }}?size=255" id="photo_url">
                 </div>
 
                 <h6 class="ui horizontal divider header"><i class="user icon"></i> 昵称 </h6>
@@ -128,7 +154,8 @@
 
                 <div class="field" id="desc">
                     <div class="ui left icon input">
-                        <input placeholder="个性签名" name="desc" type="text" style="height: 10%" maxlength="20" id="desc">
+                        <input placeholder="个性签名" name="desc" type="text" style="height: 10%"
+                               maxlength="20" id="desc" value="{{ desc }}">
                         <i class="write square icon"></i>
                     </div>
                 </div>
@@ -155,14 +182,18 @@
                 </div>
 
                 <h6 class="ui horizontal divider header"><i class="birthday icon"></i> 生日 </h6>
+
                 <div class="three fields">
                     <div class="field">
                         <label>年</label>
                         <div class="ui selection dropdown" id="year">
-                            <input name="year" type="hidden">
+                            <input name="year" type="hidden" value="{{ year }}">
                             <div class="default text">年</div>
                             <i class="dropdown icon"></i>
                             <div class="menu">
+                                <div class="item" data-value=0>
+                                    保密
+                                </div>
                                 {% for y in years %}
                                     <div class="item" data-value={{ y }}>
                                         {{ y }}
@@ -174,10 +205,13 @@
                     <div class="field">
                         <label>月</label>
                         <div class="ui selection dropdown" id="month">
-                            <input name="month" type="hidden">
+                            <input name="month" type="hidden" value="{{ month }}">
                             <div class="default text">月</div>
                             <i class="dropdown icon"></i>
                             <div class="menu">
+                                <div class="item" data-value=0>
+                                    保密
+                                </div>
                                 {% for m in months %}
                                     <div class="item" data-value={{ m }}>
                                         {{ m }}
@@ -189,10 +223,13 @@
                     <div class="field">
                         <label>日</label>
                         <div class="ui selection dropdown" id="day">
-                            <input name="day" type="hidden">
+                            <input name="day" type="hidden" value="{{ day }}">
                             <div class="default text">日</div>
                             <i class="dropdown icon"></i>
                             <div class="menu" id="days_menu">
+                                <div class="item" data-value=0>
+                                    保密
+                                </div>
                                 {% for d in days %}
                                     <div class="days item" data-value={{ d }}>
                                         {{ d }}
@@ -200,6 +237,33 @@
                                 {% endfor %}
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <h6 class="ui horizontal divider header"><i class="star icon"></i> 星座 </h6>
+
+                <div class="field">
+                    <div class="ui selection dropdown" id="constellation_field">
+                        <input name="constellation" type="hidden" value="{{ constellation }}">
+                        <div class="default text">星座</div>
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <div class="item" data-value="0">
+                                保密
+                            </div>
+                            {% for k, v in constellations %}
+                                <div class="item" data-value={{ k }}>
+                                    {{ v }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ui fluid animated teal submit button" tabindex="0" id="submit_btn">
+                    <div class="visible content">提交个人信息</div>
+                    <div class="hidden content">
+                        <i class="signup icon"></i>
                     </div>
                 </div>
 

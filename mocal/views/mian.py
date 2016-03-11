@@ -1,6 +1,5 @@
 # -*- coding: utf8 -*-
 from flask import Blueprint, render_template, request
-from mocal.models.upload import Upload
 from datetime import datetime, timedelta
 
 instance = Blueprint('main', __name__)

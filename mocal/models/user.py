@@ -48,6 +48,10 @@ class User(UserMixin, DatabaseObject):
     def logout(self):
         self.sign_out_at = datetime.now()
 
+    def photo(self, size=16):
+        photo = '{0}?size={1}'.format(self.user_info.photo, size)
+        return photo
+
     @property
     def privileges_list(self):
         return self.privileges.split(',')  # todo

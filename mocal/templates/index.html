@@ -33,6 +33,10 @@
                     $('#main_logo').transition('remove looping');
                 });
 
+                $('.user_detail').click(function(){
+                    location.href = "{{ url_for('user.user_info') }}";
+                });
+
             });
         </script>
     {% endblock %}
@@ -91,11 +95,12 @@
                     </div>
                 {% else %}
                     <div class="item">
-                        <div class="ui image label">
-                            <img src="{{ url_for('static', filename='logo/mocal32.png') }}">
+                        <a class="ui label">
+                            <img class="ui right spaced avatar image user_detail" src="{{ current_user.photo(32) }}">
                             {{ current_user.nickname }}
-                            <i class="delete icon" onclick="location.href='{{ url_for('auth.logout') }}'"></i>
-                        </div>
+                            <i class="delete icon" style="cursor: pointer"
+                           onclick="location.href='{{ url_for('auth.logout') }}'"></i>
+                        </a>
                     </div>
                 {% endif %}
             </div>

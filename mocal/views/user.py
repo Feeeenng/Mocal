@@ -2,10 +2,10 @@
 
 from datetime import datetime
 
-from flask import Blueprint, request, render_template, abort, session, current_app
+from flask import Blueprint, request, render_template, abort, session, redirect, url_for, flash
 from flask_login import login_required, current_user
 
-from mocal.utils.datetime_display import get_days_by_year_and_month
+from mocal.utils.datetime_display import get_days_by_year_and_month, constellations
 
 instance = Blueprint('user', __name__)
 
@@ -23,23 +23,50 @@ def before_request():
 @instance.route('/user_info', methods=['GET', 'POST'])
 def user_info():
     if request.method == 'GET':
-        gender = current_user.gender
-        if gender == 'male':
-            photo_default = current_app.config.get('PHOTO_DEFAULT_MALE')
-        elif gender == 'female':
-            photo_default = current_app.config.get('PHOTO_DEFAULT_FEMALE')
-        else:
-            photo_default = current_app.config.get('PHOTO_DEFAULT_SECRET')
+        user_info = current_user.user_info
+        photo_default = user_info.photo
+        desc = user_info.desc
 
-        created_at = current_user.created_at
         now = datetime.now()
         years = [y for y in xrange(now.year, now.year - 120, -1)]
         months = [m for m in xrange(1, 13)]
 
-        year = created_at.year
-        month = created_at.month
-        day = created_at.day
+        birthday = user_info.birthday
+        year = 0
+        month = 0
+        day = 0
+        days = []
+        if birthday:
+            year = birthday.year
+            month = birthday.month
+            day = birthday.day
+            days = get_days_by_year_and_month(year, month)
 
-        days = get_days_by_year_and_month(year, month)
+        constellation = user_info.constellation or 0
+
         return render_template('user/user_info.html', photo_default=photo_default, user=current_user, months=months,
-                               years=years, days=days, year=year, month=month, day=day)
+                               years=years, days=days, year=year, month=month, day=day, constellation=constellation,
+                               constellations=constellations.items(), desc=desc)
+
+    photo = request.form.get('photo')
+    nickname = request.form.get('nickname')
+    desc = request.form.get('desc')
+    gender = request.form.get('gender')
+    year = request.form.get('year', 0, int)
+    month = request.form.get('month', 0, int)
+    day = request.form.get('day', 0, int)
+    constellation = request.form.get('constellation', 0, int)
+
+    current_user.nickname = nickname
+    current_user.gender = gender
+    current_user.user_info.photo = photo
+    current_user.user_info.desc = desc
+    current_user.user_info.birthday = datetime(year=year, month=month, day=day)
+    current_user.user_info.constellation = constellation
+    current_user.save()
+
+    flash('个人信息修改完毕！')
+    return redirect(url_for('user.user_info'))
+
+
+
