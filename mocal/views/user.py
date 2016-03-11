@@ -4,7 +4,9 @@ from datetime import datetime
 
 from flask import Blueprint, request, render_template, abort, session, redirect, url_for, flash
 from flask_login import login_required, current_user
+from mocal.error import Error
 
+from mocal.views import res
 from mocal.utils.datetime_display import get_days_by_year_and_month, constellations
 
 instance = Blueprint('user', __name__)
@@ -22,14 +24,15 @@ def before_request():
 
 @instance.route('/user_info', methods=['GET', 'POST'])
 def user_info():
+    now = datetime.now()
+    years = [y for y in xrange(now.year, now.year - 120, -1)]
+    months = [m for m in xrange(1, 13)]
+    user_info = current_user.user_info
+
     if request.method == 'GET':
-        user_info = current_user.user_info
+
         photo_default = user_info.photo
         desc = user_info.desc or ''
-
-        now = datetime.now()
-        years = [y for y in xrange(now.year, now.year - 120, -1)]
-        months = [m for m in xrange(1, 13)]
 
         year = user_info.year
         month = user_info.month
@@ -52,19 +55,30 @@ def user_info():
     day = request.form.get('day', 0, int)
     constellation = request.form.get('constellation', 0, int)
 
+    # 参数检查
+    if not nickname and not photo:
+        return res(code=Error.PARAMS_REQUIRED)
+
     current_user.nickname = nickname
     current_user.user_info.photo = photo
     current_user.user_info.desc = desc
-    current_user.user_info.year = year
-    current_user.user_info.month = month
-    current_user.user_info.day = day
+    if year in [0] + years:
+        current_user.user_info.year = year
+
+    if month not in [0] + months:
+        current_user.user_info.month = month
+
+    if day not in [x for x in xrange(0, 32)]:
+        current_user.user_info.day = day
 
     if year and month and day:
         current_user.user_info.birthday = datetime(year=year, month=month, day=day)
     else:
         current_user.user_info.birthday = None
 
-    current_user.user_info.constellation = constellation
+    if constellation not in [x for x in xrange(0, 13)]:
+        current_user.user_info.constellation = constellation
+
     current_user.save()
 
     flash('个人信息修改完毕！')

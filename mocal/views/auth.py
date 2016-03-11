@@ -109,6 +109,9 @@ def register():
         if not is_checked:
             return res(code=code)
 
+    if gender not in['secret', 'male', 'female']:
+        gender = 'secret'
+
     user = User.from_db(email=email)
     if user:
         msgs.append(Error.error_map.get(Error.REGISTER_EMAIL_IS_EXISTED))

@@ -191,10 +191,6 @@
 
                 <input type="file" name="file" style="display: none" id="photo" onchange="upload_photo()">
 
-                <div class="field" id="photo_field">
-                    <input name="photo" type="hidden" value="{{ photo_default }}" id="url">
-                </div>
-
                 <div class="ui small circular image" style="margin-bottom: 3%">
                     <div class="ui active dimmer" style="display: none" id="loading">
                         <div class="ui text loader">记载中</div>
@@ -207,6 +203,10 @@
                         </div>
                     </div>
                     <img src="{{ photo_default }}?size=255" id="photo_url">
+                </div>
+
+                <div class="field" id="photo_field">
+                    <input name="photo" type="hidden" value="{{ photo_default }}" id="url">
                 </div>
 
                 <h2 class="ui header">
@@ -265,7 +265,7 @@
                     <div class="field">
                         <label>年</label>
                         <div class="ui selection dropdown" id="year">
-                            <input name="year" type="hidden" value="{{ year }}">
+                            <input name="year" type="hidden">
                             <div class="default text">年</div>
                             <i class="dropdown icon"></i>
                             <div class="menu">
@@ -284,7 +284,7 @@
                     <div class="field">
                         <label>月</label>
                         <div class="ui selection dropdown" id="month">
-                            <input name="month" type="hidden" value="{{ month }}">
+                            <input name="month" type="hidden">
                             <div class="default text">月</div>
                             <i class="dropdown icon"></i>
                             <div class="menu" id="months_menu">
@@ -303,7 +303,7 @@
                     <div class="field">
                         <label>日</label>
                         <div class="ui selection dropdown" id="day">
-                            <input name="day" type="hidden" value="{{ day }}">
+                            <input name="day" type="hidden">
                             <div class="default text">日</div>
                             <i class="dropdown icon"></i>
                             <div class="menu" id="days_menu">

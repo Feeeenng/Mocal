@@ -46,7 +46,7 @@ def get_days_by_year_and_month(year, month):
         else:
             days = 28
     else:
-        pass
+        return []
 
     return [d for d in xrange(1, days + 1)]
 
