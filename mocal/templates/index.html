@@ -97,7 +97,7 @@
                     <div class="item">
                         <a class="ui label">
                             <img class="ui right spaced avatar image user_detail" src="{{ current_user.photo(32) }}">
-                            {{ current_user.nickname }}
+                            <b class="user_detail">{{ current_user.nickname }}</b>
                             <i class="delete icon" style="cursor: pointer"
                            onclick="location.href='{{ url_for('auth.logout') }}'"></i>
                         </a>
