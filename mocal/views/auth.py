@@ -64,6 +64,7 @@ def login():
 
     # 登录
     login_user(user, remember=remember_me)
+    user.sign_in_ip = request.remote_addr
     user.login()
     user.save()
 
