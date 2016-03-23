@@ -14,3 +14,4 @@ flask-email
 flask-script
 flask-sqlalchemy
 flask-cache
+flask-socketio

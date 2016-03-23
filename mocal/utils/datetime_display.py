@@ -110,3 +110,25 @@ def get_constellation_by_month_and_day(month, day):
 
     else:
         return 0
+
+
+def now_lambda():
+    return datetime.datetime.now()
+
+
+def weekday():
+    return datetime.datetime.now().weekday() + 1
+
+
+def format_datetime(dt, format='%Y-%m-%d %H:%M:%S'):
+    if not dt:
+        return ''
+    return dt.strftime(format)
+
+
+def to_datetime(dt_str, format='%Y-%m-%d %H:%M:%S'):
+    # noinspection PyBroadException
+    try:
+        return datetime.datetime.strptime(dt_str, format)
+    except:
+        return None

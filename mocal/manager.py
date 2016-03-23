@@ -2,7 +2,7 @@
 from flask import g
 from flask_login import current_user
 from flask_script import Manager, Server
-from mocal import create_app
+from mocal import create_app, socket_io
 
 
 '''
@@ -27,8 +27,9 @@ def teardown_request(exception):
     pass
 
 
-manager = Manager(mocal_app)
-manager.add_command("runserver", Server(threaded=True))
+# manager = Manager(mocal_app)
+# manager.add_command("runserver", Server(threaded=True))
 
 if __name__ == '__main__':
-    manager.run()
+    # manager.run()
+    socket_io.run(mocal_app)

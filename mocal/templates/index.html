@@ -73,7 +73,7 @@
     {% endblock %}
 </head>
 
-<body style="background-image: url(http://www.h-ui.net/bg/images/gray/019.gif);text-align: center">
+<body style="background-image: url('{{ get_today_bg() }}');text-align: center">
     {% block navigation %}  <!-- 导航区 -->
         <div class="ui top fixed menu">
             <div class="left menu">
@@ -167,7 +167,6 @@
             </div>
 
             <div class="ui horizontal divider">Or</div>
-
             <div class="ui teal labeled icon button">
                 发起话题 <i class="add icon"></i>
             </div>

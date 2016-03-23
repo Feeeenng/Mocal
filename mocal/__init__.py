@@ -8,9 +8,10 @@ from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_cache import Cache
 from flask_login import LoginManager
+from flask_socketio import SocketIO
 
 from mocal.conf.config import config
-from utils.csrf_token import generate_csrf_token
+from utils.jinjia_env_func import generate_csrf_token, get_today_bg
 from mongoengine import connect
 
 
@@ -62,6 +63,7 @@ def import_instance(instance_name):
 mail = Mail()
 db = DataBase()
 cache = Cache()
+socket_io = SocketIO()
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.login'
@@ -86,7 +88,9 @@ def create_app(config_name):
 
     # 防跨站式攻击
     app.jinja_env.globals['csrf_token'] = generate_csrf_token
+    app.jinja_env.globals['get_today_bg'] = get_today_bg
 
     # 蓝图注册
     config_blueprint(app)
+    socket_io.init_app(app)
     return app
