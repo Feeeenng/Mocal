@@ -46,31 +46,45 @@
                     $('#msg_send').click()
                 }
             });
-
+            var current_uid = {{ current_user.id|tojson }};
+            var group_id = {{ topic.id|tojson }};
+            socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
+            socket.on('connect', function() {
+                socket.emit('join', {'uid': current_uid, 'group_id': group_id});
+            });
             $('#msg_send').click(function(){
                 var msg = $('#msg_content').val();
                 $('#msg_content').val('');
-                socket.emit('text', {msg: msg, 'uid': 55, 'group_id': 1});
-            });
-
-            socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
-            socket.on('connect', function() {
-                socket.emit('join', {'uid': 55, 'group_id': 1});
+                socket.emit('text', {msg: msg, 'uid': current_uid, 'group_id': group_id});
             });
             socket.on('status', function(data) {
-                $('#msg_list').append('<div class="ui horizontal divider" style="color:#999999;">' + data['msg'] + ' ' + data['datetime'] + '</div>');
+                if(current_uid!=data['uid']){
+                    $('#msg_list').append('<div class="ui horizontal divider" style="color:#999999;">' + data['msg'] + ' ' + data['datetime'] + '</div>');
+                }
             });
             socket.on('message', function(data) {
-                $('#msg_list').append('<div class="item msg_item my_msg">' +
-                    '<div class="ui teal inverted middle aligned segment">' +
-                    '<div class="ui grid"><div class="two column row">' +
-                    '<div class="left floated column" style="text-align: left">' +
-                    '<p class="header"><a class="a-text">' +
-                    '<img class="ui avatar image" src="'+data['photo']+'">'+data['nickname']+
-                    '</a></p></div><div class="right floated column" style="text-align: right">'+
-                    data['datetime']+'</div></div><div class="row"><div class="sixteen wide column text_msg">'+
-                    '<p>'+data['msg']+'</p></div></div></div></div></div>');
-
+                var uid = data['uid'];
+                if(current_uid == uid){
+                    $('#msg_list').append('<div class="item msg_item my_msg">' +
+                        '<div class="ui teal inverted middle aligned segment">' +
+                        '<div class="ui grid"><div class="two column row">' +
+                        '<div class="left floated column" style="text-align: left">' +
+                        '<p class="header"><a class="a-text">' +
+                        '<img class="ui avatar image" src="'+data['photo']+'">'+data['nickname']+
+                        '</a></p></div><div class="right floated column" style="text-align: right">'+
+                        data['datetime']+'</div></div><div class="row"><div class="sixteen wide column text_msg">'+
+                        '<p>'+data['msg']+'</p></div></div></div></div></div>');
+                }else{
+                    $('#msg_list').append('<div class="item msg_item">' +
+                        '<div class="ui teal middle aligned segment">' +
+                        '<div class="ui grid"><div class="two column row">' +
+                        '<div class="left floated column" style="text-align: left">' +
+                        '<p class="header"><a class="a-text">' +
+                        '<img class="ui avatar image" src="'+data['photo']+'">'+data['nickname']+
+                        '</a></p></div><div class="right floated column" style="text-align: right">'+
+                        data['datetime']+'</div></div><div class="row"><div class="sixteen wide column text_msg">'+
+                        '<p>'+data['msg']+'</p></div></div></div></div></div>');
+                }
                 $('#scroll-1').scrollTop($('#scroll-1')[0].scrollHeight);
             });
         });
@@ -86,8 +100,8 @@
                 <h1><b>{{ topic.name }}</b></h1>
                 <h5 class="header sed-bar">
                     <a class="text-default-color">
-                    <img class="ui avatar image" src="{{ current_user.photo(256) }}">
-                    {{ current_user.nickname }}
+                    <img class="ui avatar image" src="{{ photo }}">
+                    {{ creator_name }}
                     </a>
                 </h5>
                 <h6 class="header sed-bar">

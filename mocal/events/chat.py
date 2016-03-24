@@ -15,7 +15,7 @@ def join(data):
     now_str = format_datetime(now)
     join_room(group_id)
     # todo: 加群数据逻辑
-    emit('status', {'msg': nickname + ' 加入群聊', 'datetime': now_str}, room=group_id)
+    emit('status', {'msg': nickname + ' 加入群聊', 'datetime': now_str, 'uid': uid}, room=group_id)
 
 
 @socket_io.on('text', namespace='/chat')
@@ -28,7 +28,8 @@ def text(data):
     now = now_lambda()
     now_str = format_datetime(now)
     # todo: 数据存储逻辑
-    emit('message', {'nickname': nickname, 'msg': msg, 'datetime': now_str, 'uid': uid, 'photo':user.photo(256)}, room=group_id)
+    emit('message', {'nickname': nickname, 'msg': msg,
+                     'datetime': now_str, 'uid': uid, 'photo': user.photo(256)}, room=group_id)
 
 
 @socket_io.on('leave', namespace='/chat')
@@ -41,4 +42,4 @@ def leave(data):
     now_str = format_datetime(now)
     leave_room(group_id)
     # todo: 退群数据逻辑
-    emit('status', {'msg': nickname + ' 退出群聊', 'datetime': now_str}, room=group_id)
+    emit('status', {'msg': nickname + ' 退出群聊', 'datetime': now_str, 'uid': uid}, room=group_id)

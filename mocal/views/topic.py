@@ -23,7 +23,8 @@ def topic_index():
     topic = Topic.from_db(id=topic_id)
     if topic:
         creator = User.from_db(id=topic.creator_id)
-        return render_template('topic/talk.html', messages=messages, topic=topic, creator_name=creator.nickname)
+        return render_template('topic/talk.html', messages=messages, topic=topic, creator_name=creator.nickname,
+                               photo=creator.photo(256))
     flash('无法找到该话题')
     return redirect(url_for('main.index'))
 
