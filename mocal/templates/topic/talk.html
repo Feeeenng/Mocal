@@ -1,31 +1,126 @@
 {% extends "index.html" %}
 
-{% block title %} Mocal话题 {% endblock %}
+{% block title %} Mocal话题|{{ topic.name }} {% endblock %}
 
 {% block styles %}
     {{ super() }}
     <style>
+        .text-default-color {
+            color: #00B5AD;
+        }
+        .sed-bar {
+            margin: 0;
+        }
         .qz {
             position: relative;
             margin-top: 5%;
         }
+        .msg_item {
+            cursor: pointer;
+            width: 60%;
+        }
+        .text_msg {
+            text-align: left;
+            word-wrap: break-word;
+            word-break:break-all;
+        }
+        .a-text {
+            color: black;
+        }
+        .my_msg {
+            margin-left: 40%;
+        }
+        .my_msg .a-text{
+            color: white;
+        }
+
     </style>
 {% endblock %}
 
 {% block scripts %}
     {{ super() }}
     <script>
+        $(document).ready(function(){
 
+        });
     </script>
 {% endblock %}
 
 {% block content %}
     <div class="qz">
     </div>
-
     <div class="ui main container">
-    aaaaaaaaaaaaaa
+        <div class="ui segments" style="width: 70%;left: 15%">
+            <div class="ui segment">
+                <h1><b>{{ topic.name }}</b></h1>
+                <h5 class="header sed-bar">
+                    <a class="text-default-color">
+                    <img class="ui avatar image" src="{{ current_user.photo(256) }}">
+                    {{ current_user.nickname }}
+                    </a>
+                </h5>
+                <h6 class="header sed-bar">
+                    {{ topic.created_ed_str }}
+                </h6>
+            </div>
+            <div class="ui secondary segment" style="height:500px;overflow-y: auto;" id="scroll-1">
+                <div class="ui list">
+
+                    <div class="item msg_item my_msg">
+                        <div class="ui teal inverted middle aligned segment">
+                            <div class="ui grid">
+                                <div class="two column row">
+                                    <div class="left floated column" style="text-align: left">
+                                        <p class="header">
+                                            <a class="a-text">
+                                            <img class="ui avatar image" src="{{ current_user.photo(256) }}">
+                                            {{ current_user.nickname }}
+                                            </a>
+                                        </p>
+                                    </div>
+                                    <div class="right floated column" style="text-align: right">
+                                        2016-03-23 19:01:50
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="sixteen wide column text_msg">
+                                        <p>ssssssss你好吗?ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="item msg_item">
+                        <div class="ui teal middle aligned segment">
+                            <div class="ui grid">
+                                <div class="two column row">
+                                    <div class="left floated column" style="text-align: left">
+                                        <p class="header">
+                                            <a class="a-text">
+                                            <img class="ui avatar image" src="{{ current_user.photo(256) }}">
+                                            {{ current_user.nickname }}
+                                            </a>
+                                        </p>
+                                    </div>
+                                    <div class="right floated column" style="text-align: right">
+                                        2016-03-23 19:01:50
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="sixteen wide column text_msg">
+                                        <p>ssssssss你好吗?ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
     </div>
+
 {% endblock %}
 
 {% block footer %}
