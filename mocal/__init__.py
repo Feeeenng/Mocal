@@ -92,5 +92,6 @@ def create_app(config_name):
 
     # 蓝图注册
     config_blueprint(app)
+    from mocal.events import chat
     socket_io.init_app(app)
     return app

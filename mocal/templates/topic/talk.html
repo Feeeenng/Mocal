@@ -41,7 +41,38 @@
     {{ super() }}
     <script>
         $(document).ready(function(){
+            $('#msg_content').keydown(function(){
+                if(event.keyCode==13){
+                    $('#msg_send').click()
+                }
+            });
 
+            $('#msg_send').click(function(){
+                var msg = $('#msg_content').val();
+                $('#msg_content').val('');
+                socket.emit('text', {msg: msg, 'uid': 55, 'group_id': 1});
+            });
+
+            socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
+            socket.on('connect', function() {
+                socket.emit('join', {'uid': 55, 'group_id': 1});
+            });
+            socket.on('status', function(data) {
+                $('#msg_list').append('<div class="ui horizontal divider" style="color:#999999;">' + data['msg'] + ' ' + data['datetime'] + '</div>');
+            });
+            socket.on('message', function(data) {
+                $('#msg_list').append('<div class="item msg_item my_msg">' +
+                    '<div class="ui teal inverted middle aligned segment">' +
+                    '<div class="ui grid"><div class="two column row">' +
+                    '<div class="left floated column" style="text-align: left">' +
+                    '<p class="header"><a class="a-text">' +
+                    '<img class="ui avatar image" src="'+data['photo']+'">'+data['nickname']+
+                    '</a></p></div><div class="right floated column" style="text-align: right">'+
+                    data['datetime']+'</div></div><div class="row"><div class="sixteen wide column text_msg">'+
+                    '<p>'+data['msg']+'</p></div></div></div></div></div>');
+
+                $('#scroll-1').scrollTop($('#scroll-1')[0].scrollHeight);
+            });
         });
     </script>
 {% endblock %}
@@ -64,7 +95,7 @@
                 </h6>
             </div>
             <div class="ui secondary segment" style="height:500px;overflow-y: auto;" id="scroll-1">
-                <div class="ui list">
+                <div class="ui list" id="msg_list">
 
                     <div class="item msg_item my_msg">
                         <div class="ui teal inverted middle aligned segment">
@@ -116,6 +147,17 @@
                         </div>
                     </div>
 
+                </div>
+            </div>
+            <div class="ui bottom attached segment">
+                <div class="ui fluid action input">
+                    <input type="text" placeholder="我也说说..." id="msg_content">
+                    <div class="ui teal vertical animated button" tabindex="0" id="msg_send">
+                        <div class="hidden content">发送</div>
+                        <div class="visible content">
+                            <i class="send icon"></i>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
