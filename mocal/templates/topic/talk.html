@@ -48,8 +48,11 @@
             });
             var current_uid = {{ current_user.id|tojson }};
             var group_id = {{ topic.id|tojson }};
-            alert('http://' + document.domain + ':' + location.port + '/chat');
-            socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
+            if(location.port){
+                socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
+            }else{
+                socket = io.connect('http://' + document.domain + '/chat');
+            }
             socket.on('connect', function() {
                 socket.emit('join', {'uid': current_uid, 'group_id': group_id});
             });
