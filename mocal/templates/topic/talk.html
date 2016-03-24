@@ -49,8 +49,12 @@
             var current_uid = {{ current_user.id|tojson }};
             var group_id = {{ topic.id|tojson }};
             if(location.port){
+                alert(1);
+                alert('http://' + document.domain + ':' + location.port + '/chat');
                 socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
             }else{
+                alert(2);
+                alert('http://' + document.domain + '/chat');
                 socket = io.connect('http://' + document.domain + '/chat');
             }
             socket.on('connect', function() {
