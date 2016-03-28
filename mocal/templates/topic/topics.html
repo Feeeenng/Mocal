@@ -9,6 +9,7 @@
         position: relative;
         margin-top: 5%;
     }
+
     </style>
 {% endblock %}
 
@@ -16,13 +17,77 @@
     {{ super() }}
     <script>
         $(document).ready(function(){
-            $('#dimmer').dimmer({
-                on: 'hover'
-            });
             $('.in-topic').click(function(){
                 var topic_id = $(this).parent().attr('id');
-                location.href="/topic?topic_id="+topic_id;
+                var data = {
+                    'topic_id': topic_id
+                };
+                var url = "{{ url_for('topic.is_marked') }}";
+                $.ajax({
+                    url : url,
+                    type : "POST",
+                    data: JSON.stringify(data),
+                    dataType : 'JSON',
+                    success : function(result) {
+                        var success = result['success'];
+                        if(success){
+                            var is_marked = result['is_marked'];
+                            if(is_marked) {
+                                location.href="/topic?topic_id="+topic_id;
+                            }else{
+                                alert('先关注！后说话！');
+                            }
+                        }
+                    }
+                });
             });
+
+            $('.mark').click(function(){
+                var topic_id = $(this).parents('.card').attr('id');
+                var data = {
+                    'topic_id': topic_id
+                };
+                var url = "{{ url_for('topic.mark') }}";
+                $.ajax({
+                    url : url,
+                    type : "POST",
+                    data: JSON.stringify(data),
+                    dataType : 'JSON',
+                    success : function(result) {
+                        var success = result['success'];
+                        if(success){
+                            var is_marked = result['is_marked'];
+                            if(is_marked) {
+                                $('#'+topic_id).children('.x').attr("class", "x ui tiny button cancel").text("取消关注");
+                            }
+                        }
+                    }
+                });
+            });
+
+            $('.cancel').click(function(){
+                var topic_id = $(this).parents('.card').attr('id');
+                var data = {
+                    'topic_id': topic_id
+                };
+                var url = "{{ url_for('topic.cancel') }}";
+                $.ajax({
+                    url : url,
+                    type : "POST",
+                    data: JSON.stringify(data),
+                    dataType : 'JSON',
+                    success : function(result) {
+                        var success = result['success'];
+                        if(success){
+                            var is_marked = result['is_marked'];
+                            if(!is_marked) {
+                                $('#'+topic_id).children('.x').attr("class", "x ui tiny teal button mark").text("关注");
+                            }
+                        }
+                    }
+                });
+            });
+
         });
     </script>
 {% endblock %}
@@ -35,39 +100,34 @@
         {% for topic in topics %}
 
             <div class="four wide column">
-                <div class="ui teal card" id="{{ topic.id }}">
-                    {% if not topic.is_marked(current_user.id) %}
-                        <div class="ui dimmer" id="dimmer">
-                            <div class="content">
-                                <div class="center">
-                                    <div class="ui small teal button"
-                                         onclick="location.href='/topic?topic_id='+{{ topic.id }};">关注</div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endif %}
+                <div class="ui card" id="{{ topic.id }}">
 
-                    <div class="content in-topic">
+                    <div class="content in-topic" style="cursor: pointer">
                         <div class="header">
                             {{ topic.name }}
-                        </div>
-                        <div class="meta">
-                            <span class="category">
-                                <i class="user icon"></i> 23|
-                                <i class="time icon"></i> {{ topic.created_ed_str }}
-                            </span>
                         </div>
                         <div class="description">
                             <p>xxxxxxxxxxxxxxxx...</p>
                         </div>
                     </div>
-                    <div class="extra content in-topic" style="background-color: #e0e0e0">
-                        <div class="right floated author">
+
+                    <div class="extra content" style="background-color: #e0e0e0;">
+                        <div>
                             <img class="ui avatar image" src="{{ get_user_photo(topic.creator_id)(256) }}">
                             {{ get_user_name(topic.creator_id) }}
                         </div>
+                        <i class="user icon"></i> 23|
+                        <i class="time icon"></i> {{ topic.created_ed_str }}
                     </div>
+
                     <div class="floating ui red label in-topic">22</div>
+
+                    {% if topic.is_marked(current_user.id) %}
+                        <div class="x ui tiny button cancel">取消关注</div>
+                    {% else %}
+                        <div class="x ui tiny teal button mark">关注</div>
+                    {% endif %}
+
                 </div>
             </div>
         {% endfor %}
