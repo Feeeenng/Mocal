@@ -1,7 +1,8 @@
 # -*- coding: utf8 -*-
 
 from db import DatabaseObject
-from mocal.utils.datetime_display import format_datetime
+from mocal.utils.datetime_display import now_lambda
+
 
 class Topic(DatabaseObject):
     __tablename__ = 'topic'
@@ -10,6 +11,19 @@ class Topic(DatabaseObject):
     def __repr__(self):
         return '<Topic: %r>' % self.id
 
-    @property
-    def created_ed_str(self):
-        return format_datetime(self.created_at)
+    def is_marked(self, uid):
+        ut = UserTopics.from_db(uid=uid, tid=self.id, deleted_at=None)
+        if ut:
+            return True
+        return False
+
+
+class UserTopics(DatabaseObject):
+    __tablename__ = 'user_topics'
+    __table_args__ = {'autoload': True, 'extend_existing': True}
+
+    def __repr__(self):
+        return '<UserTopics: %r>' % self.id
+
+    def cancel(self):
+        self.deleted_at = now_lambda()

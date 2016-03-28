@@ -1,0 +1,80 @@
+{% extends "index.html" %}
+
+{% block title %} Mocal话题 {% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <style>
+    .qz {
+        position: relative;
+        margin-top: 5%;
+    }
+    </style>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        $(document).ready(function(){
+            $('#dimmer').dimmer({
+                on: 'hover'
+            });
+            $('.in-topic').click(function(){
+                var topic_id = $(this).parent().attr('id');
+                location.href="/topic?topic_id="+topic_id;
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div class="qz">
+    </div>
+
+    <div class="ui grid">
+        {% for topic in topics %}
+
+            <div class="four wide column">
+                <div class="ui teal card" id="{{ topic.id }}">
+                    {% if not topic.is_marked(current_user.id) %}
+                        <div class="ui dimmer" id="dimmer">
+                            <div class="content">
+                                <div class="center">
+                                    <div class="ui small teal button"
+                                         onclick="location.href='/topic?topic_id='+{{ topic.id }};">关注</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="content in-topic">
+                        <div class="header">
+                            {{ topic.name }}
+                        </div>
+                        <div class="meta">
+                            <span class="category">
+                                <i class="user icon"></i> 23|
+                                <i class="time icon"></i> {{ topic.created_ed_str }}
+                            </span>
+                        </div>
+                        <div class="description">
+                            <p>xxxxxxxxxxxxxxxx...</p>
+                        </div>
+                    </div>
+                    <div class="extra content in-topic" style="background-color: #e0e0e0">
+                        <div class="right floated author">
+                            <img class="ui avatar image" src="{{ get_user_photo(topic.creator_id)(256) }}">
+                            {{ get_user_name(topic.creator_id) }}
+                        </div>
+                    </div>
+                    <div class="floating ui red label in-topic">22</div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

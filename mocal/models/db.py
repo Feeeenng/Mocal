@@ -2,6 +2,7 @@
 from datetime import datetime
 
 from mocal import db
+from mocal.utils.datetime_display import format_datetime
 
 
 class DatabaseObject(db.Model):
@@ -55,14 +56,21 @@ class DatabaseObject(db.Model):
         return obj
 
     @classmethod
-    def fetch(cls, page=0, count=0, **kwargs):
+    def fetch(cls, page=0, count=0, sort_key=None, **kwargs):
+        sort_field = cls.get_sort_field(sort_key)
         if page == 0 and count == 0:
             expressions = cls.get_filter_params(**kwargs)
-            objs = cls.query.filter(*expressions).all()
+            objs = cls.query.filter(*expressions).order_by(sort_field).all()
         else:
             expressions = cls.get_filter_params(**kwargs)
-            objs = cls.query.filter(*expressions).order_by(db.desc('id')).paginate(page, count, False).items
+            objs = cls.query.filter(*expressions).order_by(sort_field).paginate(page, count, False).items
         return objs
+
+    @classmethod
+    def total_counts(cls, **kwargs):
+        expressions = cls.get_filter_params(**kwargs)
+        count = cls.query.filter(*expressions).count()
+        return count
 
     @classmethod
     def get_filter_params(cls, **kwargs):
@@ -106,6 +114,17 @@ class DatabaseObject(db.Model):
 
         return expressions
 
+    @classmethod
+    def get_sort_field(cls, field=None):
+        if not field:
+            return db.desc('id')
+
+        if field.startswith('-'):
+            field = field.strip('-')
+            return db.desc(field)
+        else:
+            return db.asc(field)
+
     # get property
     def get_property(self, k):
         if hasattr(self, k):
@@ -120,3 +139,7 @@ class DatabaseObject(db.Model):
     def set_properties(self, **kwargs):
         for k, v in kwargs.items():
             self.set_property(k, v)
+
+    @property
+    def created_ed_str(self):
+        return format_datetime(self.created_at)
