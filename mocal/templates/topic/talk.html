@@ -48,8 +48,7 @@
             });
             var current_uid = {{ current_user.id|tojson }};
             var group_id = {{ topic.id|tojson }};
-{#            socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');#}
-            socket = io.connect('http://127.0.0.1:80/chat');
+            socket = io.connect('http://' + document.domain + ':' + location.port + '/chat');
             socket.on('connect', function() {
                 socket.emit('join', {'uid': current_uid, 'group_id': group_id});
             });
