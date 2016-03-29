@@ -78,6 +78,15 @@
                 });
             });
 
+            $('.ui.checkbox').checkbox({
+                onChecked: function() {
+                    $(this).val('1');
+                },
+                onUnchecked: function() {
+                    $(this).val('0');
+                }
+            });
+
         });
     </script>
 {% endblock %}
@@ -106,9 +115,17 @@
       {% for topic in topics %}
         <tr id="{{ topic.id }}">
           <td class="center aligned collapsing"> <!--关注-->
+          {% if topic.is_marked(current_user.id) %}
             <div class="ui toggle checkbox">
-              <input type="checkbox"><label></label>
+              <input type="checkbox" value="1">
+              <label></label>
             </div>
+          {% else %}
+            <div class="ui toggle checkbox">
+              <input type="checkbox" value="0">
+              <label></label>
+            </div>
+          {% endif %}
           </td>
           <td>{{ topic.name }}</td> <!--话题-->
           <td class="center aligned">{{ topic.type_text }}</td> <!--类型-->
