@@ -7,7 +7,15 @@
     <style>
     .qz {
         position: relative;
-        margin-top: 5%;
+        margin-top: 10%;
+    }
+
+    .ui.toggle.checkbox input:focus:checked~.box:before, .ui.toggle.checkbox input:focus:checked~label:before {
+        background-color: #009c95!important;
+    }
+
+    .ui.toggle.checkbox input:checked~.box:before, .ui.toggle.checkbox input:checked~label:before {
+        background-color: #00B5AD!important;
     }
 
     </style>
@@ -18,7 +26,7 @@
     <script>
         $(document).ready(function(){
             $('.in-topic').click(function(){
-                var topic_id = $(this).parent().attr('id');
+                var topic_id = $(this).parents('tr').attr('id');
                 var data = {
                     'topic_id': topic_id
                 };
@@ -43,8 +51,7 @@
             });
 
             $('.mark').click(function(){
-                var mark_id = $(this).attr('id');
-                var topic_id = mark_id.substring(4);
+                var topic_id = $(this).parents('tr').attr('id');
                 var data = {
                     'topic_id': topic_id
                 };
@@ -79,45 +86,110 @@
     <div class="qz">
     </div>
 
-    <div class="ui grid">
-        {% for topic in topics %}
 
-            <div class="four wide column">
-                <div class="ui card" id="{{ topic.id }}">
 
-                    <div class="content in-topic" style="cursor: pointer">
-                        <div class="header">
-                            {{ topic.name }}
-                        </div>
-                        <div class="meta">
-                            <span class="category">{{ topic.type_text }}</span>
-                        </div>
-                        <div class="description">
-                        </div>
-                    </div>
+    <table class="ui teal compact celled definition table">
+      <thead class="full-width">
+        <tr class="center aligned">
+          <th class="one wide">关注</th>
+          <th class="five wide">话题</th>
+          <th class="one wide">类型</th>
+          <th class="one wide">人数</th>
+          <th class="two wide">创建人</th>
+          <th class="two wide">创建时间</th>
+          <th class="two wide">最新吐槽时间</th>
+          <th class="two wide">进入</th>
+        </tr>
+      </thead>
 
-                    {% if topic.is_marked(current_user.id) %}
-                        <div class="x ui tiny button mark" id="mark{{ topic.id }}">取消关注</div>
-                    {% else %}
-                        <div class="x ui tiny teal button mark" id="mark{{ topic.id }}">关注</div>
-                    {% endif %}
-
-                    <div class="extra content" style="background-color: #e0e0e0;">
-                        创建信息：
-                        <div>
-                            <img class="ui avatar image" src="{{ get_user_photo(topic.creator_id)(256) }}">
-                            {{ get_user_name(topic.creator_id) }}
-                        </div>
-                        <i class="user icon"></i> <a id="members">{{ topic.members }}</a>|
-                        <i class="time icon"></i> {{ topic.created_ed_str }}
-                    </div>
-
-                    <div class="floating ui red label in-topic">22</div>
-
-                </div>
+      <tbody>
+      {% for topic in topics %}
+        <tr id="{{ topic.id }}">
+          <td class="center aligned collapsing"> <!--关注-->
+            <div class="ui toggle checkbox">
+              <input type="checkbox"><label></label>
             </div>
-        {% endfor %}
-    </div>
+          </td>
+          <td>{{ topic.name }}</td> <!--话题-->
+          <td class="center aligned">{{ topic.type_text }}</td> <!--类型-->
+          <td class="center aligned">{{ topic.members }}</td> <!--人数-->
+          <td class="center aligned">
+            <img class="ui avatar image" src="{{ get_user_photo(topic.creator_id)(256) }}">
+            {{ get_user_name(topic.creator_id) }}
+          </td> <!--创建人-->
+          <td class="center aligned">{{ topic.created_ed_str }}</td> <!--创建时间-->
+          <td class="center akugned"></td> <!--最新吐槽时间-->
+          <th class="center aligned"> <!--进入-->
+            <div class="ui small teal labeled icon button in-topic">
+              <i class="arrow right icon"></i> 切入话题
+            </div>
+          </th>
+        </tr>
+      {% endfor %}
+      </tbody>
+
+      <tfoot class="full-width">
+        <tr>
+          <th></th>
+          <th colspan="8">
+            <div class="ui right floated small primary labeled icon button">
+              <i class="add icon"></i> Add User
+            </div>
+            <div class="ui small button">
+              Approve
+            </div>
+            <div class="ui small disabled button">
+              Approve All
+            </div>
+          </th>
+        </tr>
+      </tfoot>
+
+    </table>
+
+
+
+
+
+{#    <div class="ui grid">#}
+{#        {% for topic in topics %}#}
+{##}
+{#            <div class="four wide column">#}
+{#                <div class="ui card" id="{{ topic.id }}">#}
+{##}
+{#                    <div class="content in-topic" style="cursor: pointer">#}
+{#                        <div class="header">#}
+{#                            {{ topic.name }}#}
+{#                        </div>#}
+{#                        <div class="meta">#}
+{#                            <span class="category">{{ topic.type_text }}</span>#}
+{#                        </div>#}
+{#                        <div class="description">#}
+{#                        </div>#}
+{#                    </div>#}
+{##}
+{#                    {% if topic.is_marked(current_user.id) %}#}
+{#                        <div class="x ui tiny button mark" id="mark{{ topic.id }}">取消关注</div>#}
+{#                    {% else %}#}
+{#                        <div class="x ui tiny teal button mark" id="mark{{ topic.id }}">关注</div>#}
+{#                    {% endif %}#}
+{##}
+{#                    <div class="extra content" style="background-color: #e0e0e0;">#}
+{#                        创建信息：#}
+{#                        <div>#}
+{#                            <img class="ui avatar image" src="{{ get_user_photo(topic.creator_id)(256) }}">#}
+{#                            {{ get_user_name(topic.creator_id) }}#}
+{#                        </div>#}
+{#                        <i class="user icon"></i> <a id="members">{{ topic.members }}</a>|#}
+{#                        <i class="time icon"></i> {{ topic.created_ed_str }}#}
+{#                    </div>#}
+{##}
+{#                    <div class="floating ui red label in-topic">22</div>#}
+{##}
+{#                </div>#}
+{#            </div>#}
+{#        {% endfor %}#}
+{#    </div>#}
 
 
 {% endblock %}
