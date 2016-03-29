@@ -32,3 +32,29 @@ ALLOWED_FORMATS = ['jpg', 'png', 'jpeg']
 # 上传文件大小上线
 ALLOWED_MAX_SIZE = 10 * 1024 ** 2  # 10M
 
+# 话题类型
+UNCATEGORIZED = 0
+GAME = 1
+TECHNOLOGY = 2
+ECONOMY = 3
+SOCIETY = 4
+MUSIC = 5
+MOVIE = 6
+MILITARY = 7
+SOCIAL = 8
+NEWS = 9
+OTHERS = 100
+TOPIC_TYPES = [
+    (UNCATEGORIZED, '未分类'),
+    (GAME, '游戏'),
+    (TECHNOLOGY, '科技'),
+    (ECONOMY, '经济'),
+    (SOCIETY, '社会现象'),
+    (MUSIC, '音乐'),
+    (MOVIE, '电影'),
+    (MILITARY, '军事'),
+    (SOCIAL, '交友'),
+    (NEWS, '新闻'),
+    (OTHERS, '其他')
+]
+TOPIC_TYPES_DICT = dict(TOPIC_TYPES)

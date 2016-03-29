@@ -33,10 +33,5 @@ def default_error_handler(e):
     print e
 
 
-@mocal_app.route('/1')
-def index1():
-    raise RuntimeError()
-
-
 if __name__ == '__main__':
     socket_io.run(mocal_app)

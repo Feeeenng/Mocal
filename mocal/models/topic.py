@@ -2,6 +2,7 @@
 
 from db import DatabaseObject
 from mocal.utils.datetime_display import now_lambda
+from mocal.constant import TOPIC_TYPES_DICT
 
 
 class Topic(DatabaseObject):
@@ -16,6 +17,15 @@ class Topic(DatabaseObject):
         if ut:
             return True
         return False
+
+    @property
+    def members(self):
+        counts = UserTopics.total_counts(tid=self.id, deleted_at=None)
+        return counts
+
+    @property
+    def type_text(self):
+        return TOPIC_TYPES_DICT.get(self.type)
 
 
 class UserTopics(DatabaseObject):

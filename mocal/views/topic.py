@@ -55,30 +55,18 @@ def mark():
     ut = UserTopics.from_db(uid=current_user.id, tid=topic_id)
     if ut:
         if ut.deleted_at:
-            ut.deleted_at = None
-            ut.save()
+            ut.deleted_at = None  # 曾经关注过，后取消，再次关注
+        else:
+            ut.cancel()  # 取消关注
+        ut.save()
 
     else:
-        ut = UserTopics(uid=current_user.id, tid=topic_id)
+        ut = UserTopics(uid=current_user.id, tid=topic_id)  # 首次关注
         ut.save(True)
 
     tp = Topic.from_id(topic_id)
     if tp:
-        return jsonify(success=True, is_marked=tp.is_marked(current_user.id))
-    return jsonify(success=False)
-
-
-@instance.route('/topic/cancel', methods=['POST'])
-def cancel():
-    res = request.get_json(force=True)
-    topic_id = res.get('topic_id')
-    ut = UserTopics.from_db(uid=current_user.id, tid=topic_id)
-    if ut:
-        ut.cancel()
-        ut.save()
-    tp = Topic.from_id(topic_id)
-    if tp:
-        return jsonify(success=True, is_marked=tp.is_marked(current_user.id))
+        return jsonify(success=True, is_marked=tp.is_marked(current_user.id), members=tp.members)
     return jsonify(success=False)
 
 
