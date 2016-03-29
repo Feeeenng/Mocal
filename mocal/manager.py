@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from flask import g
+from flask import g, request
 from flask_login import current_user
-from flask_script import Manager, Server
 from mocal import create_app, socket_io
 
 
@@ -27,9 +26,17 @@ def teardown_request(exception):
     pass
 
 
-# manager = Manager(mocal_app)
-# manager.add_command("runserver", Server(threaded=True))
+@socket_io.on_error_default
+def default_error_handler(e):
+    print request.event["message"]
+    print request.event["args"]
+    print e
+
+
+@mocal_app.route('/1')
+def index1():
+    raise RuntimeError()
+
 
 if __name__ == '__main__':
-    # manager.run()
     socket_io.run(mocal_app)

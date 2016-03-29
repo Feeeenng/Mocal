@@ -3,9 +3,11 @@ from mocal.utils.datetime_display import now_lambda, format_datetime
 from flask_socketio import emit, join_room, leave_room
 from mocal import socket_io
 from mocal.models.user import User
+from mocal.events import authenticated_only
 
 
 @socket_io.on('join', namespace='/chat')
+@authenticated_only
 def join(data):
     uid = data['uid']
     user = User.from_db(id=uid)
@@ -19,6 +21,7 @@ def join(data):
 
 
 @socket_io.on('text', namespace='/chat')
+@authenticated_only
 def text(data):
     uid = data['uid']
     user = User.from_db(id=uid)
@@ -33,6 +36,7 @@ def text(data):
 
 
 @socket_io.on('leave', namespace='/chat')
+@authenticated_only
 def leave(data):
     uid = data['uid']
     user = User.from_db(id=uid)
