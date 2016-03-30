@@ -54,6 +54,7 @@ class User(UserMixin, DatabaseObject):
 
     @property
     def privileges_list(self):
+        # 权限列表
         return map(lambda a: int(a), self.privileges.split(','))
 
     def generate_confirmation_token(self, expiration=86400):
