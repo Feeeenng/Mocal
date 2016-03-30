@@ -7,7 +7,7 @@
     <style>
     .qz {
         position: relative;
-        margin-top: 10%;
+        margin-top: 6%;
     }
 
     .ui.toggle.checkbox input:focus:checked~.box:before, .ui.toggle.checkbox input:focus:checked~label:before {
@@ -50,52 +50,52 @@
                 });
             });
 
-            $('.mark').click(function(){
-                var topic_id = $(this).parents('tr').attr('id');
-                var data = {
-                    'topic_id': topic_id
-                };
-                var url = "{{ url_for('topic.mark') }}";
-                $.ajax({
-                    url : url,
-                    type : "POST",
-                    data: JSON.stringify(data),
-                    dataType : 'JSON',
-                    success : function(result) {
-                        var success = result['success'];
-                        if(success){
-                            var is_marked = result['is_marked'];
-                            var members = result['members'];
-                            if(is_marked) {
-                                $('#mark'+topic_id).attr("class", "x ui tiny button mark").text("取消关注");
-                                $('#members').text(members);
-                            }else{
-                                $('#mark'+topic_id).attr("class", "x ui tiny teal button mark").text("关注");
-                                $('#members').text(members);
-                            }
-                        }
-                    }
-                });
-            });
-
             $('.ui.checkbox').checkbox({
                 onChecked: function() {
                     $(this).val('1');
+                    var topic_id = $(this).parents('tr').attr('id');
+                    mark(topic_id)
                 },
                 onUnchecked: function() {
                     $(this).val('0');
+                    var topic_id = $(this).parents('tr').attr('id');
+                    mark(topic_id)
                 }
             });
 
         });
+
+        function mark(topic_id){
+            var data = {
+                'topic_id': topic_id,
+                'mark': true
+            };
+            var url = "{{ url_for('topic.mark') }}";
+            $.ajax({
+                url : url,
+                type : "POST",
+                data: JSON.stringify(data),
+                dataType : 'JSON',
+                success : function(result) {
+                    var success = result['success'];
+                    if(success){
+                        var is_marked = result['is_marked'];
+                        var members = result['members'];
+                        if(is_marked) {
+                            $('#members_'+topic_id).text(members);
+                        }else{
+                            $('#members_'+topic_id).text(members);
+                        }
+                    }
+                }
+            });
+        }
     </script>
 {% endblock %}
 
 {% block content %}
     <div class="qz">
     </div>
-
-
 
     <table class="ui teal compact celled definition table">
       <thead class="full-width">
@@ -117,7 +117,7 @@
           <td class="center aligned collapsing"> <!--关注-->
           {% if topic.is_marked(current_user.id) %}
             <div class="ui toggle checkbox">
-              <input type="checkbox" value="1">
+              <input type="checkbox" value="1" checked>
               <label></label>
             </div>
           {% else %}
@@ -129,16 +129,19 @@
           </td>
           <td>{{ topic.name }}</td> <!--话题-->
           <td class="center aligned">{{ topic.type_text }}</td> <!--类型-->
-          <td class="center aligned">{{ topic.members }}</td> <!--人数-->
+          <td class="center aligned" id="members_{{ topic.id }}">{{ topic.members }}</td> <!--人数-->
           <td class="center aligned">
             <img class="ui avatar image" src="{{ get_user_photo(topic.creator_id)(256) }}">
             {{ get_user_name(topic.creator_id) }}
           </td> <!--创建人-->
           <td class="center aligned">{{ topic.created_ed_str }}</td> <!--创建时间-->
-          <td class="center akugned"></td> <!--最新吐槽时间-->
+          <td class="center aligned"></td> <!--最新吐槽时间-->
           <th class="center aligned"> <!--进入-->
-            <div class="ui small teal labeled icon button in-topic">
-              <i class="arrow right icon"></i> 切入话题
+            <div class="ui teal animated button in-topic" tabindex="0">
+              <div class="visible content">切入话题</div>
+              <div class="hidden content">
+                <i class="arrow right icon"></i>
+              </div>
             </div>
           </th>
         </tr>
@@ -148,15 +151,12 @@
       <tfoot class="full-width">
         <tr>
           <th></th>
-          <th colspan="8">
-            <div class="ui right floated small primary labeled icon button">
-              <i class="add icon"></i> Add User
-            </div>
-            <div class="ui small button">
-              Approve
-            </div>
-            <div class="ui small disabled button">
-              Approve All
+          <th colspan="7" class="center aligned">
+            <div class="ui blue animated right floated button in-topic" tabindex="0">
+              <div class="visible content">添加话题</div>
+              <div class="hidden content">
+                <i class="add icon"></i>
+              </div>
             </div>
           </th>
         </tr>
