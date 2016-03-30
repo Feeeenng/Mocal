@@ -81,12 +81,14 @@
                 onChecked: function() {
                     $(this).val('1');
                     var topic_id = $(this).parents('tr').attr('id');
-                    mark(topic_id)
+                    mark(topic_id);
+                    $(this).parents('tr').children('.join').children().removeClass('disabled');
                 },
                 onUnchecked: function() {
                     $(this).val('0');
                     var topic_id = $(this).parents('tr').attr('id');
-                    mark(topic_id)
+                    mark(topic_id);
+                    $(this).parents('tr').children('.join').children().addClass('disabled');
                 }
             });
 
@@ -200,14 +202,14 @@
           </td> <!--创建人-->
           <td class="center aligned">{{ topic.created_ed_str }}</td> <!--创建时间-->
           <td class="center aligned"></td> <!--最新吐槽时间-->
-          <th class="center aligned"> <!--进入-->
-            <div class="ui teal animated button in-topic" tabindex="0">
+          <td class="center aligned join"> <!--进入-->
+            <div class="ui teal animated button in-topic {% if not topic.is_marked(current_user.id) %} disabled {% endif %}" tabindex="0">
               <div class="visible content">切入话题</div>
               <div class="hidden content">
                 <i class="arrow right icon"></i>
               </div>
             </div>
-          </th>
+          </td>
         </tr>
       {% endfor %}
       </tbody>
