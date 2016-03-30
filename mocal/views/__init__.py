@@ -19,7 +19,7 @@ def privileges_required(privileges=list()):
             privilege_ok = False if privileges else True
 
             for privilege in privileges:
-                if privilege in current_user.privileges:
+                if privilege in current_user.privileges_list:
                     privilege_ok = True
                     break
 

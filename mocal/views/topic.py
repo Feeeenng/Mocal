@@ -2,11 +2,11 @@
 
 from flask import Blueprint, render_template, url_for, request, redirect, session, flash, jsonify
 from flask_login import login_required, current_user
-from mocal.constant import TOPIC_TYPES
+from mocal.constant import TOPIC_TYPES, CAN_CREATE
 from mocal.models.message import Message
 from mocal.models.topic import Topic, UserTopics
 from mocal.models.user import User
-from mocal.views import res, check_filed_type_and_length
+from mocal.views import res, check_filed_type_and_length, privileges_required
 
 instance = Blueprint('topic', __name__)
 
@@ -93,6 +93,7 @@ def check_topic_name():
 
 
 @instance.route('/topic/add', methods=['POST'])
+@privileges_required(privileges=[CAN_CREATE])
 def add():
     name = request.form.get('name')
     desc = request.form.get('desc')
