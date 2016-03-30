@@ -50,6 +50,10 @@
                 });
             });
 
+            $('.add-topic').click(function(){
+                $('.ui.modal').modal('show');
+            });
+
             $('.ui.checkbox').checkbox({
                 onChecked: function() {
                     $(this).val('1');
@@ -152,7 +156,7 @@
         <tr>
           <th></th>
           <th colspan="7" class="center aligned">
-            <div class="ui blue animated right floated button in-topic" tabindex="0">
+            <div class="ui blue animated right floated button add-topic" tabindex="0">
               <div class="visible content">添加话题</div>
               <div class="hidden content">
                 <i class="add icon"></i>
@@ -165,49 +169,20 @@
     </table>
 
 
-
-
-
-{#    <div class="ui grid">#}
-{#        {% for topic in topics %}#}
-{##}
-{#            <div class="four wide column">#}
-{#                <div class="ui card" id="{{ topic.id }}">#}
-{##}
-{#                    <div class="content in-topic" style="cursor: pointer">#}
-{#                        <div class="header">#}
-{#                            {{ topic.name }}#}
-{#                        </div>#}
-{#                        <div class="meta">#}
-{#                            <span class="category">{{ topic.type_text }}</span>#}
-{#                        </div>#}
-{#                        <div class="description">#}
-{#                        </div>#}
-{#                    </div>#}
-{##}
-{#                    {% if topic.is_marked(current_user.id) %}#}
-{#                        <div class="x ui tiny button mark" id="mark{{ topic.id }}">取消关注</div>#}
-{#                    {% else %}#}
-{#                        <div class="x ui tiny teal button mark" id="mark{{ topic.id }}">关注</div>#}
-{#                    {% endif %}#}
-{##}
-{#                    <div class="extra content" style="background-color: #e0e0e0;">#}
-{#                        创建信息：#}
-{#                        <div>#}
-{#                            <img class="ui avatar image" src="{{ get_user_photo(topic.creator_id)(256) }}">#}
-{#                            {{ get_user_name(topic.creator_id) }}#}
-{#                        </div>#}
-{#                        <i class="user icon"></i> <a id="members">{{ topic.members }}</a>|#}
-{#                        <i class="time icon"></i> {{ topic.created_ed_str }}#}
-{#                    </div>#}
-{##}
-{#                    <div class="floating ui red label in-topic">22</div>#}
-{##}
-{#                </div>#}
-{#            </div>#}
-{#        {% endfor %}#}
-{#    </div>#}
-
+    <!--添加话题弹出框-->
+    <div class="ui modal">
+      <div class="header">添加话题</div>
+      <div class="content">
+        <p>ssssssssssssssssssss</p>
+      </div>
+      <div class="actions">
+        <div class="ui buttons">
+          <button class="ui approve teal labeled icon button"><i class="checkmark icon"></i>提交</button>
+          <div class="or"></div>
+          <button class="ui cancel right labeled icon button"><i class="remove icon"></i>取消</button>
+        </div>
+      </div>
+    </div>
 
 {% endblock %}
 
