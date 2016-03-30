@@ -4,10 +4,14 @@
 
 {% block styles %}
     {{ super() }}
-    <style>
+    <style xmlns="http://www.w3.org/1999/html">
     .qz {
         position: relative;
         margin-top: 6%;
+    }
+
+    .add-t {
+        width: 60%;left: 20%;
     }
 
     .ui.toggle.checkbox input:focus:checked~.box:before, .ui.toggle.checkbox input:focus:checked~label:before {
@@ -25,6 +29,24 @@
     {{ super() }}
     <script>
         $(document).ready(function(){
+            $('#desc').keyup(function(){
+                var desc = $(this).val();
+                var desc_count = desc.length;
+                if(desc_count>140){
+                    $('#desc_count').css('color', '#AE3A58');
+                    $('#desc_count').html(desc_count+'/140');
+                }else{
+                    $('#desc_count').css('color', 'black');
+                    $('#desc_count').html(desc_count+'/140');
+                }
+            });
+
+            $('#submit').click(function(){
+                $('#topic_add').submit()
+            });
+
+            $('.ui.dropdown').dropdown('set selected', '0');
+
             $('.in-topic').click(function(){
                 var topic_id = $(this).parents('tr').attr('id');
                 var data = {
@@ -51,6 +73,7 @@
             });
 
             $('.add-topic').click(function(){
+                $('.ui.dropdown').dropdown('set selected', '0');
                 $('.ui.modal').modal('show');
             });
 
@@ -65,6 +88,43 @@
                     var topic_id = $(this).parents('tr').attr('id');
                     mark(topic_id)
                 }
+            });
+
+            $('#topic_add').form({
+                name:{
+                    identifier: 'name',
+                    rules: [
+                        {
+                            type: 'empty',
+                            prompt: '要有话题才能开聊哦！'
+                        },
+                        {
+                            type: 'maxLength[40]',
+                            prompt: '话题不能超过40个字！'
+                        },
+                        {
+                            type   : 'regExp[/^[\u4E00-\u9FA5A-Za-z0-9_?？!！,，;；.。@$￥&#]*$/]',
+                            prompt : '话题里有有非法字符！'
+                        },
+                        {
+                            type : 'checkTopic',
+                            prompt : '话题已存在请自行搜索！'
+                        }
+                    ]
+                },
+                desc:{
+                    identifier: 'desc',
+                    rules: [
+                        {
+                            type: 'maxLength[140]',
+                            prompt: '话题描述超过140个字了,你麻不麻烦啊？'
+                        }
+                    ]
+                }
+            },
+            {
+                on: 'submit',
+                inline: true
             });
 
         });
@@ -170,14 +230,44 @@
 
 
     <!--添加话题弹出框-->
-    <div class="ui modal">
+    <div class="ui small modal">
       <div class="header">添加话题</div>
       <div class="content">
-        <p>ssssssssssssssssssss</p>
+        <form class="ui form basic segment add-t" action="{{ url_for('topic.add') }}"
+              method="post" id="topic_add">
+          <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+
+            <div class="field center aligned">
+              <div class="ui left icon input">
+                <input type="text" name="name" placeholder="话题名">
+                <i class="comments icon"></i>
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="ui floating dropdown labeled search icon teal button">
+                <input type="hidden" name="type">
+                <i class="tag icon"></i>
+                <span class="text">话题类型</span>
+                <div class="menu">
+                  {% for type in types %}
+                    <div class="item" data-value="{{ type[0] }}">{{ type[1] }}</div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <div style="float: right" id="desc_count">0/140</div>
+              <textarea name="desc" placeholder="详细描述" maxlength="200" id="desc"></textarea>
+            </div>
+
+        </form>
       </div>
+
       <div class="actions">
         <div class="ui buttons">
-          <button class="ui approve teal labeled icon button"><i class="checkmark icon"></i>提交</button>
+          <button class="ui teal labeled icon button" id="submit"><i class="checkmark icon"></i>提交</button>
           <div class="or"></div>
           <button class="ui cancel right labeled icon button"><i class="remove icon"></i>取消</button>
         </div>

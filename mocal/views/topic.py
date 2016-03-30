@@ -2,10 +2,11 @@
 
 from flask import Blueprint, render_template, url_for, request, redirect, session, flash, jsonify
 from flask_login import login_required, current_user
-from mocal.views import res
+from mocal.constant import TOPIC_TYPES
 from mocal.models.message import Message
 from mocal.models.topic import Topic, UserTopics
 from mocal.models.user import User
+from mocal.views import res, check_filed_type_and_length
 
 instance = Blueprint('topic', __name__)
 
@@ -31,11 +32,13 @@ def topic_index():
     return redirect(url_for('main.index'))
 
 
-@instance.route('/topics', methods=['GET'])
+@instance.route('/topics', methods=['GET', 'POST'])
 def topics():
-    page = request.args.get('page', 1, int)
-    topics = Topic.fetch(page=page, count=8)
-    return render_template('topic/topics.html', topics=topics, get_user_name=get_user_name, get_user_photo=get_user_photo)
+    if request.method == 'GET':
+        page = request.args.get('page', 1, int)
+        topics = Topic.fetch(page=page, count=8)
+        return render_template('topic/topics.html', topics=topics, get_user_name=get_user_name,
+                               get_user_photo=get_user_photo, types=TOPIC_TYPES)
 
 
 def get_user_name(uid):
@@ -78,3 +81,32 @@ def is_marked():
     if tp:
         return jsonify(success=True, is_marked=tp.is_marked(current_user.id))
     return jsonify(success=False)
+
+
+@instance.route('/topic/check_topic_name', methods=['GET'])
+def check_topic_name():
+    topic_name = request.args.get('topic_name')
+    user = Topic.from_db(name=topic_name, deleted_at=None)
+    if not user:
+        return res(data=False)
+    return res(data=True)
+
+
+@instance.route('/topic/add', methods=['POST'])
+def add():
+    name = request.form.get('name')
+    desc = request.form.get('desc')
+    type = request.form.get('type', 0, int)
+
+    # 参数检查
+    for i in [
+        (name, 'str', 1, 40),
+        (desc, 'str', 0, 140),
+    ]:
+        is_checked, code = check_filed_type_and_length(*i)
+        if not is_checked:
+            return res(code=code)
+
+    topic = Topic(name=name, type=type, desc=desc, creator_id=current_user.id)
+    topic.save(True)
+    return redirect(url_for('topic.topics'))

@@ -80,6 +80,20 @@
                     return !flag;
                 };
 
+                $.fn.form.settings.rules.checkTopic = function(topic_name){
+                    var flag = false;
+                    $.ajax({
+                        async : false,
+                        url: "{{ url_for('topic.check_topic_name') }}?topic_name=" + topic_name,
+                        type: "GET",
+                        dataType   : "json",
+                        success: function(ret){
+                            flag = ret["detail"];
+                        }
+                    });
+                    return !flag;
+                };
+
             });
         </script>
     {% endblock %}
@@ -104,7 +118,7 @@
                         <div class="ui animated button" tabindex="0" id="topics">
                             <div class="visible content">话题</div>
                             <div class="hidden content">
-                                <i class="comment icon"></i>
+                                <i class="comments icon"></i>
                             </div>
                         </div>
                         <div class="ui animated button" tabindex="0" id="users">

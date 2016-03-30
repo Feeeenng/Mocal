@@ -96,71 +96,21 @@
     </div>
     <div class="ui main container">
         <div class="ui segments" style="width: 70%;left: 15%">
-            <div class="ui segment">
-                <h1><b>{{ topic.name }}</b></h1>
-                <h5 class="header sed-bar">
-                    <a class="text-default-color">
-                    <img class="ui avatar image" src="{{ photo }}">
-                    {{ creator_name }}
-                    </a>
-                </h5>
-                <h6 class="header sed-bar">
-                    {{ topic.created_ed_str }}
-                </h6>
+            <div class="ui left aligned segment">
+                <h3 class="ui block header text_msg">
+                    {{ topic.name }}
+                    <div class="sub header">{{ topic.desc }}</div>
+                    <div class="sub header">
+                        话题信息：
+                        <i class="users icon"></i><b>{{ topic.members }}</b>人
+                        <i class="user icon"></i>{{ creator_name }}
+                        <i class="time icon"></i>{{ topic.created_ed_str }}
+                    </div>
+                </h3>
             </div>
             <div class="ui secondary segment" style="height:500px;overflow-y: auto;" id="scroll-1">
                 <div class="ui list" id="msg_list">
-
-                    <div class="item msg_item my_msg">
-                        <div class="ui teal inverted middle aligned segment">
-                            <div class="ui grid">
-                                <div class="two column row">
-                                    <div class="left floated column" style="text-align: left">
-                                        <p class="header">
-                                            <a class="a-text">
-                                            <img class="ui avatar image" src="{{ current_user.photo(256) }}">
-                                            {{ current_user.nickname }}
-                                            </a>
-                                        </p>
-                                    </div>
-                                    <div class="right floated column" style="text-align: right">
-                                        2016-03-23 19:01:50
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="sixteen wide column text_msg">
-                                        <p>ssssssss你好吗?ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="item msg_item">
-                        <div class="ui teal middle aligned segment">
-                            <div class="ui grid">
-                                <div class="two column row">
-                                    <div class="left floated column" style="text-align: left">
-                                        <p class="header">
-                                            <a class="a-text">
-                                            <img class="ui avatar image" src="{{ current_user.photo(256) }}">
-                                            {{ current_user.nickname }}
-                                            </a>
-                                        </p>
-                                    </div>
-                                    <div class="right floated column" style="text-align: right">
-                                        2016-03-23 19:01:50
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="sixteen wide column text_msg">
-                                        <p>ssssssss你好吗?ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                <!--msg-->
                 </div>
             </div>
             <div class="ui bottom attached segment">
