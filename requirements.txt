@@ -3,6 +3,7 @@ qiniu
 qrcode
 redis
 rq
+jieba
 pypinyin
 mysql-python
 pymongo
