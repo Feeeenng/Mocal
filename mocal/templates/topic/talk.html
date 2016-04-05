@@ -60,6 +60,7 @@
             socket.on('status', function(data) {
                 if(current_uid!=data['uid']){
                     $('#msg_list').append('<div class="ui horizontal divider" style="color:#999999;">' + data['msg'] + ' ' + data['datetime'] + '</div>');
+                    $('#members').text(data['members']);
                 }
             });
             socket.on('message', function(data) {
@@ -102,7 +103,7 @@
                     <div class="sub header">{{ topic.desc }}</div>
                     <div class="sub header">
                         话题信息：
-                        <i class="users icon"></i><b>{{ topic.members }}</b>人
+                        <i class="users icon"></i><b id="members">{{ topic.members }}</b>人
                         <i class="user icon"></i>{{ creator_name }}
                         <i class="time icon"></i>{{ topic.created_ed_str }}
                     </div>
