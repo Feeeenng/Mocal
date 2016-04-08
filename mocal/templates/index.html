@@ -100,9 +100,13 @@
 
     <script>
     $(document).ready(function(){
+        $('#search_find').click(function(){
+            $('#search').submit();
+        });
+
         $('.ui.search').search({
             type: 'category',
-            minCharacters: 3,
+            minCharacters: 1,
             apiSettings: {
                 onResponse: function (Response) {
                     var response = {
@@ -228,13 +232,15 @@
                 <div class="sub header" style="margin-bottom: 2%"><h4>mocal|默默做客</h4></div>
             </h2>
 
-            <div class="ui fluid category search" style="width: 30%;left: 35%">
-                <div class="ui icon input">
-                    <input class="prompt" type="text" placeholder="话题 #">
-                    <i class="teal inverted circular search link icon" onclick="location.href='/'"></i>
+            <form id="search" method="get" action="{{ url_for('topic.topics') }}">
+                <div class="ui fluid category search" style="width: 30%;left: 35%">
+                    <div class="ui icon input">
+                        <input class="prompt" type="text" placeholder="话题 #" name="name">
+                        <i class="teal inverted circular search link icon" id="search_find"></i>
+                    </div>
+                    <div class="results"></div>
                 </div>
-                <div class="results"></div>
-            </div>
+            </form>
 
             <div class="ui horizontal divider">Or</div>
             <div class="ui teal labeled icon button topics">

@@ -35,12 +35,16 @@ def topic_index():
 @instance.route('/topics', methods=['GET'])
 @login_required
 def topics():
+    tid = request.args.get('tid')
     name = request.args.get('name')
     page = request.args.get('page', 1, int)
     params = {
         'page': page,
-        'count': 10
+        'count': 10,
+        'deleted_at': None
     }
+    if tid:
+        params.update(id=tid)
 
     if name:
         params.update(name__contains=name)
@@ -53,7 +57,7 @@ def topics():
 @instance.route('/topic/search', methods=['GET'])
 def search():
     query = request.args.get('q')
-    params = {}
+    params = {'deleted_at': None}
     if query:
         params.update(name__contains=query)
 
@@ -64,7 +68,7 @@ def search():
             'name': topic.name,
             'type': topic.type_text,
             'desc': topic.desc,
-            'html_url': 'http://www.baidu.com'
+            'html_url': url_for('topic.topics') + '?tid=' + str(topic.id)
         })
 
     return jsonify({'items': items})
