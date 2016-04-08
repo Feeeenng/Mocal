@@ -12,12 +12,12 @@ instance = Blueprint('topic', __name__)
 
 
 @instance.before_request
-@login_required
 def before_request():
     pass
 
 
 @instance.route('/topic', methods=['GET'])
+@login_required
 def topic_index():
     topic_id = request.args.get('topic_id', 0, int)
     topic = Topic.from_db(id=topic_id)
@@ -32,14 +32,42 @@ def topic_index():
     return redirect(url_for('main.index'))
 
 
-@instance.route('/topics', methods=['GET', 'POST'])
+@instance.route('/topics', methods=['GET'])
+@login_required
 def topics():
-    if request.method == 'GET':
-        page = request.args.get('page', 1, int)
-        topics = Topic.fetch(page=page, count=8)
-        return render_template('topic/topics.html', topics=topics, get_user_name=get_user_name,
-                               get_user_photo=get_user_photo, types=TOPIC_TYPES)
+    name = request.args.get('name')
+    page = request.args.get('page', 1, int)
+    params = {
+        'page': page,
+        'count': 10
+    }
 
+    if name:
+        params.update(name__contains=name)
+
+    topics = Topic.fetch(**params)
+    return render_template('topic/topics.html', topics=topics, get_user_name=get_user_name,
+                           get_user_photo=get_user_photo, types=TOPIC_TYPES)
+
+
+@instance.route('/topic/search', methods=['GET'])
+def search():
+    query = request.args.get('q')
+    params = {}
+    if query:
+        params.update(name__contains=query)
+
+    topics = Topic.fetch(**params)
+    items = []
+    for topic in topics:
+        items.append({
+            'name': topic.name,
+            'type': topic.type_text,
+            'desc': topic.desc,
+            'html_url': 'http://www.baidu.com'
+        })
+
+    return jsonify({'items': items})
 
 def get_user_name(uid):
     user = User.from_db(id=uid)
@@ -52,6 +80,7 @@ def get_user_photo(uid):
 
 
 @instance.route('/topic/mark', methods=['POST'])
+@login_required
 def mark():
     res = request.get_json(force=True)
     topic_id = res.get('topic_id')
@@ -74,6 +103,7 @@ def mark():
 
 
 @instance.route('/topic/is_marked', methods=['POST'])
+@login_required
 def is_marked():
     res = request.get_json(force=True)
     topic_id = res.get('topic_id')
@@ -84,6 +114,7 @@ def is_marked():
 
 
 @instance.route('/topic/check_topic_name', methods=['GET'])
+@login_required
 def check_topic_name():
     topic_name = request.args.get('topic_name')
     user = Topic.from_db(name=topic_name, deleted_at=None)
@@ -93,6 +124,7 @@ def check_topic_name():
 
 
 @instance.route('/topic/add', methods=['POST'])
+@login_required
 @privileges_required(privileges=[CAN_CREATE])
 def add():
     name = request.form.get('name')

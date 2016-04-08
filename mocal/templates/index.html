@@ -97,6 +97,47 @@
             });
         </script>
     {% endblock %}
+
+    <script>
+    $(document).ready(function(){
+        $('.ui.search').search({
+            type: 'category',
+            minCharacters: 3,
+            apiSettings: {
+                onResponse: function (Response) {
+                    var response = {
+                        results: {}
+                    };
+
+                    // translate GitHub API response to work with search
+                    $.each(Response.items, function (index, item) {
+                        var type = item.type || 'Unknown', maxResults = 10;
+                        if (index >= maxResults) {
+                            return false;
+                        }
+
+                        // create new language category
+                        if (response.results[type] === undefined) {
+                            response.results[type] = {
+                                name: type,
+                                results: []
+                            };
+                        }
+
+                        // add result to category
+                        response.results[type].results.push({
+                            title: item.name,
+                            description: item.desc,
+                            url: item.html_url
+                        });
+                    });
+                    return response;
+                },
+                url: '{{ url_for('topic.search') }}?q={query}'
+            }
+        });
+    });
+    </script>
 </head>
 
 <body style="background-image: url('{{ get_today_bg() }}');text-align: center">
@@ -179,7 +220,7 @@
     </div>
 
     {% block content %}  <!-- 内容区 -->
-        <div class="ui center aligned basic segment" style="position: absolute;top: 15%">
+        <div class="ui center aligned basic segment" style="position: absolute;top: 25%">
             <h2 class="ui center aligned header">
                 <img class="ui tiny circular image" style="cursor: pointer;margin-bottom: 1%"
                      src="{{ url_for('static', filename='logo/mocal128.png') }}" onclick="location.href='/'"
@@ -187,7 +228,7 @@
                 <div class="sub header" style="margin-bottom: 2%"><h4>mocal|默默做客</h4></div>
             </h2>
 
-            <div class="ui fluid category search">
+            <div class="ui fluid category search" style="width: 30%;left: 35%">
                 <div class="ui icon input">
                     <input class="prompt" type="text" placeholder="话题 #">
                     <i class="teal inverted circular search link icon" onclick="location.href='/'"></i>
