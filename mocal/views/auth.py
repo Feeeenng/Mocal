@@ -82,7 +82,7 @@ def logout():
     current_user.save()
     logout_user()
     flash('88,{0}!'.format(nickname))
-    return redirect(url_for('main.index'))
+    return redirect(url_for('auth.login'))
 
 
 @instance.route('/register', methods=['GET', 'POST'])
