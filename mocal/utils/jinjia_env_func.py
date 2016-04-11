@@ -15,4 +15,4 @@ def some_random_string():
 
 
 def get_today_bg():
-    return url_for('static', filename='image/background/bg{0}.jpg'.format(weekday()), _external=True)
+    return url_for('static', filename='image/background/bg{0}.gif'.format(weekday()), _external=True)
