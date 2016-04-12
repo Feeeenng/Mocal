@@ -12,14 +12,17 @@
 
     {% block styles %}  <!-- 样式区 -->
         <link rel="shortcut icon" href="{{ url_for('static', filename='icon/mocal.ico') }}"/>  <!--logo-->
-        <link rel="stylesheet" type="text/css" href="static/semantic/dist/semantic.min.css">
+{#        <link rel="stylesheet" type="text/css" href="static/semantic/dist/semantic.min.css">#}
+        <link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/semantic-ui/2.1.8/semantic.min.css">
         <link rel="stylesheet" type="text/css" href="static/css/common.css">
     {% endblock %}
 
     {% block scripts %}  <!-- 脚本区 -->
         <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
-        <script type="text/javascript" src="static/js/socket.io.js"></script>
-        <script src="static/semantic/dist/semantic.min.js"></script>
+{#        <script type="text/javascript" src="static/js/socket.io.js"></script>#}
+        <script type="text/javascript" src="//cdn.bootcss.com/socket.io/1.4.5/socket.io.min.js"></script>
+{#        <script src="static/semantic/dist/semantic.min.js"></script>#}
+        <script src="//cdn.bootcss.com/semantic-ui/2.1.8/semantic.min.js"></script>
         <script src="static/js/common.js"></script>
         <script src="http://static.geetest.com/static/tools/gt.js"></script>
         <script>
