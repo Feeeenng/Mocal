@@ -18,6 +18,17 @@
 {% block scripts %}
     {{ super() }}
     <script>
+
+        $(function(){
+        //全局：
+            document.onkeydown = function(e){
+                var ev = document.all ? window.event : e;
+                if(ev.keyCode==13) {
+                    $('#login_btn').click();
+                }
+            };
+        });
+
         $(document).ready(function () {
             $('.ui.form').form({
                 email: {
@@ -48,12 +59,6 @@
 
             $('#login_btn').click(function(){
                 $('#login').submit();
-            });
-
-            $('.hc').keydown(function(){
-                if(event.keyCode==13){
-                    $('#login_btn').click()
-                }
             });
 
             var remember_me = {{ remember_me|tojson }};
@@ -102,13 +107,13 @@
                     </div>
                     <div class="field">
                         <div class="ui left icon input">
-                            <input type="email" name="email" placeholder="用户名" maxlength="40" class="hc">
+                            <input type="email" name="email" placeholder="用户名" maxlength="40">
                             <i class="mail icon"></i>
                         </div>
                     </div>
                     <div class="field">
                         <div class="ui left icon input">
-                            <input type="password"  name="password" placeholder="密码" maxlength="20" class="hc">
+                            <input type="password"  name="password" placeholder="密码" maxlength="20">
                             <i class="lock icon"></i>
                         </div>
                     </div>
