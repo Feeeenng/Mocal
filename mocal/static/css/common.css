@@ -29,3 +29,20 @@
     -ms-transform:rotate(720deg) scale(1.5,1.5);
     transform:rotate(720deg) scale(1.5,1.5);
 }
+
+.mocal-180 {
+    border-radius: 110px;
+    opacity: 0.7;
+    -webkit-transition: -webkit-transform 2s ease-out;
+    -moz-transition: -moz-transform 2s ease-out;
+    -o-transition: -o-transform 2s ease-out;
+    -ms-transition: -ms-transform 2s ease-out;
+}
+.mocal-180:hover {
+    opacity: 1;
+    -webkit-transform: rotateZ(360deg);
+    -moz-transform: rotateZ(360deg);
+    -o-transform: rotateZ(360deg);
+    -ms-transform: rotateZ(360deg);
+    transform: rotateZ(360deg);
+}
