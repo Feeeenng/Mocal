@@ -19,11 +19,6 @@ mocal_app = create_app('development')
 def before_request():
     g.current_user = current_user
 
-    if request.method == "POST":
-        token = session.pop('_csrf_token', None)
-        if not token or token != request.form.get('_csrf_token'):
-          abort(403)
-
 
 # 每个请求结束后的操作
 @mocal_app.teardown_request
