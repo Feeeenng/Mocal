@@ -85,4 +85,7 @@ def user_info():
     return redirect(url_for('user.user_info'))
 
 
+@instance.route('/users', methods=['GET', 'POST'])
+def users():
+    return render_template('user/users.html')
 
