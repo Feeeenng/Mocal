@@ -60,7 +60,7 @@
                                                </h2>
                                                <div class='ui divider'></div>
                                                <div class='content' style='text-align: left'>
-                                                   <p>{{ user.user_info.desc|truncate(30, True) }}</p>
+                                                   <p>{{ user.user_info.desc or ''|truncate(30, True) }}</p>
                                                    <p><i class='mail icon'></i>{{ user.email }}</p>
                                                    <p><i class='birthday icon'></i>{{ user.user_info.birth }}</p>
                                                    <p><i class='{{ user.gender_text_es }} icon'></i>{{ user.gender_text }}</p>
