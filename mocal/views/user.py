@@ -65,10 +65,10 @@ def user_info():
     if year in [0] + years:
         current_user.user_info.year = year
 
-    if month not in [0] + months:
+    if month in [0] + months:
         current_user.user_info.month = month
 
-    if day not in [x for x in xrange(0, 32)]:
+    if day in [x for x in xrange(0, 32)]:
         current_user.user_info.day = day
 
     if year and month and day:
@@ -76,7 +76,7 @@ def user_info():
     else:
         current_user.user_info.birthday = None
 
-    if constellation not in [x for x in xrange(0, 13)]:
+    if constellation in [x for x in xrange(0, 13)]:
         current_user.user_info.constellation = constellation
 
     current_user.save()
