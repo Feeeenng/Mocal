@@ -97,8 +97,6 @@ def user_list():
             'count': 10,
             'deleted_at': None
         }
-
-        users = User.fetch(**params)
-
-    return render_template('user/users.html', users=users)
+        users = User.fetch(sort_key='-sign_in_at', **params)
+        return render_template('user/users.html', users=users)
 
