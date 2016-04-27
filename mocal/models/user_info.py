@@ -1,6 +1,7 @@
 # -*- coding: utf8 -*-
 
 from db import DatabaseObject, db
+from mocal.utils.datetime_display import format_datetime
 
 
 class UserInfo(DatabaseObject):
@@ -13,3 +14,7 @@ class UserInfo(DatabaseObject):
 
     def __repr__(self):
         return '<UserInfo: %r>' % self.id
+
+    @property
+    def birth(self):
+        return format_datetime(self.birthday, '%Y-%m-%d') or '保密'

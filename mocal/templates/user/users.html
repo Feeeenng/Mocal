@@ -19,6 +19,16 @@
             $('.special.cards .image').dimmer({
                 on: 'hover'
             });
+
+            $('.show_detail').popup({
+                position : 'left center',
+                hoverable: true,
+                transition: 'horizontal flip',
+                delay:{
+                    show: 200,
+                    hide: 200
+                }
+            });
         });
     </script>
 {% endblock %}
@@ -31,223 +41,42 @@
 
         <div class="ui center aligned grid">
             <div class="twelve wide column">
-                <div class="ui special three doubling cards">
-                    <div class="card">
-                        <div class="blurring dimmable image">
-                            <div class="ui dimmer">
-                                <div class="content">
-                                    <div class="center">
-                                        <div class="ui inverted button">Add Friend</div>
+                <div class="ui six doubling special cards">
+                    {% for user in users %}
+                        <div class="card" id="{{ user.id }}">
+                            <div class="blurring dimmable image">
+                                <div class="ui dimmer">
+                                    <div class="content">
+                                        <div class="center">
+                                            <div class="ui inverted button"><i class="add user icon"></i>添加</div>
+                                            <div class="ui divider"></div>
+                                            <i class="user circular large icon link show_detail"
+                                               data-variation="tiny"
+                                               data-html="
+                                               <h2 class='ui header'>
+                                                   <img src='{{ user.photo(256) }}' class='ui circular image'>
+                                                   {{ user.nickname }}
+                                                    <div class='sub header'></div>
+                                               </h2>
+                                               <div class='ui divider'></div>
+                                               <div class='content' style='text-align: left'>
+                                                   <p>{{ user.user_info.desc|truncate(30, True) }}</p>
+                                                   <p><i class='mail icon'></i>{{ user.email }}</p>
+                                                   <p><i class='birthday icon'></i>{{ user.user_info.birth }}</p>
+                                                   <p><i class='{{ user.gender_text_es }} icon'></i>{{ user.gender_text }}</p>
+                                                   <div class='ui divider'></div>
+                                                   <a><i class='users icon'></i> 2粉丝 </a>
+                                                   <p><i class='wait icon'></i>(登录时间)：{{ user.last_login_at }}</p>
+                                               </div>">
+                                            </i>
+                                        </div>
                                     </div>
                                 </div>
+                                <img src="{{ user.photo(256) }}">
                             </div>
-                            <img src="http://www.semantic-ui.cn/images/avatar/large/elliot.jpg">
+                            <strong>{{ user.nickname }}</strong>
                         </div>
-                        <div class="content">
-                            <a class="header">Team Fu</a>
-                            <div class="meta">
-                                <span class="date">Create in Sep 2014</span>
-                            </div>
-                        </div>
-                        <div class="extra content">
-                            <a>
-                                <i class="users icon"></i>
-                                2 Members
-                            </a>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="blurring dimmable image">
-                            <div class="ui dimmer">
-                                <div class="content">
-                                    <div class="center">
-                                        <div class="ui inverted button">Add Friend</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <img src="http://www.semantic-ui.cn/images/avatar/large/elliot.jpg">
-                        </div>
-                        <div class="content">
-                            <a class="header">Team Fu</a>
-                            <div class="meta">
-                                <span class="date">Create in Sep 2014</span>
-                            </div>
-                        </div>
-                        <div class="extra content">
-                            <a>
-                                <i class="users icon"></i>
-                                2 Members
-                            </a>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="blurring dimmable image">
-                            <div class="ui dimmer">
-                                <div class="content">
-                                    <div class="center">
-                                        <div class="ui inverted button">Add Friend</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <img src="http://www.semantic-ui.cn/images/avatar/large/elliot.jpg">
-                        </div>
-                        <div class="content">
-                            <a class="header">Team Fu</a>
-                            <div class="meta">
-                                <span class="date">Create in Sep 2014</span>
-                            </div>
-                        </div>
-                        <div class="extra content">
-                            <a>
-                                <i class="users icon"></i>
-                                2 Members
-                            </a>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="blurring dimmable image">
-                            <div class="ui dimmer">
-                                <div class="content">
-                                    <div class="center">
-                                        <div class="ui inverted button">Add Friend</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <img src="http://www.semantic-ui.cn/images/avatar/large/elliot.jpg">
-                        </div>
-                        <div class="content">
-                            <a class="header">Team Fu</a>
-                            <div class="meta">
-                                <span class="date">Create in Sep 2014</span>
-                            </div>
-                        </div>
-                        <div class="extra content">
-                            <a>
-                                <i class="users icon"></i>
-                                2 Members
-                            </a>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="blurring dimmable image">
-                            <div class="ui dimmer">
-                                <div class="content">
-                                    <div class="center">
-                                        <div class="ui inverted button">Add Friend</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <img src="http://www.semantic-ui.cn/images/avatar/large/elliot.jpg">
-                        </div>
-                        <div class="content">
-                            <a class="header">Team Fu</a>
-                            <div class="meta">
-                                <span class="date">Create in Sep 2014</span>
-                            </div>
-                        </div>
-                        <div class="extra content">
-                            <a>
-                                <i class="users icon"></i>
-                                2 Members
-                            </a>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="blurring dimmable image">
-                            <div class="ui dimmer">
-                                <div class="content">
-                                    <div class="center">
-                                        <div class="ui inverted button">Add Friend</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <img src="http://www.semantic-ui.cn/images/avatar/large/elliot.jpg">
-                        </div>
-                        <div class="content">
-                            <a class="header">Team Fu</a>
-                            <div class="meta">
-                                <span class="date">Create in Sep 2014</span>
-                            </div>
-                        </div>
-                        <div class="extra content">
-                            <a>
-                                <i class="users icon"></i>
-                                2 Members
-                            </a>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="blurring dimmable image">
-                            <div class="ui dimmer">
-                                <div class="content">
-                                    <div class="center">
-                                        <div class="ui inverted button">Add Friend</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <img src="http://www.semantic-ui.cn/images/avatar/large/elliot.jpg">
-                        </div>
-                        <div class="content">
-                            <a class="header">Team Fu</a>
-                            <div class="meta">
-                                <span class="date">Create in Sep 2014</span>
-                            </div>
-                        </div>
-                        <div class="extra content">
-                            <a>
-                                <i class="users icon"></i>
-                                2 Members
-                            </a>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="blurring dimmable image">
-                            <div class="ui dimmer">
-                                <div class="content">
-                                    <div class="center">
-                                        <div class="ui inverted button">Add Friend</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <img src="http://www.semantic-ui.cn/images/avatar/large/elliot.jpg">
-                        </div>
-                        <div class="content">
-                            <a class="header">Team Fu</a>
-                            <div class="meta">
-                                <span class="date">Create in Sep 2014</span>
-                            </div>
-                        </div>
-                        <div class="extra content">
-                            <a>
-                                <i class="users icon"></i>
-                                2 Members
-                            </a>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="blurring dimmable image">
-                            <div class="ui dimmer">
-                                <div class="content">
-                                    <div class="center">
-                                        <div class="ui inverted button">Add Friend</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <img src="http://www.semantic-ui.cn/images/avatar/large/elliot.jpg">
-                        </div>
-                        <div class="content">
-                            <a class="header">Team Fu</a>
-                            <div class="meta">
-                                <span class="date">Create in Sep 2014</span>
-                            </div>
-                        </div>
-                        <div class="extra content">
-                            <a>
-                                <i class="users icon"></i>
-                                2 Members
-                            </a>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
 

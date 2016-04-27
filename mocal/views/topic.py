@@ -73,6 +73,7 @@ def search():
 
     return jsonify({'items': items})
 
+
 def get_user_name(uid):
     user = User.from_db(id=uid)
     return user.nickname

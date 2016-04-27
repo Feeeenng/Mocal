@@ -8,6 +8,7 @@ from mocal.error import Error
 
 from mocal.views import res
 from mocal.utils.datetime_display import get_days_by_year_and_month, constellations
+from mocal.models.user import User
 
 instance = Blueprint('user', __name__)
 
@@ -50,6 +51,7 @@ def user_info():
     photo = request.form.get('photo')
     nickname = request.form.get('nickname')
     desc = request.form.get('desc')
+    gender = request.form.get('gender')
     year = request.form.get('year', 0, int)
     month = request.form.get('month', 0, int)
     day = request.form.get('day', 0, int)
@@ -62,6 +64,7 @@ def user_info():
     current_user.nickname = nickname
     current_user.user_info.photo = photo
     current_user.user_info.desc = desc
+    current_user.gender = gender
     if year in [0] + years:
         current_user.user_info.year = year
 
@@ -86,6 +89,16 @@ def user_info():
 
 
 @instance.route('/users', methods=['GET', 'POST'])
-def users():
-    return render_template('user/users.html')
+def user_list():
+    if request.method == 'GET':
+        page = request.args.get('page', 1, int)
+        params = {
+            'page': page,
+            'count': 10,
+            'deleted_at': None
+        }
+
+        users = User.fetch(**params)
+
+    return render_template('user/users.html', users=users)
 

@@ -8,6 +8,7 @@ from mocal import login_manager
 from mocal.constant import VIP_USER, CAN_CREATE, CAN_DELETE, CAN_SELECT, CAN_UPDATE
 from mocal.utils.md5 import MD5
 from datetime import datetime
+from mocal.utils.datetime_display import format_datetime
 
 
 @login_manager.user_loader
@@ -51,6 +52,29 @@ class User(UserMixin, DatabaseObject):
     def photo(self, size=16):
         photo = '{0}?size={1}'.format(self.user_info.photo, size)
         return photo
+
+    @property
+    def gender_text_es(self):
+        r = self.gender
+        if self.gender == 'secret':
+            r = 'spy'
+        return r
+
+    @property
+    def last_login_at(self):
+        return format_datetime(self.sign_in_at, '%Y-%m-%d') or '-'
+
+    @property
+    def gender_text(self):
+        if self.gender == 'male':
+            r = '男'
+        elif self.gender == 'female':
+            r = '女'
+        elif self.gender == 'secret':
+            r = '保密'
+        else:
+            r = ''
+        return r
 
     @property
     def privileges_list(self):
