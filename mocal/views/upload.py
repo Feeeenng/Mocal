@@ -57,7 +57,7 @@ def upload_file():
 
 def is_allowed_format(file_name):
     ext = os.path.splitext(file_name)[-1].strip('.')
-    if ext.lower() not in ALLOWED_FORMATS:
+    if ext.lower() not in ALLOWED_FORMATS:  # ['jpg', 'png', 'jpeg', 'gif']
         flash('上传失败，仅支持上传jpg和png格式文件！')
         return False
     return True
@@ -67,7 +67,7 @@ def is_allowed_size(f):
     f.stream.seek(0, 2)
     content_length = f.tell()
     f.stream.seek(0)
-    if content_length > ALLOWED_MAX_SIZE:
+    if content_length > ALLOWED_MAX_SIZE:  # 10 * 1024 ** 2  # 10M
         return False
     return True
 
